@@ -7,15 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE4CD8F224B62CCB006140C3 /* ShotEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8F124B62CCB006140C3 /* ShotEditorView.swift */; };
+		BE4CD8F424B6A595006140C3 /* SongEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8F324B6A595006140C3 /* SongEditorView.swift */; };
+		BE4CD8F624B6A5C4006140C3 /* FormationEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8F524B6A5C4006140C3 /* FormationEditorView.swift */; };
+		BE4CD8F824B6A6D3006140C3 /* ProjectModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8F724B6A6D3006140C3 /* ProjectModel.swift */; };
+		BE4CD8FA24B6A6EA006140C3 /* SongModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8F924B6A6EA006140C3 /* SongModel.swift */; };
+		BE4CD8FC24B6A6F4006140C3 /* LyricModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8FB24B6A6F4006140C3 /* LyricModel.swift */; };
+		BE4CD8FE24B6A6FF006140C3 /* ShotModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8FD24B6A6FF006140C3 /* ShotModel.swift */; };
+		BE4CD90024B6A707006140C3 /* FormationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8FF24B6A707006140C3 /* FormationModel.swift */; };
+		BE4CD90224B6BB66006140C3 /* CharacterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD90124B6BB65006140C3 /* CharacterModel.swift */; };
+		BE4CD90524B6D513006140C3 /* FormationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD90424B6D513006140C3 /* FormationViewModel.swift */; };
+		BE4CD90724B6DD90006140C3 /* ProjectViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD90624B6DD90006140C3 /* ProjectViewModel.swift */; };
+		BE5EFFC324B708650064BA18 /* RegExp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5EFFC224B708650064BA18 /* RegExp.swift */; };
+		BE5EFFC524B72D250064BA18 /* SongViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5EFFC424B72D250064BA18 /* SongViewModel.swift */; };
+		BE5EFFC724B72D9D0064BA18 /* ShotViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5EFFC624B72D9D0064BA18 /* ShotViewModel.swift */; };
 		BE83F94F24AB389600F4015F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE83F94E24AB389600F4015F /* AppDelegate.swift */; };
 		BE83F95124AB389600F4015F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE83F95024AB389600F4015F /* SceneDelegate.swift */; };
-		BE83F95424AB389600F4015F /* shonichi.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BE83F95224AB389600F4015F /* shonichi.xcdatamodeld */; };
-		BE83F95624AB389600F4015F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE83F95524AB389600F4015F /* ContentView.swift */; };
+		BE83F95624AB389600F4015F /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE83F95524AB389600F4015F /* DashboardView.swift */; };
 		BE83F95824AB389600F4015F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE83F95724AB389600F4015F /* Assets.xcassets */; };
 		BE83F95B24AB389600F4015F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE83F95A24AB389600F4015F /* Preview Assets.xcassets */; };
 		BE83F95E24AB389600F4015F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BE83F95C24AB389600F4015F /* LaunchScreen.storyboard */; };
 		BE83F96924AB389600F4015F /* shonichiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE83F96824AB389600F4015F /* shonichiTests.swift */; };
 		BE83F97424AB389600F4015F /* shonichiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE83F97324AB389600F4015F /* shonichiUITests.swift */; };
+		BEB32B4224B8E40F004068C8 /* shonichi.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BEB32B4024B8E40F004068C8 /* shonichi.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,11 +50,25 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BE4CD8F124B62CCB006140C3 /* ShotEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ShotEditorView.swift; path = shonichi/Views/ShotEditorView.swift; sourceTree = SOURCE_ROOT; };
+		BE4CD8F324B6A595006140C3 /* SongEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SongEditorView.swift; path = shonichi/Views/SongEditorView.swift; sourceTree = SOURCE_ROOT; };
+		BE4CD8F524B6A5C4006140C3 /* FormationEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormationEditorView.swift; sourceTree = "<group>"; };
+		BE4CD8F724B6A6D3006140C3 /* ProjectModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectModel.swift; sourceTree = "<group>"; };
+		BE4CD8F924B6A6EA006140C3 /* SongModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongModel.swift; sourceTree = "<group>"; };
+		BE4CD8FB24B6A6F4006140C3 /* LyricModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricModel.swift; sourceTree = "<group>"; };
+		BE4CD8FD24B6A6FF006140C3 /* ShotModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShotModel.swift; sourceTree = "<group>"; };
+		BE4CD8FF24B6A707006140C3 /* FormationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormationModel.swift; sourceTree = "<group>"; };
+		BE4CD90124B6BB65006140C3 /* CharacterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterModel.swift; sourceTree = "<group>"; };
+		BE4CD90324B6C707006140C3 /* shonichi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = shonichi.entitlements; sourceTree = "<group>"; };
+		BE4CD90424B6D513006140C3 /* FormationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormationViewModel.swift; sourceTree = "<group>"; };
+		BE4CD90624B6DD90006140C3 /* ProjectViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectViewModel.swift; sourceTree = "<group>"; };
+		BE5EFFC224B708650064BA18 /* RegExp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegExp.swift; sourceTree = "<group>"; };
+		BE5EFFC424B72D250064BA18 /* SongViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongViewModel.swift; sourceTree = "<group>"; };
+		BE5EFFC624B72D9D0064BA18 /* ShotViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShotViewModel.swift; sourceTree = "<group>"; };
 		BE83F94B24AB389600F4015F /* shonichi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = shonichi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE83F94E24AB389600F4015F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BE83F95024AB389600F4015F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		BE83F95324AB389600F4015F /* shonichi.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = shonichi.xcdatamodel; sourceTree = "<group>"; };
-		BE83F95524AB389600F4015F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		BE83F95524AB389600F4015F /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		BE83F95724AB389600F4015F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BE83F95A24AB389600F4015F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		BE83F95D24AB389600F4015F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -51,6 +79,7 @@
 		BE83F96F24AB389600F4015F /* shonichiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = shonichiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE83F97324AB389600F4015F /* shonichiUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = shonichiUITests.swift; sourceTree = "<group>"; };
 		BE83F97524AB389600F4015F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BEB32B4124B8E40F004068C8 /* shonichi.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = shonichi.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +107,49 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BE4CD8ED24B62C28006140C3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				BE83F95524AB389600F4015F /* DashboardView.swift */,
+				BE4CD8F124B62CCB006140C3 /* ShotEditorView.swift */,
+				BE4CD8F324B6A595006140C3 /* SongEditorView.swift */,
+				BE4CD8F524B6A5C4006140C3 /* FormationEditorView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		BE4CD8EE24B62C4A006140C3 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				BE5EFFC224B708650064BA18 /* RegExp.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		BE4CD8EF24B62C4C006140C3 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				BE4CD8F724B6A6D3006140C3 /* ProjectModel.swift */,
+				BE4CD8FD24B6A6FF006140C3 /* ShotModel.swift */,
+				BE4CD8F924B6A6EA006140C3 /* SongModel.swift */,
+				BE4CD8FB24B6A6F4006140C3 /* LyricModel.swift */,
+				BE4CD8FF24B6A707006140C3 /* FormationModel.swift */,
+				BE4CD90124B6BB65006140C3 /* CharacterModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		BE4CD8F024B62C52006140C3 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				BE4CD90624B6DD90006140C3 /* ProjectViewModel.swift */,
+				BE5EFFC624B72D9D0064BA18 /* ShotViewModel.swift */,
+				BE5EFFC424B72D250064BA18 /* SongViewModel.swift */,
+				BE4CD90424B6D513006140C3 /* FormationViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
 		BE83F94224AB389600F4015F = {
 			isa = PBXGroup;
 			children = (
@@ -101,13 +173,17 @@
 		BE83F94D24AB389600F4015F /* shonichi */ = {
 			isa = PBXGroup;
 			children = (
+				BE4CD90324B6C707006140C3 /* shonichi.entitlements */,
+				BE4CD8EF24B62C4C006140C3 /* Models */,
+				BE4CD8F024B62C52006140C3 /* ViewModels */,
+				BE4CD8EE24B62C4A006140C3 /* Utilities */,
+				BE4CD8ED24B62C28006140C3 /* Views */,
 				BE83F94E24AB389600F4015F /* AppDelegate.swift */,
 				BE83F95024AB389600F4015F /* SceneDelegate.swift */,
-				BE83F95524AB389600F4015F /* ContentView.swift */,
+				BEB32B4024B8E40F004068C8 /* shonichi.xcdatamodeld */,
 				BE83F95724AB389600F4015F /* Assets.xcassets */,
 				BE83F95C24AB389600F4015F /* LaunchScreen.storyboard */,
 				BE83F95F24AB389600F4015F /* Info.plist */,
-				BE83F95224AB389600F4015F /* shonichi.xcdatamodeld */,
 				BE83F95924AB389600F4015F /* Preview Content */,
 			);
 			path = shonichi;
@@ -202,7 +278,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1150;
-				LastUpgradeCheck = 1150;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = "seiya studio";
 				TargetAttributes = {
 					BE83F94A24AB389600F4015F = {
@@ -270,10 +346,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE4CD8F424B6A595006140C3 /* SongEditorView.swift in Sources */,
+				BE4CD8FC24B6A6F4006140C3 /* LyricModel.swift in Sources */,
+				BE5EFFC324B708650064BA18 /* RegExp.swift in Sources */,
 				BE83F94F24AB389600F4015F /* AppDelegate.swift in Sources */,
-				BE83F95424AB389600F4015F /* shonichi.xcdatamodeld in Sources */,
-				BE83F95624AB389600F4015F /* ContentView.swift in Sources */,
+				BEB32B4224B8E40F004068C8 /* shonichi.xcdatamodeld in Sources */,
+				BE4CD90724B6DD90006140C3 /* ProjectViewModel.swift in Sources */,
+				BE83F95624AB389600F4015F /* DashboardView.swift in Sources */,
+				BE4CD8FE24B6A6FF006140C3 /* ShotModel.swift in Sources */,
+				BE4CD90224B6BB66006140C3 /* CharacterModel.swift in Sources */,
+				BE5EFFC524B72D250064BA18 /* SongViewModel.swift in Sources */,
 				BE83F95124AB389600F4015F /* SceneDelegate.swift in Sources */,
+				BE4CD90024B6A707006140C3 /* FormationModel.swift in Sources */,
+				BE5EFFC724B72D9D0064BA18 /* ShotViewModel.swift in Sources */,
+				BE4CD8F824B6A6D3006140C3 /* ProjectModel.swift in Sources */,
+				BE4CD8FA24B6A6EA006140C3 /* SongModel.swift in Sources */,
+				BE4CD8F224B62CCB006140C3 /* ShotEditorView.swift in Sources */,
+				BE4CD90524B6D513006140C3 /* FormationViewModel.swift in Sources */,
+				BE4CD8F624B6A5C4006140C3 /* FormationEditorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,6 +436,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -406,6 +497,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -438,6 +530,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = shonichi/shonichi.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"shonichi/Preview Content\"";
 				DEVELOPMENT_TEAM = CTS575YL8S;
@@ -447,8 +541,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = studio.seiya.shonichi;
+				PRODUCT_BUNDLE_IDENTIFIER = seiya.shonichi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -458,6 +554,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = shonichi/shonichi.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"shonichi/Preview Content\"";
 				DEVELOPMENT_TEAM = CTS575YL8S;
@@ -467,8 +565,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = studio.seiya.shonichi;
+				PRODUCT_BUNDLE_IDENTIFIER = seiya.shonichi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -600,12 +700,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		BE83F95224AB389600F4015F /* shonichi.xcdatamodeld */ = {
+		BEB32B4024B8E40F004068C8 /* shonichi.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				BE83F95324AB389600F4015F /* shonichi.xcdatamodel */,
+				BEB32B4124B8E40F004068C8 /* shonichi.xcdatamodel */,
 			);
-			currentVersion = BE83F95324AB389600F4015F /* shonichi.xcdatamodel */;
+			currentVersion = BEB32B4124B8E40F004068C8 /* shonichi.xcdatamodel */;
 			path = shonichi.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
