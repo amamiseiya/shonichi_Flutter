@@ -22,6 +22,7 @@ class SongViewModel: ObservableObject {
         return allSongsRequest
     }
 
+    // ! 有问题
     var allLyricsForSongRequest: NSFetchRequest<SNLyric> {
         let allLyricsForSongRequest = NSFetchRequest<SNLyric>(entityName: "SNLyric")
         allLyricsForSongRequest.predicate = NSPredicate(format: "compositedBy = %@", argumentArray: [projectViewModel.currentProject?.aggregatesSong])
@@ -35,17 +36,54 @@ class SongViewModel: ObservableObject {
         self.projectViewModel = projectViewModel
     }
     
-    func addSong(name: String) -> Void {
+// MARK: Intent
+    
+    func addSong(name: String) -> SNSong {
         let song = SNSong(context: context)
         song.id = UUID()
         song.name = name
         
         try? self.context.save()
+        return song
         
     }
     
-    func deleteSong() -> Void {
-        
+    func updateSong(song: SNSong) -> Void {
         
     }
+    
+    func deleteSong(song: SNSong) -> Void {
+        context.delete(song)
+        try? context.save()
+    }
+    
+    func selectCurrentSong(currentSong: SNSong?) -> Void {
+        if self.projectViewModel.currentProject?.aggregatesSong == currentSong {
+            self.currentSong = nil
+            print("currentSong unselected.")
+        } else {
+            self.currentSong = currentSong
+            print("currentSong selected.")
+        }
+    }
+    
+    func addLyric(text: String) -> SNLyric {
+        let lyric = SNLyric(context: context)
+        lyric.id = UUID()
+        lyric.text = text
+        
+        try? self.context.save()
+        return lyric
+        
+    }
+    
+    func updateLyric(lyric: SNLyric) -> Void {
+        
+    }
+    
+    func deleteLyric(lyric: SNLyric) -> Void {
+        context.delete(lyric)
+        try? context.save()
+    }
+    
 }

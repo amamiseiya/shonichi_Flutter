@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17162" systemVersion="19F101" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19G73" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
     <entity name="SNAttachment" representedClassName="SNAttachment" syncable="YES" codeGenerationType="class">
         <attribute name="file" optional="YES" attributeType="URI"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
@@ -7,6 +7,8 @@
         <relationship name="compositedBy" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNSong" inverseName="compositesAttachment" inverseEntity="SNSong"/>
     </entity>
     <entity name="SNCharacter" representedClassName="SNCharacter" syncable="YES" codeGenerationType="class">
+        <attribute name="grade" optional="YES" attributeType="String"/>
+        <attribute name="group" optional="YES" attributeType="String"/>
         <attribute name="memberColor" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnachiveFromData"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="nameAbbr" optional="YES" attributeType="String"/>
@@ -40,8 +42,8 @@
         <relationship name="madeFor" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNSong" inverseName="canBePresented" inverseEntity="SNSong"/>
     </entity>
     <entity name="SNKikaku" representedClassName="SNKikaku" syncable="YES" codeGenerationType="class">
-        <attribute name="groupName" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="teamName" optional="YES" attributeType="String"/>
         <relationship name="hasMembers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNCharacter" inverseName="subordinates" inverseEntity="SNCharacter"/>
         <relationship name="hasSongs" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNSong" inverseName="subordinatesKikaku" inverseEntity="SNSong"/>
     </entity>
@@ -83,7 +85,7 @@
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="aggregatedBy" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNProject" inverseName="aggregatesShotTable" inverseEntity="SNProject"/>
-        <relationship name="composites" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNShot" inverseName="compositedBy" inverseEntity="SNShot"/>
+        <relationship name="composites" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNShot" inverseName="compositedBy" inverseEntity="SNShot"/>
         <relationship name="madeFor" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNSong" inverseName="canBeShoot" inverseEntity="SNSong"/>
     </entity>
     <entity name="SNSong" representedClassName="SNSong" syncable="YES" codeGenerationType="class">
@@ -99,7 +101,7 @@
     </entity>
     <elements>
         <element name="SNAttachment" positionX="-530.41015625" positionY="254.6640625" width="128" height="103"/>
-        <element name="SNCharacter" positionX="36.43359375" positionY="374.5625" width="128" height="148"/>
+        <element name="SNCharacter" positionX="36.43359375" positionY="374.5625" width="128" height="178"/>
         <element name="SNFormation" positionX="38.875" positionY="23.43359375" width="128" height="253"/>
         <element name="SNFormationTable" positionX="66.625" positionY="-196.20703125" width="128" height="133"/>
         <element name="SNKikaku" positionX="-341.25390625" positionY="350.41015625" width="128" height="103"/>

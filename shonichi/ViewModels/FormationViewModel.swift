@@ -50,5 +50,60 @@ class FormationViewModel: ObservableObject {
         self.projectViewModel = projectViewModel
         
     }
+    
+    func addFormationTable(name: String, author: String, aggregatedBy: NSSet?, madeFor: SNSong?) -> SNFormationTable {
+            let formationTable = SNFormationTable(context: self.context)
+            formationTable.id = UUID()
+            formationTable.name = name
+            formationTable.author = author
+            
+    //        if aggregatedBy != nil {
+    //            formationTable.addToAggregatedBy(aggregatedBy!)
+    //        } else {
+    //            print("Error")
+    //        }
+            
+            formationTable.aggregatedBy = aggregatedBy
+            formationTable.madeFor = madeFor
+            
+            try? self.context.save()
+            return formationTable
+        }
+        
+        func updateFormationTable(formationTable: SNFormationTable) -> Void {
+        }
+        
+        func deleteFormationTable(formationTable: SNFormationTable) -> Void {
+            context.delete(formationTable)
+            try? self.context.save()
+        }
+        
+        func selectCurrentFormationTable(currentFormationTable: SNFormationTable?) -> Void {
+            if self.projectViewModel.currentProject?.aggregatesFormationTable == currentFormationTable {
+                self.projectViewModel.currentProject?.aggregatesFormationTable = nil
+                print("currentFormationTable unselected.")
+            } else {
+                self.projectViewModel.currentProject?.aggregatesFormationTable = currentFormationTable
+                print("currentFormationTable selected.")
+            }
+        }
+        
+        func addFormation() -> SNFormation? {
+            if currentFormationTable != nil {
+                let formation = SNFormation(context: self.context)
+                formation.id = UUID()
+                formation.startTime = Date()
+                formation.compositedBy = currentFormationTable
+                try? self.context.save()
+                return formation
+            } else {
+                return nil
+            }
+        }
+        
+        func deleteFormation(formation: SNFormation) -> Void {
+            context.delete(formation)
+            try? context.save()
+        }
 
 }

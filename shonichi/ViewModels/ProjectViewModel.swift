@@ -35,18 +35,19 @@ class ProjectViewModel: ObservableObject {
     
     // MARK: Intent
 
-    func addProject(dancerName: String) -> Void {
+    func addProject(dancerName: String, relatedSong: SNSong?) -> SNProject {
         let project = SNProject(context: self.context)
         project.id = UUID()
         project.dancerName = dancerName
         project.createdTime = Date()
+        project.aggregatesSong = relatedSong
         
         try? self.context.save()
-        
+        return project
     }
     
     func updateProject(project: SNProject) -> Void {
-
+        
     }
     
     func deleteProject(project: SNProject) -> Void {
@@ -54,7 +55,16 @@ class ProjectViewModel: ObservableObject {
         try? context.save()
     }
 
-    func selectCurrentProject(currentProject: SNProject) -> Void {
-        self.currentProject = currentProject
+    func selectCurrentProject(currentProject: SNProject?) -> Void {
+        if self.currentProject == currentProject {
+            self.currentProject = nil
+            print("currentProject unselected.")
+        } else {
+            self.currentProject = currentProject
+            print("currentProject selected.")
+        }
     }
+    
+
+    
 }

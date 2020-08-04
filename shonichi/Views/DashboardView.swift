@@ -10,69 +10,94 @@ import SwiftUI
 import CoreData
 
 //struct ContentView_Previews: PreviewProvider {
+//    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+//    let projectViewModel = ProjectViewModel(context: context)
+//    let shotViewModel = ShotViewModel(context: context, projectViewModel: projectViewModel)
+//    let songViewModel = SongViewModel(context: context, projectViewModel: projectViewModel)
+//    let formationViewModel = FormationViewModel(context: context, projectViewModel: projectViewModel)
 //    static var previews: some View {
-//        Group {
-//            DashboardView(projectViewModel: ProjectViewModel())
-//        }
+//        DashboardView(projectViewModel: projectViewModel, shotViewModel: shotViewModel, songViewModel: songViewModel, formationViewModel: formationViewModel).environment(\.managedObjectContext, context)
 //    }
 //}
 
 struct DashboardView: View {
     @Environment(\.managedObjectContext) var context
+    
     @ObservedObject var projectViewModel: ProjectViewModel
-    @State private var popoverAddIsShowing: Bool = false
+    @ObservedObject var shotViewModel: ShotViewModel
+    @ObservedObject var songViewModel: SongViewModel
+    @ObservedObject var formationViewModel: FormationViewModel
+    @ObservedObject var characterViewModel: CharacterViewModel
+    
+    @State private var editSheetIsShowing: Bool = false
     @FetchRequest var allProjectsResults: FetchedResults<SNProject>
     
-    init(projectViewModel: ProjectViewModel) {
+    init(projectViewModel: ProjectViewModel, shotViewModel: ShotViewModel, songViewModel: SongViewModel, formationViewModel: FormationViewModel, characterViewModel: CharacterViewModel) {
         self.projectViewModel = projectViewModel
+        self.shotViewModel = shotViewModel
+        self.songViewModel = songViewModel
+        self.formationViewModel = formationViewModel
+        self.characterViewModel = characterViewModel
         self._allProjectsResults = FetchRequest(fetchRequest: projectViewModel.allProjectsRequest)
     }
     
+    
     var body: some View {
-        NavigationView{
-            VStack(alignment: .leading){
+        NavigationView {
+            VStack(alignment: .leading) {
                 Text("お帰りなさい♪")
                 LatestProjectView
+                    .listRowBackground((self.projectViewModel.currentProject == self.allProjectsResults.first) ? Color.blue : Color.white)
+                    .onTapGesture {
+                        self.projectViewModel.selectCurrentProject(currentProject: self.allProjectsResults.first)
+                    }
                 List {
                     if allProjectsResults.count > 1 {
                         ForEach(self.allProjectsResults) { project in
                             NormalProjectView(project: project)
+                            .onTapGesture {
+                                self.projectViewModel.selectCurrentProject(currentProject: project)
+                            }
+                            .listRowBackground(self.projectViewModel.currentProject == project ? Color.blue : Color.white)
                         }.onDelete { indexSet in indexSet.map {
-                            self.allProjectsResults[$0]
+                        self.allProjectsResults[$0]
                         }.forEach{ self.projectViewModel.deleteProject(project: $0) }
-                        }
                     }
-                }.padding(.all, 15.0)
+                    }
+                }
                 List {
-                    NavigationLink(destination: ShotEditorView(shotViewModel: ShotViewModel(context: context, projectViewModel: projectViewModel))) {
-                        Text("分镜脚本编辑")
+                    NavigationLink(destination: ShotEditorView(projectViewModel: projectViewModel, shotViewModel: shotViewModel, songViewModel: songViewModel)) {
+                        Text("Shot Editor")
                     }
-                    NavigationLink(destination: SongEditorView(songViewModel: SongViewModel(context: context, projectViewModel: projectViewModel))) {
-                        Text("歌曲信息查看")
+                    NavigationLink(destination: SongEditorView(songViewModel: songViewModel)) {
+                        Text("Song Editor")
                     }
-                    NavigationLink(destination: FormationEditorView(formationViewModel: FormationViewModel(context: context, projectViewModel: projectViewModel))) {
-                        Text("队形编辑")
+                    NavigationLink(destination: FormationEditorView(formationViewModel: formationViewModel)) {
+                        Text("Formation Editor")
+                    }
+                    NavigationLink(destination: ModelView(characterViewModel: characterViewModel)) {
+                        Text("Model Viewer")
                     }
                 }
-            }.navigationBarItems(trailing: HStack {
+            }.padding(.all, 15.0)
+            .navigationBarItems(trailing: HStack {
                 Button(action:{}){Image(systemName: "arrow.clockwise").imageScale(.large)}.fixedSize()
-                Button(action:{self.popoverAddIsShowing = true}){Image(systemName: "plus").imageScale(.large)}.fixedSize()
-                    .popover(isPresented: $popoverAddIsShowing) { popoverEdit(projectViewModel: self.projectViewModel, isShowing: self.$popoverAddIsShowing).environment(\.managedObjectContext, self.context)
+                Button(action:{self.editSheetIsShowing = true}){Image(systemName: "plus").imageScale(.large)}.fixedSize()
                 }
-        })
+            ).sheet(isPresented: $editSheetIsShowing) { ProjectEditSheet(isShowing: self.$editSheetIsShowing, projectViewModel: self.projectViewModel, songViewModel: self.songViewModel, project: nil).environment(\.managedObjectContext, self.context)
+            }
+        }
     }
-}
     
     var LatestProjectView: some View {
         return Group {
-            Button(action:{}){
-                if !self.allProjectsResults.isEmpty {
-                    Text("当前项目：")
-                    Text(allProjectsResults.first!.aggregatesSong?.name ?? "未知曲目 with \(allProjectsResults.first!.dancerName!)")
-                Spacer()
-                } else {
-                    Text("当前没有项目。")
+            if !self.allProjectsResults.isEmpty {
+                VStack {
+                    Text("Current project:")
+                    Text((allProjectsResults.first!.aggregatesSong?.name ?? "Undefined") + " with \(allProjectsResults.first!.dancerName!)")
                 }
+            } else {
+                Text("No project.")
             }
         }
     }
@@ -83,24 +108,33 @@ struct DashboardView: View {
         
         var body: some View {
             VStack(alignment: .leading) {
-                       Text(project.aggregatesSong?.name ?? "未知曲目 with \(project.dancerName!)")
-                       Text("创建时间：")
-                       Text(project.createdTime!.description)
+               Text((project.aggregatesSong?.name ?? "Undefined") + " with \(project.dancerName!)")
+               Text("Created:")
+               Text(project.createdTime!.description)
             }
         }
     }
 }
 
-
         
-struct popoverEdit: View {
-    var projectViewModel: ProjectViewModel
+struct ProjectEditSheet: View {
     @Environment(\.managedObjectContext) var context
+    
     @Binding var isShowing: Bool
+//    @State private var isEditing: Bool
+    @FetchRequest var allSongsResults: FetchedResults<SNSong>
+    var projectViewModel: ProjectViewModel
+    var songViewModel: SongViewModel
     
     @State private var dancerName: String = ""
+    @State private var relatedSong: SNSong?
     
-    init(project: SNProject?) {
+    
+    init(isShowing: Binding<Bool>, projectViewModel: ProjectViewModel, songViewModel: SongViewModel, project: SNProject?) {
+        self._isShowing = isShowing
+        self.projectViewModel = projectViewModel
+        self.songViewModel = songViewModel
+        self._allSongsResults = FetchRequest(fetchRequest: songViewModel.allSongsRequest)
         if project != nil {
             self.dancerName = project!.dancerName!
         }
@@ -109,13 +143,47 @@ struct popoverEdit: View {
     var body: some View {
         NavigationView {
            Form {
-               TextField("Dancer Name", text: $dancerName)
-           }.navigationBarItems(leading: Button(action: {self.isShowing = false}){ Text("Cancel")}, trailing: Button(action: {
+            Section(header: Text("Properties")) {
+                TextField("Dancer Name", text: $dancerName)
+            }
+            Section(header: Text("Related Entities"), footer: EditButton()) {
+                Group {
+                    Text("Undefined")
+                }.onTapGesture {
+                    self.relatedSong = nil
+                }
+                HStack {
+                    NavigationLink(destination: EditSongSheet(songViewModel: songViewModel)){
+                        Text("Add song")
+                    }
+                }
+                List {
+                    ForEach(allSongsResults) {song in
+                        NormalSongViewLite(name: song.name).onTapGesture {
+                            print("relatedSong selected.")
+                            self.relatedSong = song
+                        }
+                    }
+                }
+            }
+           }.navigationBarItems(leading: Button(action: {self.isShowing = false}){Text("Cancel")}, trailing: Button(action: {
             if !self.dancerName.isEmpty {
-                self.projectViewModel.addProject(dancerName: self.dancerName)
+                self.projectViewModel.addProject(dancerName: self.dancerName,relatedSong: self.relatedSong)
                 self.isShowing = false
             }
            }) { Text("Done")})
-       }
+        }
+    }
+}
+
+struct NormalSongViewLite: View {
+    var name: String?
+    
+    var body: some View {
+        Group {
+            VStack {
+            Text(name!)
+            }
+        }
     }
 }

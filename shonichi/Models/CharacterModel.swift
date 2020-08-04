@@ -8,24 +8,7 @@
 
 import SwiftUI
 import CoreData
-
-//// Deprecated
-//struct SNCharacter: CustomStringConvertible {
-//    var description: String {
-//        return name
-//    }
-//
-//    var name: String
-//    var nameAbbr: String
-//    var memberColor: Color
-//    var subordinateKikaku: Kikaku
-//
-//}
-
-struct LLCratacter {
-    var grade: Grade
-    var group: LLGroup
-}
+import UIKit
 
 
 enum Kikaku: String {
@@ -53,10 +36,25 @@ enum LLSSGroup {
     case guiltyKiss
 }
 
+extension SNKikaku: Identifiable {
+    
+}
+
 extension SNCharacter: Identifiable {
     
 }
 
 class characterTransformer: ValueTransformer {
     
+}
+
+// https://qiita.com/Kyome/items/eae6216b13c651254f64
+extension UIColor {
+    convenience init(hex: String, alpha: CGFloat = 1.0) {
+        let v = Int("000000" + hex, radix: 16) ?? 0
+        let r = CGFloat(v / Int(powf(256, 2)) % 256) / 255
+        let g = CGFloat(v / Int(powf(256, 1)) % 256) / 255
+        let b = CGFloat(v / Int(powf(256, 0)) % 256) / 255
+        self.init(red: r, green: g, blue: b, alpha: min(max(alpha, 0), 1))
+    }
 }

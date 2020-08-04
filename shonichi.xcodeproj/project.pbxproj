@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE0A521624D64A5C008913F4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BE0A521824D64A5C008913F4 /* Localizable.strings */; };
 		BE4CD8F224B62CCB006140C3 /* ShotEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8F124B62CCB006140C3 /* ShotEditorView.swift */; };
 		BE4CD8F424B6A595006140C3 /* SongEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8F324B6A595006140C3 /* SongEditorView.swift */; };
 		BE4CD8F624B6A5C4006140C3 /* FormationEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8F524B6A5C4006140C3 /* FormationEditorView.swift */; };
 		BE4CD8F824B6A6D3006140C3 /* ProjectModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8F724B6A6D3006140C3 /* ProjectModel.swift */; };
 		BE4CD8FA24B6A6EA006140C3 /* SongModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8F924B6A6EA006140C3 /* SongModel.swift */; };
-		BE4CD8FC24B6A6F4006140C3 /* LyricModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8FB24B6A6F4006140C3 /* LyricModel.swift */; };
 		BE4CD8FE24B6A6FF006140C3 /* ShotModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8FD24B6A6FF006140C3 /* ShotModel.swift */; };
 		BE4CD90024B6A707006140C3 /* FormationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD8FF24B6A707006140C3 /* FormationModel.swift */; };
 		BE4CD90224B6BB66006140C3 /* CharacterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4CD90124B6BB65006140C3 /* CharacterModel.swift */; };
@@ -29,6 +29,8 @@
 		BE83F95E24AB389600F4015F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BE83F95C24AB389600F4015F /* LaunchScreen.storyboard */; };
 		BE83F96924AB389600F4015F /* shonichiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE83F96824AB389600F4015F /* shonichiTests.swift */; };
 		BE83F97424AB389600F4015F /* shonichiUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE83F97324AB389600F4015F /* shonichiUITests.swift */; };
+		BEAFE5C424BBD8BB009A1792 /* CharacterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEAFE5C324BBD8BB009A1792 /* CharacterViewModel.swift */; };
+		BEAFE5C624BBD923009A1792 /* ModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEAFE5C524BBD923009A1792 /* ModelView.swift */; };
 		BEB32B4224B8E40F004068C8 /* shonichi.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BEB32B4024B8E40F004068C8 /* shonichi.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
@@ -50,12 +52,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BE0A521724D64A5C008913F4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BE4CD8F124B62CCB006140C3 /* ShotEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ShotEditorView.swift; path = shonichi/Views/ShotEditorView.swift; sourceTree = SOURCE_ROOT; };
 		BE4CD8F324B6A595006140C3 /* SongEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SongEditorView.swift; path = shonichi/Views/SongEditorView.swift; sourceTree = SOURCE_ROOT; };
 		BE4CD8F524B6A5C4006140C3 /* FormationEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormationEditorView.swift; sourceTree = "<group>"; };
 		BE4CD8F724B6A6D3006140C3 /* ProjectModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectModel.swift; sourceTree = "<group>"; };
 		BE4CD8F924B6A6EA006140C3 /* SongModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongModel.swift; sourceTree = "<group>"; };
-		BE4CD8FB24B6A6F4006140C3 /* LyricModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricModel.swift; sourceTree = "<group>"; };
 		BE4CD8FD24B6A6FF006140C3 /* ShotModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShotModel.swift; sourceTree = "<group>"; };
 		BE4CD8FF24B6A707006140C3 /* FormationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormationModel.swift; sourceTree = "<group>"; };
 		BE4CD90124B6BB65006140C3 /* CharacterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterModel.swift; sourceTree = "<group>"; };
@@ -79,6 +81,8 @@
 		BE83F96F24AB389600F4015F /* shonichiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = shonichiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE83F97324AB389600F4015F /* shonichiUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = shonichiUITests.swift; sourceTree = "<group>"; };
 		BE83F97524AB389600F4015F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BEAFE5C324BBD8BB009A1792 /* CharacterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterViewModel.swift; sourceTree = "<group>"; };
+		BEAFE5C524BBD923009A1792 /* ModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelView.swift; sourceTree = "<group>"; };
 		BEB32B4124B8E40F004068C8 /* shonichi.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = shonichi.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -114,6 +118,7 @@
 				BE4CD8F124B62CCB006140C3 /* ShotEditorView.swift */,
 				BE4CD8F324B6A595006140C3 /* SongEditorView.swift */,
 				BE4CD8F524B6A5C4006140C3 /* FormationEditorView.swift */,
+				BEAFE5C524BBD923009A1792 /* ModelView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -132,7 +137,6 @@
 				BE4CD8F724B6A6D3006140C3 /* ProjectModel.swift */,
 				BE4CD8FD24B6A6FF006140C3 /* ShotModel.swift */,
 				BE4CD8F924B6A6EA006140C3 /* SongModel.swift */,
-				BE4CD8FB24B6A6F4006140C3 /* LyricModel.swift */,
 				BE4CD8FF24B6A707006140C3 /* FormationModel.swift */,
 				BE4CD90124B6BB65006140C3 /* CharacterModel.swift */,
 			);
@@ -146,6 +150,7 @@
 				BE5EFFC624B72D9D0064BA18 /* ShotViewModel.swift */,
 				BE5EFFC424B72D250064BA18 /* SongViewModel.swift */,
 				BE4CD90424B6D513006140C3 /* FormationViewModel.swift */,
+				BEAFE5C324BBD8BB009A1792 /* CharacterViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -176,14 +181,15 @@
 				BE4CD90324B6C707006140C3 /* shonichi.entitlements */,
 				BE4CD8EF24B62C4C006140C3 /* Models */,
 				BE4CD8F024B62C52006140C3 /* ViewModels */,
-				BE4CD8EE24B62C4A006140C3 /* Utilities */,
 				BE4CD8ED24B62C28006140C3 /* Views */,
+				BE4CD8EE24B62C4A006140C3 /* Utilities */,
 				BE83F94E24AB389600F4015F /* AppDelegate.swift */,
 				BE83F95024AB389600F4015F /* SceneDelegate.swift */,
-				BEB32B4024B8E40F004068C8 /* shonichi.xcdatamodeld */,
 				BE83F95724AB389600F4015F /* Assets.xcassets */,
 				BE83F95C24AB389600F4015F /* LaunchScreen.storyboard */,
 				BE83F95F24AB389600F4015F /* Info.plist */,
+				BEB32B4024B8E40F004068C8 /* shonichi.xcdatamodeld */,
+				BE0A521824D64A5C008913F4 /* Localizable.strings */,
 				BE83F95924AB389600F4015F /* Preview Content */,
 			);
 			path = shonichi;
@@ -320,6 +326,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE83F95E24AB389600F4015F /* LaunchScreen.storyboard in Resources */,
+				BE0A521624D64A5C008913F4 /* Localizable.strings in Resources */,
 				BE83F95B24AB389600F4015F /* Preview Assets.xcassets in Resources */,
 				BE83F95824AB389600F4015F /* Assets.xcassets in Resources */,
 			);
@@ -347,7 +354,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE4CD8F424B6A595006140C3 /* SongEditorView.swift in Sources */,
-				BE4CD8FC24B6A6F4006140C3 /* LyricModel.swift in Sources */,
 				BE5EFFC324B708650064BA18 /* RegExp.swift in Sources */,
 				BE83F94F24AB389600F4015F /* AppDelegate.swift in Sources */,
 				BEB32B4224B8E40F004068C8 /* shonichi.xcdatamodeld in Sources */,
@@ -356,9 +362,11 @@
 				BE4CD8FE24B6A6FF006140C3 /* ShotModel.swift in Sources */,
 				BE4CD90224B6BB66006140C3 /* CharacterModel.swift in Sources */,
 				BE5EFFC524B72D250064BA18 /* SongViewModel.swift in Sources */,
+				BEAFE5C424BBD8BB009A1792 /* CharacterViewModel.swift in Sources */,
 				BE83F95124AB389600F4015F /* SceneDelegate.swift in Sources */,
 				BE4CD90024B6A707006140C3 /* FormationModel.swift in Sources */,
 				BE5EFFC724B72D9D0064BA18 /* ShotViewModel.swift in Sources */,
+				BEAFE5C624BBD923009A1792 /* ModelView.swift in Sources */,
 				BE4CD8F824B6A6D3006140C3 /* ProjectModel.swift in Sources */,
 				BE4CD8FA24B6A6EA006140C3 /* SongModel.swift in Sources */,
 				BE4CD8F224B62CCB006140C3 /* ShotEditorView.swift in Sources */,
@@ -399,6 +407,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		BE0A521824D64A5C008913F4 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BE0A521724D64A5C008913F4 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		BE83F95C24AB389600F4015F /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

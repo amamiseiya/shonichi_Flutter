@@ -41,7 +41,7 @@ struct FormationEditorView: View {
     private var CharacterSelector: some View {
         List {
             if formationViewModel.currentFormationTable != nil {
-                ForEach(charactersResults, id: \.id) {character in
+                ForEach(charactersResults) { character in
                     Button(action: {}){
                         Text(character.name!)
                     }
@@ -53,7 +53,7 @@ struct FormationEditorView: View {
 
     private var FormationSelector: some View {
         List {
-            ForEach(allFormationsForProjectResults, id: \.id ) { formation in
+            ForEach(allFormationsForProjectResults) { (formation: SNFormation) in
                 Button(action: {}){
                     Text(formation.startTime!.description)
                 }

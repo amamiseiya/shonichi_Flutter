@@ -8,15 +8,6 @@
 
 import Foundation
 
-//// Deprecated
-//struct SNProject: Identifiable {
-//    var id: Int
-//    var date: Date
-//    var dancerName: String
-//    var songId: Int
-//    var shotTableId: Int
-//    var formationTableId: Int
-//}
 
 extension SNProject: Identifiable {
     

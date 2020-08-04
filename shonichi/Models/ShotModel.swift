@@ -8,26 +8,14 @@
 
 import SwiftUI
 
-//// Deprecated
-//struct SNShot: Identifiable {
-//
-//    var id: Int
-//    var shotTableId: Int
-//    var shotName: String
-//    var startTime: Date
-//    var endTime: Date
-//    var sceneNumber: Int
-//    var shotNumber: Int
-//    var lyric: String
-//    var characters: [SNCharacter]
-//    var type: ShotType
-//    var movement: ShotMovement
-//    var angle: ShotAngle
-//    var content: String
-//    var image: UIImage
-//    var comment: String
-//
-//}
+extension SNShotTable: Identifiable {
+
+}
+
+extension SNShot: Identifiable {
+
+}
+
 
 enum ShotType{
     case closeUp
