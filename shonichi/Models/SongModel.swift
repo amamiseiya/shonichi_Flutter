@@ -10,10 +10,12 @@ import Foundation
 import CoreData
 
 
-extension SNSong: Identifiable {
+//extension SNSong: Identifiable {
+//
+//}
+//
+//extension SNLyric: Identifiable {
+//
+//}
 
-}
 
-extension SNLyric: Identifiable {
-
-}

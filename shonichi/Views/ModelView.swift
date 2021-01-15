@@ -33,7 +33,7 @@ struct ModelView: View {
                 VStack {
                     Text(character.name ?? "Error")
                     Text(character.subordinates!.name ?? "Error")
-//                    Color(character.memberColor as! UIColor)
+                    Color(character.memberColor as! UIColor)
                 }
             }
         }

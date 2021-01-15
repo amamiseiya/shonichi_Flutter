@@ -1,0 +1,72 @@
+PODS:
+  - Flutter (1.0.0)
+  - FlutterPluginRegistrant (0.0.1):
+    - Flutter
+    - image_picker
+    - path_provider
+    - sqflite
+    - video_player
+    - wakelock
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
+  - image_picker (0.0.1):
+    - Flutter
+  - path_provider (0.0.1):
+    - Flutter
+  - shonichi_flutter_module (0.0.1):
+    - Flutter
+  - sqflite (0.0.2):
+    - Flutter
+    - FMDB (>= 2.7.5)
+  - video_player (0.0.1):
+    - Flutter
+  - wakelock (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `flutter_module/.ios/Flutter/engine`)
+  - FlutterPluginRegistrant (from `flutter_module/.ios/Flutter/FlutterPluginRegistrant`)
+  - image_picker (from `flutter_module/.ios/Flutter/.symlinks/image_picker/ios`)
+  - path_provider (from `flutter_module/.ios/Flutter/.symlinks/path_provider/ios`)
+  - shonichi_flutter_module (from `flutter_module/.ios/Flutter`)
+  - sqflite (from `flutter_module/.ios/Flutter/.symlinks/sqflite/ios`)
+  - video_player (from `flutter_module/.ios/Flutter/.symlinks/video_player/ios`)
+  - wakelock (from `flutter_module/.ios/Flutter/.symlinks/wakelock/ios`)
+
+SPEC REPOS:
+  trunk:
+    - FMDB
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: flutter_module/.ios/Flutter/engine
+  FlutterPluginRegistrant:
+    :path: flutter_module/.ios/Flutter/FlutterPluginRegistrant
+  image_picker:
+    :path: flutter_module/.ios/Flutter/.symlinks/image_picker/ios
+  path_provider:
+    :path: flutter_module/.ios/Flutter/.symlinks/path_provider/ios
+  shonichi_flutter_module:
+    :path: flutter_module/.ios/Flutter
+  sqflite:
+    :path: flutter_module/.ios/Flutter/.symlinks/sqflite/ios
+  video_player:
+    :path: flutter_module/.ios/Flutter/.symlinks/video_player/ios
+  wakelock:
+    :path: flutter_module/.ios/Flutter/.symlinks/wakelock/ios
+
+SPEC CHECKSUMS:
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  FlutterPluginRegistrant: e718f01de2fc746fcf61e616d83265eeefb442b6
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  shonichi_flutter_module: b66395f5b132d299cb33e51015c9b37e0d8f7f96
+  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
+  video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
+  wakelock: bfc7955c418d0db797614075aabbc58a39ab5107
+
+PODFILE CHECKSUM: 49f2e396f447533c788d112adda69ddd79ada2aa
+
+COCOAPODS: 1.10.1

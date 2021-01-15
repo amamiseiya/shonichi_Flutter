@@ -1,0 +1,85 @@
+@startuml Class
+
+
+Song "1" o-- "1" Lyric
+Song "1...*" o-- "1" Shot
+Song "1...*" o-- "1" Formation
+Project "1" o-- "1...*" Song
+Project "1" o-- "1...*" Shot
+Project "1" o-- "1...*" Formation
+
+class Project {
+    int projectId
+    DateTime projectDate
+    String dancerName
+    int songId
+    int shotVersion
+    int formationVersion
+    fromMap()
+    toMap()
+}
+
+class Song {
+    int songId
+    String songName
+    String subordinateKikaku
+    int lyricOffset
+    String coverFileName
+    List<String> videoIntros
+    List<String> videoFileNames
+    List<int> videoOffsets
+    fromMap()
+    toMap()
+}
+
+class Shot {
+    int songId
+    int shotVersion
+    String shotName
+    Duration startTime
+    Duration endTime
+    int shotNumber
+    String shotLyric
+    int shotScene
+    List<Character> shotCharacters
+    String shotType
+    String shotMovement
+    String shotAngle
+    String shotContent
+    String shotImage
+    String shotComment
+    fromMap()
+    toMap()
+}
+
+class Lyric {
+    int songId
+    Duration startTime
+    Duration endTime
+    String lyricContent
+    List<Character> soloCharacters
+    fromMap()
+    toMap()
+}
+
+class Formation {
+    int songId
+    int formationVersion
+    String characterName
+    Color memberColor
+    int startTime
+    double posX
+    double posY
+    int curveX1X
+    int curveX1Y
+    int curveX2X
+    int curveX2Y
+    int curveY1X
+    int curveY1Y
+    int curveY2X
+    int curveY2Y
+    fromMap()
+    toMap()
+}
+
+@enduml

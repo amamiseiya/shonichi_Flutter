@@ -10,9 +10,25 @@ import SwiftUI
 import CoreData
 
 //struct ShotEditorView_Previews: PreviewProvider {
+//
+//    var context: NSManagedObjectContext
+//    var projectViewModel: ProjectViewModel
+//    var shotViewModel: ShotViewModel
+//    var songViewModel: SongViewModel
+//    var shotEditorView_Previews: ShotEditorView
+//
 //    static var previews: some View {
-//        ShotEditorView()
+//        shotEditorView_Previews
 //    }
+//
+//    init() {
+//        context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+//        projectViewModel = ProjectViewModel(context: context)
+//        shotViewModel = ShotViewModel(context: context, projectViewModel: projectViewModel)
+//        songViewModel = SongViewModel(context: context, projectViewModel: projectViewModel)
+//        shotEditorView_Previews = ShotEditorView(projectViewModel: projectViewModel, shotViewModel: shotViewModel, songViewModel: songViewModel)
+//    }
+//
 //}
 
 
@@ -23,14 +39,15 @@ struct ShotEditorView: View {
     @ObservedObject var shotViewModel: ShotViewModel
     @ObservedObject var songViewModel: SongViewModel
     @State private var shotTableEditSheetIsShowing: Bool = false
-    @FetchRequest var allShotTablesForProjectResults: FetchedResults<SNShotTable>
+    @FetchRequest var allShotTablesForSongResults: FetchedResults<SNShotTable>
     @FetchRequest var allShotsForProjectResults: FetchedResults<SNShot>
+    @State private var shotTableSelection: SNShotTable? = nil
     
     init(projectViewModel: ProjectViewModel, shotViewModel: ShotViewModel, songViewModel: SongViewModel) {
         self.projectViewModel = projectViewModel
         self.shotViewModel = shotViewModel
         self.songViewModel = songViewModel
-        self._allShotTablesForProjectResults = FetchRequest(fetchRequest: shotViewModel.allShotTablesForSongRequest)
+        self._allShotTablesForSongResults = FetchRequest(fetchRequest: shotViewModel.allShotTablesForSongRequest)
         self._allShotsForProjectResults = FetchRequest(fetchRequest: shotViewModel.allShotsForProjectRequest)
     }
     
@@ -48,20 +65,27 @@ struct ShotEditorView: View {
     
     var shotTableList: some View {
         GeometryReader{ geometry in
-            List {
-                ForEach(self.allShotTablesForProjectResults) { (shotTable: SNShotTable) in
-                    Text(shotTable.name ?? "Undefined")
-                    .onTapGesture {
-                        self.shotViewModel.selectCurrentShotTable(currentShotTable: shotTable)
+            List(selection: self.$shotTableSelection) {
+                ForEach(self.allShotTablesForSongResults) { (shotTable: SNShotTable) in
+                    Button(action:{
+                        self.shotViewModel.selectCurrentShotTable(currentShotTable: shotTable)}){
+                            GeometryReader { _ in
+                                Text(shotTable.name ?? "Undefined")
+                            }
                     }
+//                    .onTapGesture {
+//                        self.shotViewModel.selectCurrentShotTable(currentShotTable: shotTable)
+//                    }
+                    .buttonStyle(shotTableButtonStyle(currentShotTable: self.shotViewModel.currentShotTable, shotTable: shotTable))
                 }
                 .onDelete { indexSet in indexSet.map {
-                    self.allShotTablesForProjectResults[$0]
+                    self.allShotTablesForSongResults[$0]
                     }.forEach{ self.shotViewModel.deleteShotTable(shotTable: $0) }
                 }
             }
         }
     }
+    
     
     var shotList: some View {
         List {
@@ -72,6 +96,20 @@ struct ShotEditorView: View {
                 }.forEach{ self.shotViewModel.deleteShot(shot: $0) }
             }
         }
+    }
+}
+
+
+struct shotTableButtonStyle: ButtonStyle {
+    
+    @State var currentShotTable: SNShotTable?
+    @State var shotTable: SNShotTable
+    
+    public func makeBody(configuration: shotTableButtonStyle.Configuration) -> some View {
+        configuration.label
+            .background(RoundedRectangle(cornerRadius: 5).fill(currentShotTable == shotTable ? Color.blue : Color.white))
+            .padding(15)
+            
     }
 }
 
@@ -124,7 +162,7 @@ struct ShotTableEditSheet: View {
                     self.madeFor = self.projectViewModel.currentProject?.aggregatesSong
                 }
                 HStack {
-                    NavigationLink(destination: EditSongSheet(songViewModel: songViewModel)){
+                    NavigationLink(destination: EditSongSheet(songViewModel: songViewModel, isShowing: $isShowing)){
                         Text("Add song")
                     }
                 }
@@ -151,10 +189,18 @@ struct ShotTableEditSheet: View {
 struct ShotItem: View {
     var shot: SNShot
     
+    @State private var text = ""
+    
+    init(shot: SNShot) {
+        self.shot = shot
+        text = shot.text ?? ""
+    }
+    
     var body: some View {
         HStack {
             Text(shot.startTime!.description)
             Text(shot.id!.description)
+            TextField("Text", text: $text)
         }
     }
 }

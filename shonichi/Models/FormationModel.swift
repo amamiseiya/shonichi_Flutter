@@ -8,10 +8,10 @@
 
 import SwiftUI
 
-extension SNFormationTable: Identifiable {
+//extension SNFormationTable: Identifiable {
+//
+//}
 
-}
-
-extension SNFormation: Identifiable {
-
-}
+//extension SNFormation: Identifiable {
+//
+//}

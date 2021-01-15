@@ -28,16 +28,18 @@ struct DashboardView: View {
     @ObservedObject var songViewModel: SongViewModel
     @ObservedObject var formationViewModel: FormationViewModel
     @ObservedObject var characterViewModel: CharacterViewModel
+    @ObservedObject var migratorViewModel: MigratorViewModel
     
     @State private var editSheetIsShowing: Bool = false
     @FetchRequest var allProjectsResults: FetchedResults<SNProject>
     
-    init(projectViewModel: ProjectViewModel, shotViewModel: ShotViewModel, songViewModel: SongViewModel, formationViewModel: FormationViewModel, characterViewModel: CharacterViewModel) {
+    init(projectViewModel: ProjectViewModel, shotViewModel: ShotViewModel, songViewModel: SongViewModel, formationViewModel: FormationViewModel, characterViewModel: CharacterViewModel, migratorViewModel: MigratorViewModel) {
         self.projectViewModel = projectViewModel
         self.shotViewModel = shotViewModel
         self.songViewModel = songViewModel
         self.formationViewModel = formationViewModel
         self.characterViewModel = characterViewModel
+        self.migratorViewModel = migratorViewModel
         self._allProjectsResults = FetchRequest(fetchRequest: projectViewModel.allProjectsRequest)
     }
     
@@ -54,11 +56,12 @@ struct DashboardView: View {
                 List {
                     if allProjectsResults.count > 1 {
                         ForEach(self.allProjectsResults) { project in
-                            NormalProjectView(project: project)
-                            .onTapGesture {
-                                self.projectViewModel.selectCurrentProject(currentProject: project)
-                            }
-                            .listRowBackground(self.projectViewModel.currentProject == project ? Color.blue : Color.white)
+                            Button(action: { self.projectViewModel.selectCurrentProject(currentProject: project)}){
+                                NormalProjectView(project: project)}
+//                            .onTapGesture {
+//                                self.projectViewModel.selectCurrentProject(currentProject: project)
+//                            }
+                                .buttonStyle(projectButtonStyle(currentProject: self.projectViewModel.currentProject, project: project))
                         }.onDelete { indexSet in indexSet.map {
                         self.allProjectsResults[$0]
                         }.forEach{ self.projectViewModel.deleteProject(project: $0) }
@@ -77,6 +80,9 @@ struct DashboardView: View {
                     }
                     NavigationLink(destination: ModelView(characterViewModel: characterViewModel)) {
                         Text("Model Viewer")
+                    }
+                    NavigationLink(destination: MigratorView(migratorViewModel: migratorViewModel)) {
+                        Text("Migrator")
                     }
                 }
             }.padding(.all, 15.0)
@@ -107,16 +113,29 @@ struct DashboardView: View {
         var project: SNProject
         
         var body: some View {
-            VStack(alignment: .leading) {
-               Text((project.aggregatesSong?.name ?? "Undefined") + " with \(project.dancerName!)")
-               Text("Created:")
-               Text(project.createdTime!.description)
+            GeometryReader { _ in
+                VStack(alignment: .leading) {
+                    Text((self.project.aggregatesSong?.name ?? "Undefined") + " with \(self.project.dancerName!)")
+                   Text("Created:")
+                    Text(self.project.createdTime!.description)
+                }
             }
         }
     }
 }
 
-        
+struct projectButtonStyle: ButtonStyle {
+    
+    @State var currentProject: SNProject?
+    @State var project: SNProject
+    
+    public func makeBody(configuration: projectButtonStyle.Configuration) -> some View {
+        configuration.label
+            .background(RoundedRectangle(cornerRadius: 5).fill(currentProject == project ? Color.blue : Color.white))
+            .padding(15)
+    }
+}
+
 struct ProjectEditSheet: View {
     @Environment(\.managedObjectContext) var context
     
@@ -153,7 +172,7 @@ struct ProjectEditSheet: View {
                     self.relatedSong = nil
                 }
                 HStack {
-                    NavigationLink(destination: EditSongSheet(songViewModel: songViewModel)){
+                    NavigationLink(destination: EditSongSheet(songViewModel: songViewModel, isShowing: $isShowing)){
                         Text("Add song")
                     }
                 }

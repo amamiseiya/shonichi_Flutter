@@ -36,13 +36,13 @@ enum LLSSGroup {
     case guiltyKiss
 }
 
-extension SNKikaku: Identifiable {
-    
-}
+//extension SNKikaku: Identifiable {
+//    
+//}
 
-extension SNCharacter: Identifiable {
-    
-}
+//extension SNCharacter: Identifiable {
+//    
+//}
 
 class characterTransformer: ValueTransformer {
     

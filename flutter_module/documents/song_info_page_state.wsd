@@ -1,0 +1,12 @@
+@startuml SongInfoPageState
+scale 500 width
+
+[*] --> LyricUninitialized
+LyricUninitialized-->FetchingLyric:StartFetching
+FetchingLyric-->LyricFetched
+LyricFetched-->FetchingLyric:ChangeLyricData
+LyricFetched-->FetchingLyric:ImportLyric
+LyricFetched-->FetchingLyric:PressDelete
+LyricFetched-->[*]
+
+@enduml

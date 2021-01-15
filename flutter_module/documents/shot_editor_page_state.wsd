@@ -1,0 +1,12 @@
+@startuml ShotEditorPageState
+scale 500 width
+
+[*] --> ShotUninitialized
+ShotUninitialized-->FetchingShot:StartFetching
+FetchingShot-->ShotFetched
+ShotFetched-->FetchingShot:PressDelete
+ShotFetched-->FetchingShot:PressDeleteSelected
+ShotFetched-->FetchingShot:ChangeShotData
+ShotFetched-->[*]
+
+@enduml

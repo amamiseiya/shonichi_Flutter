@@ -17,9 +17,10 @@ class ShotViewModel: ObservableObject {
         projectViewModel.currentProject?.aggregatesShotTable
     }
     
+    // TODO: 实现正确的筛选
     var allShotTablesForSongRequest: NSFetchRequest<SNShotTable> {
         let allShotTablesForSongRequest = NSFetchRequest<SNShotTable>(entityName: "SNShotTable")
-        allShotTablesForSongRequest.predicate = NSPredicate(format: "madeFor = %@", argumentArray: [projectViewModel.currentProject?.aggregatesSong])
+        allShotTablesForSongRequest.predicate = NSPredicate(format: "TRUEPREDICATE", argumentArray: [projectViewModel.currentProject?.aggregatesSong])
         allShotTablesForSongRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
         return allShotTablesForSongRequest
     }
@@ -52,6 +53,7 @@ class ShotViewModel: ObservableObject {
         shotTable.madeFor = madeFor
         
         try? self.context.save()
+        print("New shottable added.")
         return shotTable
     }
     

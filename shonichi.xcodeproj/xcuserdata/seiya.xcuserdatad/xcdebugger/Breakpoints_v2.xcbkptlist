@@ -14,13 +14,13 @@
             filePath = "shonichi/ViewModels/ShotViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "29"
-            endingLineNumber = "29"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
             landmarkName = "allShotsForProjectRequest"
             landmarkType = "24">
             <Locations>
                <Location
-                  uuid = "F4187E59-6BD1-477C-B00A-3E3C58CBF65B - b387c44369f56b64"
+                  uuid = "F4187E59-6BD1-477C-B00A-3E3C58CBF65B - c9b04f2af9190264"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -35,7 +35,7 @@
                   offsetFromSymbolStart = "20">
                </Location>
                <Location
-                  uuid = "F4187E59-6BD1-477C-B00A-3E3C58CBF65B - 4e75727b94a4fdfb"
+                  uuid = "F4187E59-6BD1-477C-B00A-3E3C58CBF65B - 3442f912044890fc"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"

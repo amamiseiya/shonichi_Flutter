@@ -1,0 +1,14 @@
+@startuml HomePageState
+scale 500 width
+
+[*] --> ProjectUninitialized
+ProjectUninitialized-->FetchingProject:InitializeApp
+FetchingProject-->NoProjectFetched
+FetchingProject-->ProjectFetched
+NoProjectFetched-->AddingProject:AddProject
+ProjectFetched-->AddingProject:AddProject
+ProjectFetched-->FetchingProject:DeleteProject
+AddingProject-->FetchingProject:ConfirmAddProject
+ProjectFetched-->ProjectSelected:SelectAProject
+ProjectSelected-->[*]
+@enduml

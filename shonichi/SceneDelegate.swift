@@ -24,13 +24,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Create the SwiftUI view and set the context as the value for the managedObjectContext environment keyPath.
         // Add `@Environment(\.managedObjectContext)` in the views that will need the context.
-        let projectViewModel = ProjectViewModel(context: context)
-        let shotViewModel = ShotViewModel(context: context, projectViewModel: projectViewModel)
-        let songViewModel = SongViewModel(context: context, projectViewModel: projectViewModel)
-        let formationViewModel = FormationViewModel(context: context, projectViewModel: projectViewModel)
-        let characterViewModel = CharacterViewModel(context: context)
-        let contentView = DashboardView(projectViewModel: projectViewModel, shotViewModel: shotViewModel, songViewModel: songViewModel, formationViewModel: formationViewModel, characterViewModel: characterViewModel).environment(\.managedObjectContext, context)
-
+//        let projectViewModel = ProjectViewModel(context: context)
+//        let shotViewModel = ShotViewModel(context: context, projectViewModel: projectViewModel)
+//        let songViewModel = SongViewModel(context: context, projectViewModel: projectViewModel)
+//        let formationViewModel = FormationViewModel(context: context, projectViewModel: projectViewModel)
+//        let characterViewModel = CharacterViewModel(context: context)
+//        let migratorViewModel = MigratorViewModel(context: context)
+//        let contentView = DashboardView(projectViewModel: projectViewModel, shotViewModel: shotViewModel, songViewModel: songViewModel, formationViewModel: formationViewModel, characterViewModel: characterViewModel, migratorViewModel: migratorViewModel).environment(\.managedObjectContext, context)
+        
+        let contentView = NewDashboardView().environment(\.managedObjectContext, context)
+//
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)

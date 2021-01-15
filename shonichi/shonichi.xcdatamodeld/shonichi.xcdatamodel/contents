@@ -55,7 +55,7 @@
         <relationship name="compositedBy" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNSong" inverseName="compositesLyric" inverseEntity="SNSong"/>
         <relationship name="soloPart" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNCharacter" inverseName="participatesLyric" inverseEntity="SNCharacter"/>
     </entity>
-    <entity name="SNProject" representedClassName="SNProject" syncable="YES" codeGenerationType="class">
+    <entity name="SNProject" representedClassName=".SNProject" syncable="YES">
         <attribute name="createdTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="dancerName" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
@@ -80,13 +80,16 @@
         <relationship name="characters" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNCharacter" inverseName="participatesShot" inverseEntity="SNCharacter"/>
         <relationship name="compositedBy" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNShotTable" inverseName="composites" inverseEntity="SNShotTable"/>
     </entity>
-    <entity name="SNShotTable" representedClassName="SNShotTable" syncable="YES" codeGenerationType="class">
+    <entity name="SNShotTable" representedClassName=".SNShotTable" syncable="YES">
         <attribute name="author" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="aggregatedBy" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNProject" inverseName="aggregatesShotTable" inverseEntity="SNProject"/>
         <relationship name="composites" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNShot" inverseName="compositedBy" inverseEntity="SNShot"/>
         <relationship name="madeFor" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNSong" inverseName="canBeShoot" inverseEntity="SNSong"/>
+        <fetchedProperty name="fetchedProperty" optional="YES">
+            <fetchRequest name="fetchedPropertyFetchRequest" entity="SNShotTable"/>
+        </fetchedProperty>
     </entity>
     <entity name="SNSong" representedClassName="SNSong" syncable="YES" codeGenerationType="class">
         <attribute name="coverFile" optional="YES" attributeType="URI"/>
@@ -108,7 +111,7 @@
         <element name="SNLyric" positionX="-510.63671875" positionY="22.4765625" width="121.41015625" height="133"/>
         <element name="SNProject" positionX="-525.33203125" positionY="-413.5234375" width="128" height="148"/>
         <element name="SNShot" positionX="-228.8359375" positionY="42.6875" width="128" height="253"/>
-        <element name="SNShotTable" positionX="-236.8125" positionY="-273.26953125" width="128" height="133"/>
+        <element name="SNShotTable" positionX="-243.4375" positionY="-263.828125" width="128" height="161"/>
         <element name="SNSong" positionX="-521.12890625" positionY="-195.125" width="128" height="178"/>
     </elements>
 </model>

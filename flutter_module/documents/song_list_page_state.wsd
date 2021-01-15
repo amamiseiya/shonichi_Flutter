@@ -1,0 +1,15 @@
+@startuml SongListPageState
+scale 500 width
+
+[*] --> SongUninitialized
+SongUninitialized-->FetchingSong
+FetchingSong-->SongFetched
+SongFetched-->FetchingSong:PressDelete
+SongFetched-->FetchingSong:PressDeleteSelected
+SongFetched->EditingSong:PressedAdd
+SongFetched->EditingSong:PressedUpdate
+EditingSong-up->FetchingSong:ConfirmAdd
+EditingSong-up->FetchingSong:ConfirmUpdate
+SongFetched-->[*]
+
+@enduml

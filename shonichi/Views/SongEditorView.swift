@@ -33,7 +33,7 @@ struct SongEditorView: View {
     var body: some View {
         NavigationView{
             songList
-                .sheet(isPresented: $editSheetIsShowing, content: {EditSongSheet(songViewModel: self.songViewModel)})
+                .sheet(isPresented: $editSheetIsShowing, content: {EditSongSheet(songViewModel: self.songViewModel, isShowing: self.$editSheetIsShowing)})
                 .navigationBarItems(trailing: Button(action: {self.editSheetIsShowing = true}, label: {Image(systemName: "plus")}))
             Divider()
             lyricList
@@ -90,12 +90,14 @@ struct EditSongSheet: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
     var songViewModel: SongViewModel
+    @Binding var isShowing: Bool
     
     @State private var name: String = ""
     @State private var coverFile: UIImage?
     
-    init(songViewModel: SongViewModel) {
+    init(songViewModel: SongViewModel, isShowing: Binding<Bool>) {
         self.songViewModel = songViewModel
+        self._isShowing = isShowing
     }
     
     var body: some View {
@@ -114,6 +116,7 @@ struct EditSongSheet: View {
                                 if !self.name.isEmpty {
                                     let newSong = self.songViewModel.addSong(name: self.name)
             //                        newSong.coverFile = coverFile
+                                    self.isShowing = false
                                 }
                             }) { Text("Done")})
         }
