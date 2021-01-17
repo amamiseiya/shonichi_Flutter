@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:leancloud_storage/leancloud.dart';
 
 import 'l10n/localization_intl.dart';
 import 'widget/loading.dart';
 import 'page/homepage.dart';
-import 'bloc/project_bloc.dart';
-import 'bloc/song_bloc.dart';
-import 'bloc/shot_bloc.dart';
-import 'bloc/formation_bloc.dart';
-import 'bloc/lyric_bloc.dart';
-import 'bloc/migrator_bloc.dart';
+import 'bloc/project/project_crud_bloc.dart';
+import 'bloc/project/project_selection_bloc.dart';
+import 'bloc/song/song_crud_bloc.dart';
+import 'bloc/shot/shot_crud_bloc.dart';
+import 'bloc/formation/formation_crud_bloc.dart';
+import 'bloc/lyric/lyric_crud_bloc.dart';
+import 'bloc/migrator/migrator_bloc.dart';
 import 'repository/project_repository.dart';
 import 'repository/song_repository.dart';
 import 'repository/shot_repository.dart';
@@ -20,40 +22,57 @@ import 'repository/formation_repository.dart';
 
 //-------------------------main()-----------------------------
 //------------------------------------------------------------
-void main() {
+Future<void> main() async {
   final ProjectRepository projectRepository = ProjectRepository();
   final SongRepository songRepository = SongRepository();
   final LyricRepository lyricRepository = LyricRepository();
   final FormationRepository formationRepository = FormationRepository();
   final ShotRepository shotRepository = ShotRepository();
   final StorageRepository storageRepository = StorageRepository();
+
+  LeanCloud.initialize(
+      'QLubFJnOVAq4nsON9K6SoV9X-gzGzoHsz', '6XtOUj6cgDICX6kVoHiO0qEs',
+      server: 'https://qlubfjno.lc-cn-n1-shared.com',
+      queryCache: new LCQueryCache());
+  LCLogger.setLevel(LCLogger.DebugLevel);
+
+  LCObject object = LCObject('TestObject');
+  object['words'] = 'Hello world!';
+  await object.save();
+
   runApp(MultiBlocProvider(providers: [
-    BlocProvider<ProjectBloc>(
+    BlocProvider<ProjectCrudBloc>(
       create: (context) =>
-          ProjectBloc(projectRepository, songRepository, storageRepository)
+          ProjectCrudBloc(projectRepository, songRepository, storageRepository)
             ..add(InitializeApp()),
     ),
-    BlocProvider<SongBloc>(
-      create: (context) => SongBloc(BlocProvider.of<ProjectBloc>(context),
-          songRepository, storageRepository),
+    BlocProvider<ProjectSelectionBloc>(
+        create: (context) => ProjectSelectionBloc(projectRepository)),
+    BlocProvider<SongCrudBloc>(
+      create: (context) => SongCrudBloc(
+          BlocProvider.of<ProjectCrudBloc>(context),
+          BlocProvider.of<ProjectSelectionBloc>(context),
+          songRepository,
+          storageRepository),
     ),
-    BlocProvider<LyricBloc>(
-      create: (context) => LyricBloc(BlocProvider.of<SongBloc>(context),
+    BlocProvider<LyricCrudBloc>(
+      create: (context) => LyricCrudBloc(BlocProvider.of<SongCrudBloc>(context),
           lyricRepository, storageRepository),
     ),
-    BlocProvider<FormationBloc>(
-      create: (context) => FormationBloc(
-          BlocProvider.of<ProjectBloc>(context),
-          BlocProvider.of<SongBloc>(context),
-          BlocProvider.of<LyricBloc>(context),
+    BlocProvider<FormationCrudBloc>(
+      create: (context) => FormationCrudBloc(
+          BlocProvider.of<ProjectSelectionBloc>(context),
+          BlocProvider.of<SongCrudBloc>(context),
+          BlocProvider.of<LyricCrudBloc>(context),
           formationRepository,
           storageRepository),
     ),
-    BlocProvider<ShotBloc>(
-      create: (context) => ShotBloc(
-          BlocProvider.of<ProjectBloc>(context),
-          BlocProvider.of<SongBloc>(context),
-          BlocProvider.of<LyricBloc>(context),
+    BlocProvider<ShotCrudBloc>(
+      create: (context) => ShotCrudBloc(
+          BlocProvider.of<ProjectCrudBloc>(context),
+          BlocProvider.of<ProjectSelectionBloc>(context),
+          BlocProvider.of<SongCrudBloc>(context),
+          BlocProvider.of<LyricCrudBloc>(context),
           songRepository,
           lyricRepository,
           shotRepository,
@@ -61,8 +80,8 @@ void main() {
     ),
     BlocProvider<MigratorBloc>(
       create: (context) => MigratorBloc(
-          BlocProvider.of<ProjectBloc>(context),
-          BlocProvider.of<SongBloc>(context),
+          BlocProvider.of<ProjectCrudBloc>(context),
+          BlocProvider.of<SongCrudBloc>(context),
           projectRepository,
           songRepository,
           shotRepository,

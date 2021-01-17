@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../model/song.dart';
 import '../model/shot.dart';
 import '../model/character.dart';
-import '../bloc/shot_bloc.dart';
-import '../bloc/song_bloc.dart';
+import '../bloc/shot/shot_crud_bloc.dart';
+import '../bloc/song/song_crud_bloc.dart';
 
 class CharacterSelector extends StatefulWidget {
-  final Shot currentShot;
+  final SNShot currentShot;
   final Function updateShot;
-  final Song currentSong;
+  final SNSong currentSong;
 
   CharacterSelector(
       {Key key,
@@ -25,11 +25,11 @@ class CharacterSelector extends StatefulWidget {
 
 class CharacterSelectorState extends State<CharacterSelector>
     with TickerProviderStateMixin {
-  SongBloc songBloc;
-  ShotBloc shotBloc;
-  final Shot currentShot;
+  SongCrudBloc songBloc;
+  ShotCrudBloc shotBloc;
+  final SNShot currentShot;
   final Function updateShot;
-  final Song currentSong;
+  final SNSong currentSong;
   Animation<double> animation;
   AnimationController _animationController;
   bool chipVisible = true;
@@ -40,10 +40,10 @@ class CharacterSelectorState extends State<CharacterSelector>
   @override
   void initState() {
     super.initState();
-    shotBloc = BlocProvider.of<ShotBloc>(context);
-    songBloc = BlocProvider.of<SongBloc>(context);
-    _animationController =
-        AnimationController(duration: const Duration(milliseconds: 100));
+    shotBloc = BlocProvider.of<ShotCrudBloc>(context);
+    songBloc = BlocProvider.of<SongCrudBloc>(context);
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 100));
     _animationController.addListener(() {
       setState() {}
     });
@@ -108,14 +108,14 @@ class CharacterSelectorState extends State<CharacterSelector>
                     width: 90,
                     height: 90,
                     child: Wrap(
-                      children: Character.membersSortedByGrade(
+                      children: SNCharacter.membersSortedByGrade(
                               currentSong.subordinateKikaku)
                           .map((character) {
                         return GestureDetector(
                             onTap: () {
-                              if (!currentShot.shotCharacters.any((c) =>
-                                  c.characterName == character.characterName)) {
-                                currentShot.shotCharacters.add(character);
+                              if (!currentShot.characters
+                                  .any((c) => c.name == character.name)) {
+                                currentShot.characters.add(character);
                                 updateShot(currentShot);
                               }
                               setState(() {
@@ -125,21 +125,21 @@ class CharacterSelectorState extends State<CharacterSelector>
                             },
                             child: CircleAvatar(
                               radius: 15,
-                              child: Text(character.characterNameAbbr),
+                              child: Text(character.nameAbbr),
                             ));
                       }).toList(),
                     ))),
           ]),
           Wrap(
             children: <Widget>[] +
-                currentShot.shotCharacters.map((character) {
+                currentShot.characters.map((character) {
                   return ActionChip(
                     backgroundColor: character.memberColor,
                     onPressed: () {
-                      currentShot.shotCharacters.remove(character);
+                      currentShot.characters.remove(character);
                       updateShot(currentShot);
                     },
-                    label: Text(character.characterNameAbbr),
+                    label: Text(character.nameAbbr),
                   );
                 }).toList(),
           )

@@ -7,10 +7,7 @@ part 'character_event.dart';
 part 'character_state.dart';
 
 class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
-  CharacterBloc(CharacterState initialState) : super(initialState);
-
-  @override
-  CharacterState get initialState => CharacterUninitialized();
+  CharacterBloc() : super(CharacterUninitialized());
 
   @override
   Stream<CharacterState> mapEventToState(

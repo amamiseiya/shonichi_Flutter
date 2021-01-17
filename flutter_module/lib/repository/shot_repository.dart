@@ -1,40 +1,24 @@
 import 'dart:async';
 
 import '../model/shot.dart';
-import '../provider/provider_sqlite.dart';
+import '../model/project.dart';
+import '../provider/sqlite_provider.dart';
 
 class ShotRepository {
-  final shotProvider = ProviderSqlite();
+  final provider = ShotSQLiteProvider();
 
-  Future<int> getLatestShotVersion(int songId) async {
-    final List<Map<String, dynamic>> latestShot = await shotProvider.query(
-        'shottable',
-        where: 'songId = ?',
-        whereArgs: [songId],
-        orderBy: 'shotVersion DESC',
-        limit: 1);
-    return latestShot.first['shotVersion'];
-  }
+  Future<int> getLatestShotTable(int songId) async =>
+      await provider.getLatestShotTable(songId);
 
-  Future<void> addShot(Shot shot) async =>
-      await shotProvider.insert('shottable', shot.toMap());
+  Future<void> create(SNShot shot) async => await provider.create(shot);
 
-  Future<void> deleteShot(Shot shot) async =>
-      await shotProvider.delete('shottable',
-          where: 'startTime = ?', whereArgs: [shot.startTime.inMilliseconds]);
+  Future<List<SNShot>> retrieve(int tableId) async =>
+      await provider.retrieve(tableId);
 
-  Future<void> updateShot(Shot shot) async =>
-      await shotProvider.update('shottable', shot.toMap(),
-          where: 'startTime = ?', whereArgs: [shot.startTime.inMilliseconds]);
+  Future<void> update(SNShot shot) async => await provider.update(shot);
 
-  Future<List<Shot>> fetchShotsForProject(int songId, int shotVersion) {
-    final list = shotProvider.query('shottable',
-        where: 'songId = ? AND shotVersion = ?',
-        whereArgs: [
-          songId,
-          shotVersion
-        ]).then((onValue) =>
-        List.generate(onValue.length, (i) => Shot.fromMap(onValue[i])));
-    return list;
-  }
+  Future<void> delete(SNShot shot) async => await provider.delete(shot);
+
+  Future<void> deleteMultiple(List<SNShot> shots) async =>
+      await provider.deleteMultiple(shots);
 }

@@ -10,9 +10,9 @@ import '../widget/character_selector.dart';
 import '../model/lyric.dart';
 import '../model/shot.dart';
 import '../model/character.dart';
-import '../bloc/project_bloc.dart';
-import '../bloc/shot_bloc.dart';
-import '../bloc/song_bloc.dart';
+import '../bloc/project/project_crud_bloc.dart';
+import '../bloc/shot/shot_crud_bloc.dart';
+import '../bloc/song/song_crud_bloc.dart';
 import '../util/reg_exp.dart';
 import '../util/data_convert.dart';
 
@@ -26,12 +26,12 @@ class ShotEditorPageState extends State<ShotEditorPage> {
       GlobalKey<ShotsDataTableState>();
   final GlobalKey<ShotInspectorState> shotInspectorKey =
       GlobalKey<ShotInspectorState>();
-  ShotBloc shotBloc;
+  ShotCrudBloc shotBloc;
 
   @override
   void initState() {
-    shotBloc = BlocProvider.of<ShotBloc>(context);
-    shotBloc.add(StartFetchingShot());
+    shotBloc = BlocProvider.of<ShotCrudBloc>(context);
+    shotBloc.add(RetrieveShot());
     super.initState();
   }
 
@@ -39,8 +39,8 @@ class ShotEditorPageState extends State<ShotEditorPage> {
   void dispose() {
     print('dispose');
     // shotBloc.dispose();
-    // BlocProvider.of<ProjectBloc>(context).dispose();
-    // BlocProvider.of<LyricBloc>(context).dispose();
+    // BlocProvider.of<ProjectCrudBloc>(context).dispose();
+    // BlocProvider.of<LyricCrudBloc>(context).dispose();
     super.dispose();
   }
 
@@ -65,8 +65,9 @@ class ShotEditorPageState extends State<ShotEditorPage> {
         ),
         drawer: MyDrawer(),
         // body is the majority of the screen.
-        body: BlocBuilder<ShotBloc, ShotState>(builder: (context, state) {
-          if (state is ShotFetched) {
+        body:
+            BlocBuilder<ShotCrudBloc, ShotCrudState>(builder: (context, state) {
+          if (state is ShotRetrieved) {
             return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -90,7 +91,7 @@ class ShotEditorPageState extends State<ShotEditorPage> {
             child: Icon(Icons.add),
             heroTag: 'addFAB',
             onPressed: () {
-              shotBloc.add(AddShot());
+              shotBloc.add(CreateShot());
             },
           ),
           FloatingActionButton(
@@ -98,7 +99,7 @@ class ShotEditorPageState extends State<ShotEditorPage> {
               child: Icon(Icons.delete),
               heroTag: 'deleteFAB',
               onPressed: () {
-                shotBloc.add(DeleteSelectedShot(
+                shotBloc.add(DeleteMultipleShot(
                     shotsDataTableKey.currentState.shotsSelected));
               }),
         ]));
@@ -113,16 +114,16 @@ class ShotsDataTable extends StatefulWidget {
 
 //分镜表类
 class ShotsDataTableState extends State<ShotsDataTable> {
-  ShotBloc shotBloc;
-  List<Shot> shots;
-  List<Shot> shotsSelected = [];
+  ShotCrudBloc shotBloc;
+  List<SNShot> shots;
+  List<SNShot> shotsSelected = [];
   bool _sortAscending = true;
   int _sortColumnIndex;
 
   @override
   void initState() {
     super.initState();
-    shotBloc = BlocProvider.of<ShotBloc>(context);
+    shotBloc = BlocProvider.of<ShotCrudBloc>(context);
   }
 
   void _sort(int index, bool ascending) {
@@ -139,8 +140,8 @@ class ShotsDataTableState extends State<ShotsDataTable> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ShotBloc, ShotState>(builder: (context, state) {
-      if (state is ShotFetched) {
+    return BlocBuilder<ShotCrudBloc, ShotCrudState>(builder: (context, state) {
+      if (state is ShotRetrieved) {
         shots = state.shots;
         return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -166,9 +167,9 @@ class ShotsDataTableState extends State<ShotsDataTable> {
                               ),
                             ] +
                             List.generate(
-                              Shot.titles.length - 2,
+                              SNShot.titles.length - 2,
                               (i) =>
-                                  DataColumn(label: Text(Shot.titles[i + 2])),
+                                  DataColumn(label: Text(SNShot.titles[i + 2])),
                             ),
                         rows: shots
                             .map((shot) => DataRow(
@@ -188,10 +189,10 @@ class ShotsDataTableState extends State<ShotsDataTable> {
                                         Text(simpleDurationRegExp.stringMatch(
                                             shot.startTime.toString())),
                                       ),
-                                      DataCell(Text(shot.shotLyric)),
+                                      DataCell(Text(shot.lyric)),
                                       DataCell(
                                         DropdownButton(
-                                          value: shot.shotScene,
+                                          value: shot.sceneNumber,
                                           icon: Icon(Icons.arrow_downward,
                                               size: 14),
                                           style: TextStyle(
@@ -202,8 +203,8 @@ class ShotsDataTableState extends State<ShotsDataTable> {
                                             color: Colors.deepPurpleAccent,
                                           ),
                                           onChanged: (newValue) {
-                                            shot.shotScene = newValue;
-                                            shotBloc.add(ChangeShotData(shot));
+                                            shot.sceneNumber = newValue;
+                                            shotBloc.add(UpdateShot(shot));
                                           },
                                           items: shotScenes
                                               .map((shotSceneMap) =>
@@ -217,17 +218,16 @@ class ShotsDataTableState extends State<ShotsDataTable> {
                                         ),
                                       ),
                                       DataCell(StreamBuilder(
-                                          stream:
-                                              BlocProvider.of<SongBloc>(context)
-                                                  .currentSongSubject,
+                                          stream: BlocProvider.of<SongCrudBloc>(
+                                                  context)
+                                              .currentSongSubject,
                                           builder: (BuildContext context,
                                               AsyncSnapshot snapshot) {
                                             if (snapshot.hasData) {
                                               return CharacterSelector(
                                                   currentShot: shot,
-                                                  updateShot: (shot) =>
-                                                      shotBloc.add(
-                                                          ChangeShotData(shot)),
+                                                  updateShot: (shot) => shotBloc
+                                                      .add(UpdateShot(shot)),
                                                   currentSong: snapshot.data);
                                             } else {
                                               return Container();
@@ -243,7 +243,7 @@ class ShotsDataTableState extends State<ShotsDataTable> {
                                           ),
                                           onChanged: (newValue) {
                                             shot.shotType = newValue;
-                                            shotBloc.add(ChangeShotData(shot));
+                                            shotBloc.add(UpdateShot(shot));
                                           },
                                           items: shotTypes
                                               .map((shotTypeMap) =>
@@ -261,21 +261,20 @@ class ShotsDataTableState extends State<ShotsDataTable> {
                                       DataCell(
                                           TextField(
                                             controller: TextEditingController()
-                                              ..text = shot.shotContent,
+                                              ..text = shot.text,
                                             // maxLines: null,
                                             decoration: InputDecoration(),
                                             onChanged: (value) {
-                                              shot.shotContent = value;
+                                              shot.text = value;
                                             },
                                             onEditingComplete: () {
-                                              shotBloc
-                                                  .add(ChangeShotData(shot));
+                                              shotBloc.add(UpdateShot(shot));
                                             },
                                           ),
                                           // showEditIcon: true,
                                           onTap: null),
-                                      DataCell(Text(shot.shotImage)),
-                                      DataCell(Text(shot.shotComment)),
+                                      DataCell(Text(shot.image)),
+                                      DataCell(Text(shot.comment)),
                                     ]))
                             .toList(),
                       ),
@@ -296,17 +295,17 @@ class ShotInspector extends StatefulWidget {
 }
 
 class ShotInspectorState extends State<ShotInspector> {
-  ProjectBloc projectBloc;
-  SongBloc songBloc;
-  ShotBloc shotBloc;
-  List<Lyric> lyrics;
+  ProjectCrudBloc projectBloc;
+  SongCrudBloc songBloc;
+  ShotCrudBloc shotBloc;
+  List<SNLyric> lyrics;
 
   @override
   void initState() {
     super.initState();
-    projectBloc = BlocProvider.of<ProjectBloc>(context);
-    songBloc = BlocProvider.of<SongBloc>(context);
-    shotBloc = BlocProvider.of<ShotBloc>(context);
+    projectBloc = BlocProvider.of<ProjectCrudBloc>(context);
+    songBloc = BlocProvider.of<SongCrudBloc>(context);
+    shotBloc = BlocProvider.of<ShotCrudBloc>(context);
   }
 
   @override
@@ -480,7 +479,7 @@ class _LyricAnimatorState extends State<LyricAnimator>
   final lyricPainterSize = Size(250, 600);
 
   final List<Map<String, dynamic>> lyricMaps;
-  ShotBloc shotBloc;
+  ShotCrudBloc shotBloc;
   AnimationController _lyricOffsetYController;
   LyricPainter _lyricPainter;
   int currentShotTime = 0;
@@ -490,7 +489,7 @@ class _LyricAnimatorState extends State<LyricAnimator>
   @override
   void initState() {
     super.initState();
-    shotBloc = BlocProvider.of<ShotBloc>(context);
+    shotBloc = BlocProvider.of<ShotCrudBloc>(context);
     _lyricPainter = LyricPainter(lyricMaps, currentShotTime);
   }
 
@@ -528,14 +527,14 @@ class _LyricAnimatorState extends State<LyricAnimator>
 
       // 初始化动画控制器，切换歌词时间为300ms，并且添加状态监听，
       // 如果为 completed，则消除掉当前controller，并且置为空。
-      _lyricOffsetYController =
-          AnimationController(duration: Duration(milliseconds: 300))
-            ..addStatusListener((status) {
-              if (status == AnimationStatus.completed) {
-                _lyricOffsetYController.dispose();
-                _lyricOffsetYController = null;
-              }
-            });
+      _lyricOffsetYController = AnimationController(
+          vsync: this, duration: Duration(milliseconds: 300))
+        ..addStatusListener((status) {
+          if (status == AnimationStatus.completed) {
+            _lyricOffsetYController.dispose();
+            _lyricOffsetYController = null;
+          }
+        });
       // 计算出来当前行的偏移量
       // 起始为当前偏移量，结束点为计算出来的偏移量
       Animation animation = Tween<double>(

@@ -1,14 +1,14 @@
 @startuml Class
 
 
-Song "1" o-- "1" Lyric
-Song "1...*" o-- "1" Shot
-Song "1...*" o-- "1" Formation
-Project "1" o-- "1...*" Song
-Project "1" o-- "1...*" Shot
-Project "1" o-- "1...*" Formation
+SNSong "1" o-- "1" SNLyric
+SNSong "1...*" o-- "1" SNShot
+SNSong "1...*" o-- "1" SNFormation
+SNProject "1" o-- "1...*" SNSong
+SNProject "1" o-- "1...*" SNShot
+SNProject "1" o-- "1...*" SNFormation
 
-class Project {
+class SNProject {
     int projectId
     DateTime projectDate
     String dancerName
@@ -19,7 +19,7 @@ class Project {
     toMap()
 }
 
-class Song {
+class SNSong {
     int songId
     String songName
     String subordinateKikaku
@@ -32,7 +32,7 @@ class Song {
     toMap()
 }
 
-class Shot {
+class SNShot {
     int songId
     int shotVersion
     String shotName
@@ -41,7 +41,7 @@ class Shot {
     int shotNumber
     String shotLyric
     int shotScene
-    List<Character> shotCharacters
+    List<SNCharacter> shotCharacters
     String shotType
     String shotMovement
     String shotAngle
@@ -52,17 +52,17 @@ class Shot {
     toMap()
 }
 
-class Lyric {
+class SNLyric {
     int songId
     Duration startTime
     Duration endTime
     String lyricContent
-    List<Character> soloCharacters
+    List<SNCharacter> soloCharacters
     fromMap()
     toMap()
 }
 
-class Formation {
+class SNFormation {
     int songId
     int formationVersion
     String characterName

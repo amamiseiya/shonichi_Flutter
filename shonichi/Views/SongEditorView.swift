@@ -104,7 +104,7 @@ struct EditSongSheet: View {
         NavigationView {
             Form {
                 Section(header: Text("Properties")) {
-                    TextField("Song Name", text: $name)
+                    TextField("SNSong Name", text: $name)
                     NavigationLink(destination: SongCoverPicker(sourceType: .photoLibrary, onImagePicked: { image in
                         self.coverFile = image
                         self.presentationMode.wrappedValue.dismiss()

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 
-enum KCurveType {X, Y, Z, Rotation, Camera }
+enum KCurveType { X, Y, Z, Rotation, Camera }
 
-class Formation {
-  int songId;
-  int formationVersion;
-  String characterName;
-  Color memberColor;
+class SNFormation {
+  int id;
   Duration startTime;
   double posX;
   double posY;
@@ -19,11 +16,11 @@ class Formation {
   int curveY2X;
   int curveY2Y;
 
-  Formation(
-      {this.songId,
-      this.formationVersion,
-      this.characterName,
-      this.memberColor,
+  String characterName;
+  int tableId;
+
+  SNFormation(
+      {this.id,
       this.startTime,
       this.posX,
       this.posY,
@@ -34,14 +31,13 @@ class Formation {
       this.curveY1X,
       this.curveY1Y,
       this.curveY2X,
-      this.curveY2Y});
+      this.curveY2Y,
+      this.characterName,
+      this.tableId});
 
-  factory Formation.fromMap(Map<String, dynamic> map) {
-    return Formation(
-        songId: map['songId'],
-        formationVersion: map['formationVersion'],
-        characterName: map['characterName'],
-        memberColor: Color(map['memberColor']),
+  factory SNFormation.fromMap(Map<String, dynamic> map) {
+    return SNFormation(
+        id: map['id'],
         startTime: Duration(milliseconds: map['startTime']),
         posX: map['posX'],
         posY: map['posY'],
@@ -52,15 +48,14 @@ class Formation {
         curveY1X: map['curveY1X'],
         curveY1Y: map['curveY1Y'],
         curveY2X: map['curveY2X'],
-        curveY2Y: map['curveY2Y']);
+        curveY2Y: map['curveY2Y'],
+        characterName: map['characterName'],
+        tableId: map['tableId']);
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'songId': songId,
-      'formationVersion': formationVersion,
-      'characterName': characterName,
-      'memberColor': memberColor.value,
+      'id': id,
       'startTime': startTime.inMilliseconds,
       'posX': posX,
       'posY': posY,
@@ -71,7 +66,9 @@ class Formation {
       'curveY1X': curveY1X,
       'curveY1Y': curveY1Y,
       'curveY2X': curveY2X,
-      'curveY2Y': curveY2Y
+      'curveY2Y': curveY2Y,
+      'characterName': characterName,
+      'tableId': tableId
     };
   }
 

@@ -2,14 +2,14 @@
 scale 500 width
 
 [*] --> SongUninitialized
-SongUninitialized-->FetchingSong
-FetchingSong-->SongFetched
-SongFetched-->FetchingSong:PressDelete
-SongFetched-->FetchingSong:PressDeleteSelected
-SongFetched->EditingSong:PressedAdd
-SongFetched->EditingSong:PressedUpdate
-EditingSong-up->FetchingSong:ConfirmAdd
-EditingSong-up->FetchingSong:ConfirmUpdate
-SongFetched-->[*]
+SongUninitialized-->RetrievingSong
+RetrievingSong-->SongRetrieved
+SongRetrieved-->RetrievingSong:PressDelete
+SongRetrieved-->RetrievingSong:PressDeleteSelected
+SongRetrieved->EditingSong:PressedAdd
+SongRetrieved->EditingSong:PressedUpdate
+EditingSong-up->RetrievingSong:ConfirmAdd
+EditingSong-up->RetrievingSong:ConfirmUpdate
+SongRetrieved-->[*]
 
 @enduml

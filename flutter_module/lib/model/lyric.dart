@@ -1,51 +1,56 @@
 import 'character.dart';
-import 'formation.dart';
 
-class Lyric {
-  int songId;
+class SNLyric {
+  int id;
   Duration startTime;
   Duration endTime;
-  String lyricContent;
-  List<Character> soloCharacters;
+  String text;
 
-  Lyric(
-      {this.songId,
+  int songId;
+  List<SNCharacter> soloPart;
+
+  SNLyric(
+      {this.id,
       this.startTime,
       this.endTime,
-      this.lyricContent,
-      this.soloCharacters});
+      this.text,
+      this.songId,
+      this.soloPart});
 
-  factory Lyric.fromMap(Map<String, dynamic> map) {
-    return Lyric(
-        songId: map['songId'],
+  factory SNLyric.fromMap(Map<String, dynamic> map) {
+    return SNLyric(
+        id: map['id'],
         startTime: Duration(milliseconds: map['startTime']),
         endTime: Duration(milliseconds: map['endTime']),
-        lyricContent: map['lyricContent'],
-        soloCharacters: map['soloCharacters']);
+        text: map['text'],
+        songId: map['songId'],
+        soloPart: map['soloPart']);
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'songId': songId,
+      'id': id,
       'startTime': startTime.inMilliseconds,
       'endTime': endTime.inMilliseconds,
-      'lyricContent': lyricContent,
-      'soloCharacters': soloCharacters
+      'text': text,
+      'songId': songId,
+      'soloPart': soloPart
     };
   }
 
-  static List<Lyric> parseFromLrc(String lrcStr, int songId, int lyricOffset) {
+  static List<SNLyric> parseFromLrc(
+      String lrcStr, int songId, int lyricOffset) {
     try {
       // assert(lyricOffset % 100 == 0);
-      List<Lyric> result = lrcStr
+      List<SNLyric> result = lrcStr
           .split('\n')
           .where((row) => RegExp(r'^\[\d{2}').hasMatch(row))
           .map((record) {
-        String lyricContent = record.substring(record.indexOf(']') + 1);
+        String text = record.substring(record.indexOf(']') + 1);
         String time = record.substring(1, record.indexOf(']'));
-        return Lyric(
+        return SNLyric(
           songId: songId,
-          lyricContent: lyricContent,
+          text: text,
           startTime: Duration(
             minutes: int.parse(
               time.substring(0, time.indexOf(':')),

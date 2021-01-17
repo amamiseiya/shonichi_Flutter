@@ -1,29 +1,28 @@
 import '../model/project.dart';
-import '../provider/provider_sqlite.dart';
+import '../provider/sqlite_provider.dart';
 
 class ProjectRepository {
-  final projectProvider = ProviderSqlite();
+  final provider = ProjectSQLiteProvider();
 
-  Future<void> addProject(Project project) async =>
-      await projectProvider.insert('projecttable', project.toMap());
+  Future<void> create(SNProject project) async =>
+      await provider.create(project);
 
-  Future<void> deleteProject(Project project) async =>
-      await projectProvider.delete('projecttable',
-          where: 'projectId = ?', whereArgs: [project.projectId]);
+  Future<SNProject> retrieve(int id) async => await provider.retrieve(id);
 
-  Future<void> updateProject(Project project) async =>
-      await projectProvider.update('projecttable', project.toMap(),
-          where: 'projectId = ?', whereArgs: [project.projectId]);
+  Future<List<SNProject>> retrieveMultiple(int count) async =>
+      await provider.retrieveMultiple(count);
 
-  Future<List<Project>> fetch4Projects() async {
-    final List<Map<String, dynamic>> mapList = await projectProvider
-        .query('projecttable', orderBy: 'projectId DESC', limit: 4);
-    return List.generate(mapList.length, (i) => Project.fromMap(mapList[i]));
-  }
+  Future<void> update(SNProject project) async =>
+      await provider.update(project);
 
-  Future<Project> fetchSpecifiedProject(int id) async {
-    final List<Map<String, dynamic>> mapList = await projectProvider
-        .query('projecttable', where: 'projectId = ?', whereArgs: [id]);
-    return Project.fromMap(mapList.first);
+  Future<void> delete(SNProject project) async =>
+      await provider.delete(project);
+
+  Future<void> deleteMultiple(List<SNProject> projects) async {
+    if (projects.isNotEmpty) {
+      for (SNProject project in projects) {
+        await provider.delete(project);
+      }
+    }
   }
 }

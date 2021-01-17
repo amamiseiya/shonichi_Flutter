@@ -6,11 +6,11 @@ import '../widget/drawer.dart';
 import '../widget/loading.dart';
 import '../model/project.dart';
 import '../model/song.dart';
-import '../bloc/project_bloc.dart';
-import '../bloc/song_bloc.dart';
-import '../bloc/shot_bloc.dart';
-import '../bloc/lyric_bloc.dart';
-import '../bloc/migrator_bloc.dart';
+import '../bloc/project/project_crud_bloc.dart';
+import '../bloc/song/song_crud_bloc.dart';
+import '../bloc/shot/shot_crud_bloc.dart';
+import '../bloc/lyric/lyric_crud_bloc.dart';
+import '../bloc/migrator/migrator_bloc.dart';
 
 class MigratorPage extends StatelessWidget {
   final GlobalKey<ExporterMarkdownState> _documentExporterKey =
@@ -61,21 +61,21 @@ class ExporterMarkdown extends StatefulWidget {
 }
 
 class ExporterMarkdownState extends State<ExporterMarkdown> {
-  ProjectBloc projectBloc;
-  SongBloc songBloc;
-  LyricBloc lyricBloc;
-  ShotBloc shotBloc;
+  ProjectCrudBloc projectBloc;
+  SongCrudBloc songBloc;
+  LyricCrudBloc lyricBloc;
+  ShotCrudBloc shotBloc;
   MigratorBloc migratorBloc;
-  Project currentProject;
-  Song currentSong;
+  SNProject currentProject;
+  SNSong currentSong;
   bool needEncrypt = false;
 
   @override
   void initState() {
-    projectBloc = BlocProvider.of<ProjectBloc>(context);
-    lyricBloc = BlocProvider.of<LyricBloc>(context);
-    songBloc = BlocProvider.of<SongBloc>(context);
-    shotBloc = BlocProvider.of<ShotBloc>(context);
+    projectBloc = BlocProvider.of<ProjectCrudBloc>(context);
+    lyricBloc = BlocProvider.of<LyricCrudBloc>(context);
+    songBloc = BlocProvider.of<SongCrudBloc>(context);
+    shotBloc = BlocProvider.of<ShotCrudBloc>(context);
     migratorBloc = BlocProvider.of<MigratorBloc>(context);
     super.initState();
   }

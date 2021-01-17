@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/project_bloc.dart';
-import '../provider/provider_sqlite.dart';
+import '../bloc/project/project_crud_bloc.dart';
+import '../provider/sqlite_provider.dart';
 
 Future<void> showTutorial(BuildContext context) {
-  final ProjectBloc projectBloc = BlocProvider.of<ProjectBloc>(context);
+  final ProjectCrudBloc projectCrudBloc =
+      BlocProvider.of<ProjectCrudBloc>(context);
 
   return showDialog(
       context: context,
@@ -14,16 +15,16 @@ Future<void> showTutorial(BuildContext context) {
             child: Center(
                 child: Column(children: [
           FlatButton(
-            onPressed: () => projectBloc.add(AddProject()),
-            child: Text('Create New Project'),
+            onPressed: () => projectCrudBloc.add(CreateProject()),
+            child: Text('Create New SNProject'),
           ),
           FlatButton(
             child: Icon(
               Icons.refresh,
             ),
             onPressed: () {
-              ProviderSqlite.supermutekiniubireset();
-              projectBloc.add(ReloadProject());
+              SQLiteProvider.cheatCodeReset();
+              projectCrudBloc.add(RetrieveProject());
             },
           )
         ])));
@@ -37,12 +38,12 @@ class Tutorial extends StatefulWidget {
 }
 
 class TutorialState extends State<Tutorial> with WidgetsBindingObserver {
-  ProjectBloc projectBloc;
+  ProjectCrudBloc projectBloc;
 
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    projectBloc = BlocProvider.of<ProjectBloc>(context);
+    projectBloc = BlocProvider.of<ProjectCrudBloc>(context);
     super.initState();
   }
 
@@ -59,16 +60,16 @@ class TutorialState extends State<Tutorial> with WidgetsBindingObserver {
             child: Center(
                 child: Column(children: [
       FlatButton(
-        onPressed: () => projectBloc.add(AddProject()),
-        child: Text('Create New Project'),
+        onPressed: () => projectBloc.add(CreateProject()),
+        child: Text('Create New SNProject'),
       ),
       FlatButton(
         child: Icon(
           Icons.refresh,
         ),
         onPressed: () {
-          ProviderSqlite.supermutekiniubireset();
-          projectBloc.add(ReloadProject());
+          SQLiteProvider.cheatCodeReset();
+          projectBloc.add(RetrieveProject());
         },
       )
     ]))));

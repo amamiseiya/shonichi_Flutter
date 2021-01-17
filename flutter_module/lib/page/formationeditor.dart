@@ -7,12 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widget/drawer.dart';
 import '../widget/loading.dart';
 import '../widget/error.dart';
-import '../bloc/formation_bloc.dart';
+import '../bloc/formation/formation_crud_bloc.dart';
 import '../model/formation.dart';
 import '../util/reg_exp.dart';
 
-Future<Formation> formationEditorDialog(
-    BuildContext context, Formation formation) {
+Future<SNFormation> formationEditorDialog(
+    BuildContext context, SNFormation formation) {
   return showDialog(context: context, builder: (context) => Container());
 }
 
@@ -24,7 +24,7 @@ class FormationEditorPage extends StatefulWidget {
 class FormationEditorPageState extends State<FormationEditorPage> {
   final GlobalKey<FormationEditorState> _formationEditorKey =
       GlobalKey<FormationEditorState>();
-  FormationBloc formationBloc;
+  FormationCrudBloc formationBloc;
 
   // @override
   // bool get wantKeepAlive => true;
@@ -32,7 +32,7 @@ class FormationEditorPageState extends State<FormationEditorPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    formationBloc = BlocProvider.of<FormationBloc>(context);
+    formationBloc = BlocProvider.of<FormationCrudBloc>(context);
   }
 
   @override
@@ -91,11 +91,11 @@ class FormationEditor extends StatefulWidget {
 }
 
 class FormationEditorState extends State<FormationEditor> {
-  FormationBloc formationBloc;
+  FormationCrudBloc formationBloc;
 
   @override
   void initState() {
-    formationBloc = BlocProvider.of<FormationBloc>(context);
+    formationBloc = BlocProvider.of<FormationCrudBloc>(context);
     formationBloc.add(ReloadFormation());
     super.initState();
   }
@@ -236,11 +236,11 @@ class TimeSlider extends StatefulWidget {
 }
 
 class _TimeSliderState extends State<TimeSlider> {
-  FormationBloc formationBloc;
+  FormationCrudBloc formationBloc;
 
   @override
   void initState() {
-    formationBloc = BlocProvider.of<FormationBloc>(context);
+    formationBloc = BlocProvider.of<FormationCrudBloc>(context);
     super.initState();
   }
 
@@ -286,11 +286,11 @@ class CharacterFilterButton extends StatefulWidget {
 }
 
 class _CharacterFilterButtonState extends State<CharacterFilterButton> {
-  FormationBloc formationBloc;
+  FormationCrudBloc formationBloc;
 
   @override
   void initState() {
-    formationBloc = BlocProvider.of<FormationBloc>(context);
+    formationBloc = BlocProvider.of<FormationCrudBloc>(context);
     super.initState();
   }
 
@@ -302,13 +302,13 @@ class _CharacterFilterButtonState extends State<CharacterFilterButton> {
           return Wrap(
             children: snapshot.data
                 .map<Widget>((character) => FlatButton(
-                      color: (formationBloc.selectedCharacter.characterName ==
-                              character.characterName)
+                      color: (formationBloc.selectedCharacter.name ==
+                              character.name)
                           ? Colors.blueAccent.shade100
                           : Colors.grey.shade300,
                       onPressed: () => setState(
                           () => formationBloc.add(ChangeCharacter(character))),
-                      child: Text(character.characterName),
+                      child: Text(character.name),
                     ))
                 .toList(),
           );
@@ -319,7 +319,7 @@ class _CharacterFilterButtonState extends State<CharacterFilterButton> {
 }
 
 class ProgramAnimator extends StatefulWidget {
-  final List<Formation> frame;
+  final List<SNFormation> frame;
   final Size size;
   ProgramAnimator({Key key, this.frame, this.size}) : super(key: key);
   @override
@@ -329,8 +329,8 @@ class ProgramAnimator extends StatefulWidget {
 class _ProgramAnimatorState extends State<ProgramAnimator>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
-  FormationBloc formationBloc;
-  final List<Formation> frame;
+  FormationCrudBloc formationBloc;
+  final List<SNFormation> frame;
   final Size size;
 
   _ProgramAnimatorState(this.frame, this.size);
@@ -338,8 +338,8 @@ class _ProgramAnimatorState extends State<ProgramAnimator>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController();
-    formationBloc = BlocProvider.of<FormationBloc>(context);
+    _controller = AnimationController(vsync: this);
+    formationBloc = BlocProvider.of<FormationCrudBloc>(context);
   }
 
   @override
@@ -365,18 +365,19 @@ class _ProgramAnimatorState extends State<ProgramAnimator>
 }
 
 class ProgramPainter extends CustomPainter {
-  final List<Formation> frame;
+  final List<SNFormation> frame;
   ProgramPainter(this.frame);
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (Formation characterFormation in frame) {
+    for (SNFormation characterFormation in frame) {
       canvas.drawCircle(
           characterFormation.getFormationPos(size),
           20,
           Paint()
             ..isAntiAlias = !true
-            ..color = characterFormation.memberColor
+            ..color = Colors.blueAccent
+            //TODO: implement member color displaying
             ..strokeWidth = 5
             ..style = PaintingStyle.stroke);
     }
@@ -456,11 +457,11 @@ class KCurveFilterButton extends StatefulWidget {
 }
 
 class _KCurveFilterButtonState extends State<KCurveFilterButton> {
-  FormationBloc formationBloc;
+  FormationCrudBloc formationBloc;
 
   @override
   void initState() {
-    formationBloc = BlocProvider.of<FormationBloc>(context);
+    formationBloc = BlocProvider.of<FormationCrudBloc>(context);
     super.initState();
   }
 

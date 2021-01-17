@@ -7,9 +7,10 @@ import '../widget/tutorial.dart';
 import '../widget/drawer.dart';
 import '../widget/loading.dart';
 import '../widget/error.dart';
-import '../bloc/project_bloc.dart';
+import '../bloc/project/project_crud_bloc.dart';
+import '../bloc/project/project_selection_bloc.dart';
 import '../model/project.dart';
-import '../provider/provider_sqlite.dart';
+import '../provider/sqlite_provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -18,17 +19,19 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final GlobalKey<DashboardState> _dashboardKey = GlobalKey<DashboardState>();
-  ProjectBloc projectBloc;
+  ProjectCrudBloc projectBloc;
+  ProjectSelectionBloc projectSelectionBloc;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    projectBloc = BlocProvider.of<ProjectBloc>(context);
+    projectBloc = BlocProvider.of<ProjectCrudBloc>(context);
+    projectSelectionBloc = BlocProvider.of<ProjectSelectionBloc>(context);
   }
 
   @override
   void dispose() {
-    projectBloc.dispose();
+    projectBloc.close();
     super.dispose();
   }
 
@@ -53,16 +56,16 @@ class HomePageState extends State<HomePage> {
         ),
         drawer: MyDrawer(),
         // body is the majority of the screen.
-        body: BlocListener<ProjectBloc, ProjectState>(
+        body: BlocListener<ProjectCrudBloc, ProjectCrudState>(
             listener: (context, state) {
-              if (state is NoProjectFetched) {
+              if (state is NoProjectRetrieved) {
                 showTutorial(context);
-              } else if (state is AddingProject) {
+              } else if (state is CreatingProject) {
                 projectEditorDialog(context, null).then(
-                    (project) => projectBloc.add(ConfirmAddProject(project)));
+                    (project) => projectBloc.add(SubmitCreateProject(project)));
               } else if (state is UpdatingProject) {
                 projectEditorDialog(context, state.project).then((newProject) =>
-                    projectBloc.add(ConfirmUpdateProject(newProject)));
+                    projectBloc.add(SubmitUpdateProject(newProject)));
               }
             },
             child: Dashboard(key: _dashboardKey)),
@@ -75,12 +78,12 @@ class HomePageState extends State<HomePage> {
                 Icons.refresh,
               ),
               heroTag: 'resetFAB',
-              onPressed: () => ProviderSqlite.supermutekiniubireset()),
+              onPressed: () => SQLiteProvider.cheatCodeReset()),
           FloatingActionButton(
               tooltip: 'Add', // used by assistive technologies
               child: Icon(Icons.add),
               heroTag: 'addFAB',
-              onPressed: () => projectBloc.add(AddProject())),
+              onPressed: () => projectBloc.add(CreateProject())),
           FloatingActionButton(
               tooltip: 'Edit', // used by assistive technologies
               child: Icon(Icons.edit),
@@ -104,30 +107,29 @@ class Dashboard extends StatefulWidget {
 }
 
 class DashboardState extends State<Dashboard> {
-  ProjectBloc projectBloc;
-  List<Project> projects;
-  Project currentProject;
+  ProjectCrudBloc projectBloc;
+  ProjectSelectionBloc projectSelectionBloc;
+  List<SNProject> projects;
+  SNProject currentProject;
   File firstProjectCoverFile;
 
   @override
   void initState() {
-    projectBloc = BlocProvider.of<ProjectBloc>(context);
+    projectBloc = BlocProvider.of<ProjectCrudBloc>(context);
+    projectSelectionBloc = BlocProvider.of<ProjectSelectionBloc>(context);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProjectBloc, ProjectState>(builder: (context, state) {
-      if (state is FetchingProjects) {
+    return BlocBuilder<ProjectCrudBloc, ProjectCrudState>(
+        builder: (context, state) {
+      if (state is RetrievingProject) {
         return LoadingAnimationLinear();
-      } else if (state is ProjectFetched) {
+      } else if (state is ProjectRetrieved) {
         projects = state.projects;
         firstProjectCoverFile = state.firstProjectCoverFile;
-      } else if (state is ProjectSelected) {
-        projects = state.projects;
-        firstProjectCoverFile = state.firstProjectCoverFile;
-        currentProject = state.project;
-      } else if (state is AddingProject || state is UpdatingProject) {
+      } else if (state is CreatingProject || state is UpdatingProject) {
       } else {
         return ErrorAnimation();
       }
@@ -165,8 +167,8 @@ class DashboardState extends State<Dashboard> {
                       height: 300,
                       child: InkWell(
                         onTap: () {
-                          projectBloc
-                              .add(SelectAProject(projects[0].projectId));
+                          projectSelectionBloc
+                              .add(SelectProject(projects[0].id));
                         },
                       ),
                     ),
@@ -175,7 +177,7 @@ class DashboardState extends State<Dashboard> {
                       textScaleFactor: 1.5,
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
-                    Text('at:' + projects[0].projectDate.toString()),
+                    Text('at:' + projects[0].createdTime.toString()),
                     Text('with:' + projects[0].dancerName),
                   ])),
           Card(
@@ -197,8 +199,8 @@ class DashboardState extends State<Dashboard> {
                                 subtitle:
                                     Text('with:' + projects[i + 1].dancerName),
                                 onTap: () {
-                                  projectBloc.add(SelectAProject(
-                                      projects[i + 1].projectId));
+                                  projectSelectionBloc
+                                      .add(SelectProject(projects[i + 1].id));
                                 },
                               ))
                             : Container()))
@@ -217,7 +219,7 @@ class DashboardState extends State<Dashboard> {
                   decoration: InputDecoration(
                       fillColor: Colors.blue.shade100, filled: true),
                   onSubmitted: (value) async {
-                    projectBloc.add(SelectAProject(int.parse(value)));
+                    projectSelectionBloc.add(SelectProject(int.parse(value)));
                   },
                 )
               ])),
@@ -227,24 +229,24 @@ class DashboardState extends State<Dashboard> {
   }
 }
 
-Future<Project> projectEditorDialog(BuildContext context, Project project) {
-  int projectId = (project != null) ? project.projectId : 114514;
-  DateTime projectDate =
-      (project != null) ? project.projectDate : DateTime.now();
+Future<SNProject> projectEditorDialog(BuildContext context, SNProject project) {
+  int id = (project != null) ? project.id : 114514;
+  DateTime createdTime =
+      (project != null) ? project.createdTime : DateTime.now();
   String dancerName = (project != null) ? project.dancerName : '';
   int songId = (project != null) ? project.songId : 114514;
-  int shotVersion = (project != null) ? project.shotVersion : 114514;
-  int formationVersion = (project != null) ? project.formationVersion : 114514;
+  int shotTableId = (project != null) ? project.shotTableId : 114514;
+  int formationTableId = (project != null) ? project.formationTableId : 114514;
   TextEditingController _projectIdController = TextEditingController()
-    ..text = projectId.toString();
+    ..text = id.toString();
   TextEditingController _dancerNameController = TextEditingController()
     ..text = dancerName;
   TextEditingController _songIdController = TextEditingController()
     ..text = songId.toString();
   TextEditingController _shotVersionController = TextEditingController()
-    ..text = shotVersion.toString();
+    ..text = shotTableId.toString();
   TextEditingController _formationVersionController = TextEditingController()
-    ..text = formationVersion.toString();
+    ..text = formationTableId.toString();
   return showDialog(
       context: context,
       builder: (context) => StatefulBuilder(builder: (context, setState) {
@@ -258,17 +260,17 @@ Future<Project> projectEditorDialog(BuildContext context, Project project) {
                       controller: _projectIdController,
                       decoration: InputDecoration(hintText: '输入项目编号'),
                       onChanged: (value) {
-                        projectId = int.parse(value);
+                        id = int.parse(value);
                       },
                     ),
                     FlatButton(
                       onPressed: () => showDatePicker(
                         context: context,
-                        initialDate: projectDate,
+                        initialDate: createdTime,
                         firstDate:
                             DateTime.now().subtract(Duration(days: 3650)),
                         lastDate: DateTime.now().add(Duration(days: 3650)),
-                      ).then((value) => projectDate = value),
+                      ).then((value) => createdTime = value),
                       child: Text('选择日期'),
                     ),
                     TextFormField(
@@ -289,27 +291,27 @@ Future<Project> projectEditorDialog(BuildContext context, Project project) {
                       controller: _shotVersionController,
                       decoration: InputDecoration(hintText: '输入分镜编号'),
                       onChanged: (value) {
-                        shotVersion = int.parse(value);
+                        shotTableId = int.parse(value);
                       },
                     ),
                     TextFormField(
                       controller: _formationVersionController,
                       decoration: InputDecoration(hintText: '输入队形编号'),
                       onChanged: (value) {
-                        formationVersion = int.parse(value);
+                        formationTableId = int.parse(value);
                       },
                     ),
                   ])),
                   SimpleDialogOption(
                     onPressed: () => Navigator.pop(
                         context,
-                        Project(
-                            projectId: projectId,
-                            projectDate: projectDate,
+                        SNProject(
+                            id: id,
                             dancerName: dancerName,
+                            createdTime: createdTime,
                             songId: songId,
-                            shotVersion: shotVersion,
-                            formationVersion: formationVersion)),
+                            shotTableId: shotTableId,
+                            formationTableId: formationTableId)),
                     child: Text('完成'),
                   ),
                 ])

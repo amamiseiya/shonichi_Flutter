@@ -8,13 +8,13 @@ import '../model/project.dart';
 import '../model/song.dart';
 
 class StorageRepository {
-  Future<File> getSongCoverFile(Song song) async {
+  Future<File> getSongCoverFile(SNSong song) async {
     final Directory appDocDir = await getApplicationDocumentsDirectory();
-    return File(ppath.join(appDocDir.path, song.songName, song.coverFileName));
+    return File(ppath.join(appDocDir.path, song.name, song.coverFileName));
   }
 
-  Future<String> importMarkdown(Project project) async {
-    String fileName = project.projectId.toString() +
+  Future<String> importMarkdown(SNProject project) async {
+    String fileName = project.id.toString() +
         '_' +
         project.songId.toString() +
         '_' +
@@ -25,8 +25,8 @@ class StorageRepository {
     return file.readAsString(encoding: utf8);
   }
 
-  Future<void> exportMarkdown(Project project, String text) async {
-    String fileName = project.projectId.toString() +
+  Future<void> exportMarkdown(SNProject project, String text) async {
+    String fileName = project.id.toString() +
         '_' +
         project.songId.toString() +
         '_' +

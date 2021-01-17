@@ -1,35 +1,35 @@
-part of 'lyric_bloc.dart';
+part of 'lyric_crud_bloc.dart';
 
 @immutable
-abstract class LyricEvent extends Equatable {
-  const LyricEvent();
+abstract class LyricCrudEvent extends Equatable {
+  const LyricCrudEvent();
 }
 
-class StartFetchingLyric extends LyricEvent {
+class StartRetrievingLyric extends LyricCrudEvent {
   @override
-  String toString() => 'StartFetchingLyric';
+  String toString() => 'StartRetrievingLyric';
   @override
   List<Object> get props => [];
 }
 
-class ReloadLyric extends LyricEvent {
+class ReloadLyric extends LyricCrudEvent {
   @override
   String toString() => 'ReloadLyric';
   @override
   List<Object> get props => [];
 }
 
-class FinishFetchingLyric extends LyricEvent {
-  final List<Lyric> lyrics;
-  FinishFetchingLyric(this.lyrics);
+class FinishRetrievingLyric extends LyricCrudEvent {
+  final List<SNLyric> lyrics;
+  FinishRetrievingLyric(this.lyrics);
   @override
-  String toString() => 'FinishFetchingLyric';
+  String toString() => 'FinishRetrievingLyric';
   @override
   List<Object> get props => [lyrics];
 }
 
-class ChangeLyricData extends LyricEvent {
-  final Lyric lyric;
+class ChangeLyricData extends LyricCrudEvent {
+  final SNLyric lyric;
   ChangeLyricData(this.lyric);
   @override
   String toString() => 'ChangeLyricData';
@@ -37,7 +37,7 @@ class ChangeLyricData extends LyricEvent {
   List<Object> get props => [lyric];
 }
 
-class ImportLyric extends LyricEvent {
+class ImportLyric extends LyricCrudEvent {
   final String lrcStr;
   ImportLyric(this.lrcStr);
   @override
@@ -46,8 +46,8 @@ class ImportLyric extends LyricEvent {
   List<Object> get props => [lrcStr];
 }
 
-class PressDelete extends LyricEvent {
-  final Lyric lyric;
+class PressDelete extends LyricCrudEvent {
+  final SNLyric lyric;
   PressDelete(this.lyric);
   @override
   String toString() => 'PressDelete';

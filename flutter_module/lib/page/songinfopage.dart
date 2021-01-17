@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
 
-import '../bloc/project_bloc.dart';
+import '../bloc/project/project_crud_bloc.dart';
 import '../model/project.dart';
-import '../bloc/lyric_bloc.dart';
+import '../bloc/lyric/lyric_crud_bloc.dart';
 import '../model/lyric.dart';
-import '../bloc/song_bloc.dart';
+import '../bloc/song/song_crud_bloc.dart';
 import '../model/song.dart';
 import '../widget/drawer.dart';
 import '../widget/loading.dart';
@@ -23,13 +23,13 @@ class SongInfoPageState extends State<SongInfoPage> {
       GlobalKey<LyricsDataTableState>();
   final GlobalKey<LyricInspectorState> _lyricInspectorKey =
       GlobalKey<LyricInspectorState>();
-  LyricBloc lyricBloc;
+  LyricCrudBloc lyricBloc;
 
   @override
   void initState() {
     super.initState();
-    lyricBloc = BlocProvider.of<LyricBloc>(context);
-    lyricBloc.add(StartFetchingLyric());
+    lyricBloc = BlocProvider.of<LyricCrudBloc>(context);
+    lyricBloc.add(StartRetrievingLyric());
   }
 
   @override
@@ -75,16 +75,16 @@ class LyricsDataTable extends StatefulWidget {
 
 //分镜表类
 class LyricsDataTableState extends State<LyricsDataTable> {
-  LyricBloc lyricBloc;
-  List<Lyric> lyrics;
-  List<Lyric> lyricsSelected = [];
+  LyricCrudBloc lyricBloc;
+  List<SNLyric> lyrics;
+  List<SNLyric> lyricsSelected = [];
   bool _sortAscending = true;
   int _sortColumnIndex;
 
   @override
   void initState() {
     super.initState();
-    lyricBloc = BlocProvider.of<LyricBloc>(context);
+    lyricBloc = BlocProvider.of<LyricCrudBloc>(context);
   }
 
   void _sort(int index, bool ascending) {
@@ -100,9 +100,9 @@ class LyricsDataTableState extends State<LyricsDataTable> {
   }
 
   Widget build(BuildContext context) {
-    return BlocBuilder<LyricBloc, LyricState>(
+    return BlocBuilder<LyricCrudBloc, LyricCrudState>(
       builder: (context, state) {
-        if (state is LyricFetched) {
+        if (state is LyricRetrieved) {
           lyrics = state.lyrics;
           return Flexible(
               child: ListView(
@@ -136,7 +136,7 @@ class LyricsDataTableState extends State<LyricsDataTable> {
                             cells: [
                               DataCell(Text(simpleDurationRegExp
                                   .stringMatch(lyric.startTime.toString()))),
-                              DataCell(Text(lyric.lyricContent),
+                              DataCell(Text(lyric.text),
                                   showEditIcon: true, onTap: null),
                               DataCell(Text('')),
                             ]))
@@ -159,12 +159,12 @@ class LyricInspector extends StatefulWidget {
 }
 
 class LyricInspectorState extends State<LyricInspector> {
-  ProjectBloc projectBloc;
-  SongBloc songBloc;
-  LyricBloc lyricBloc;
-  Project currentProject;
-  Song currentSong;
-  List<Lyric> lyrics;
+  ProjectCrudBloc projectBloc;
+  SongCrudBloc songBloc;
+  LyricCrudBloc lyricBloc;
+  SNProject currentProject;
+  SNSong currentSong;
+  List<SNLyric> lyrics;
   VideoPlayerController videoPlayerController;
   ChewieController chewieController;
   Chewie playerWidget;
@@ -183,9 +183,9 @@ class LyricInspectorState extends State<LyricInspector> {
   }
 
   Future<void> initialize() async {
-    projectBloc = BlocProvider.of<ProjectBloc>(context);
-    lyricBloc = BlocProvider.of<LyricBloc>(context);
-    songBloc = BlocProvider.of<SongBloc>(context);
+    projectBloc = BlocProvider.of<ProjectCrudBloc>(context);
+    lyricBloc = BlocProvider.of<LyricCrudBloc>(context);
+    songBloc = BlocProvider.of<SongCrudBloc>(context);
     // Directory appDocDir = await getApplicationDocumentsDirectory();
     // videoPlayerController = VideoPlayerController.file(File(ppath.join(
     //     appDocDir.path, currentSong.songName, currentSong.videoFileNames[0])));
@@ -281,5 +281,5 @@ Future<void> addLyricFromLrc(BuildContext context) async {
           ],
         );
       });
-  BlocProvider.of<LyricBloc>(context).add(ImportLyric(_future));
+  BlocProvider.of<LyricCrudBloc>(context).add(ImportLyric(_future));
 }

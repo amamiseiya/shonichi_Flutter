@@ -1,48 +1,48 @@
-part of 'formation_bloc.dart';
+part of 'formation_crud_bloc.dart';
 
-abstract class FormationEvent extends Equatable {
-  const FormationEvent();
+abstract class FormationCrudEvent extends Equatable {
+  const FormationCrudEvent();
 }
 
-class FirstLoadFormation extends FormationEvent {
+class FirstLoadFormation extends FormationCrudEvent {
   @override
   String toString() => 'FirstLoadFormation';
   @override
   List<Object> get props => [];
 }
 
-class ReloadFormation extends FormationEvent {
+class ReloadFormation extends FormationCrudEvent {
   @override
   String toString() => 'ReloadFormation';
   @override
   List<Object> get props => [];
 }
 
-class FinishFetchingFormation extends FormationEvent {
-  final List<Formation> formations;
-  final List<Character> characters;
-  FinishFetchingFormation(this.formations, this.characters);
+class FinishRetrievingFormation extends FormationCrudEvent {
+  final List<SNFormation> formations;
+  final List<SNCharacter> characters;
+  FinishRetrievingFormation(this.formations, this.characters);
   @override
-  String toString() => 'FinishFetchingFormation';
+  String toString() => 'FinishRetrievingFormation';
   @override
   List<Object> get props => [formations, characters];
 }
 
-class PressAddFormation extends FormationEvent {
+class PressAddFormation extends FormationCrudEvent {
   @override
   String toString() => 'PressAddFormation';
   @override
   List<Object> get props => [];
 }
 
-class PressDeleteFormation extends FormationEvent {
+class PressDeleteFormation extends FormationCrudEvent {
   @override
   String toString() => 'PressDeleteFormation';
   @override
   List<Object> get props => [];
 }
 
-class ChangeSliderValue extends FormationEvent {
+class ChangeSliderValue extends FormationCrudEvent {
   final double sliderValue;
   ChangeSliderValue(this.sliderValue);
   @override
@@ -51,8 +51,8 @@ class ChangeSliderValue extends FormationEvent {
   List<Object> get props => [sliderValue];
 }
 
-class ChangeCharacter extends FormationEvent {
-  final Character character;
+class ChangeCharacter extends FormationCrudEvent {
+  final SNCharacter character;
   ChangeCharacter(this.character);
   @override
   String toString() => 'ChangeCharacter';
@@ -60,7 +60,7 @@ class ChangeCharacter extends FormationEvent {
   List<Object> get props => [character];
 }
 
-class ChangeTime extends FormationEvent {
+class ChangeTime extends FormationCrudEvent {
   final Duration startTime;
   ChangeTime(this.startTime);
   @override
@@ -69,7 +69,7 @@ class ChangeTime extends FormationEvent {
   List<Object> get props => [startTime];
 }
 
-class ChangeKCurveType extends FormationEvent {
+class ChangeKCurveType extends FormationCrudEvent {
   final KCurveType kCurveType;
   ChangeKCurveType(this.kCurveType);
   @override
@@ -78,9 +78,9 @@ class ChangeKCurveType extends FormationEvent {
   List<Object> get props => [kCurveType];
 }
 
-class OnPanDownProgram extends FormationEvent {
+class OnPanDownProgram extends FormationCrudEvent {
   final DragDownDetails details;
-  final List<Formation> frame;
+  final List<SNFormation> frame;
   final BuildContext context;
   OnPanDownProgram(this.details, this.frame, this.context);
   @override
@@ -89,9 +89,9 @@ class OnPanDownProgram extends FormationEvent {
   List<Object> get props => [details, frame, context];
 }
 
-class OnPanUpdateProgram extends FormationEvent {
+class OnPanUpdateProgram extends FormationCrudEvent {
   final DragUpdateDetails details;
-  final List<Formation> frame;
+  final List<SNFormation> frame;
   final BuildContext context;
   OnPanUpdateProgram(this.details, this.frame, this.context);
   @override
@@ -100,9 +100,9 @@ class OnPanUpdateProgram extends FormationEvent {
   List<Object> get props => [details, frame, context];
 }
 
-class OnPanEndProgram extends FormationEvent {
+class OnPanEndProgram extends FormationCrudEvent {
   final DragEndDetails details;
-  final List<Formation> frame;
+  final List<SNFormation> frame;
   final BuildContext context;
   OnPanEndProgram(this.details, this.frame, this.context);
   @override
@@ -111,7 +111,7 @@ class OnPanEndProgram extends FormationEvent {
   List<Object> get props => [details, frame, context];
 }
 
-class OnPanDownKCurve extends FormationEvent {
+class OnPanDownKCurve extends FormationCrudEvent {
   final DragDownDetails details;
   final List<Offset> editingKCurve;
   final BuildContext context;
@@ -122,7 +122,7 @@ class OnPanDownKCurve extends FormationEvent {
   List<Object> get props => [details, editingKCurve, context];
 }
 
-class OnPanUpdateKCurve extends FormationEvent {
+class OnPanUpdateKCurve extends FormationCrudEvent {
   final DragUpdateDetails details;
   final List<Offset> editingKCurve;
   final BuildContext context;
@@ -133,7 +133,7 @@ class OnPanUpdateKCurve extends FormationEvent {
   List<Object> get props => [details, editingKCurve, context];
 }
 
-class OnPanEndKCurve extends FormationEvent {
+class OnPanEndKCurve extends FormationCrudEvent {
   final DragEndDetails details;
   final List<Offset> editingKCurve;
   final BuildContext context;

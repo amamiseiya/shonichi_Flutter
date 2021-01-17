@@ -144,7 +144,7 @@ MigratorPage
 │  │  ├─ migratorpage.dart
 │  │  ├─ shoteditorpage.dart
 │  ├─ provider                  //为Repository提供数据的Provider
-│  │  └─ provider_sqlite.dart   //本应用中具体为SQLite数据库
+│  │  └─ sqlite_provider.dart   //本应用中具体为SQLite数据库
 │  ├─ repository                //为应用提供特定数据的Repository
 │  │  ├─ lyric_repository.dart
 │  │  ├─ project_repository.dart
@@ -158,3 +158,10 @@ MigratorPage
 └─ test                         //单元测试代码
    ├─ des_test.dart
 ```
+
+## 数据存储
+
+Repository
+将对象提供给Bloc使用。
+
+https://leancloud.cn/docs/sdk_setup-flutter.html

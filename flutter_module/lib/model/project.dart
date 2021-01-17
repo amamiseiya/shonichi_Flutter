@@ -1,38 +1,43 @@
-class Project {
-  int projectId;
-  DateTime projectDate;
+class SNProject {
+  int id;
   String dancerName;
+  DateTime createdTime;
+  DateTime modifiedTime;
+
   int songId;
-  int shotVersion;
-  int formationVersion;
+  int shotTableId;
+  int formationTableId;
 
-  Project(
-      {this.projectId,
-      this.projectDate,
+  SNProject(
+      {this.id,
       this.dancerName,
+      this.createdTime,
+      this.modifiedTime,
       this.songId,
-      this.shotVersion,
-      this.formationVersion});
+      this.shotTableId,
+      this.formationTableId});
 
-  factory Project.fromMap(Map<String, dynamic> map) {
-    return Project(
-      projectId: map['projectId'],
-      projectDate: DateTime.parse(map['projectDate']),
+  factory SNProject.fromMap(Map<String, dynamic> map) {
+    return SNProject(
+      id: map['id'],
       dancerName: map['dancerName'],
+      createdTime: DateTime.parse(map['createdTime']),
+      modifiedTime: DateTime.parse(map['modifiedTime']),
       songId: map['songId'],
-      shotVersion: map['shotVersion'],
-      formationVersion: map['formationVersion'],
+      shotTableId: map['shotTableId'],
+      formationTableId: map['formationTableId'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'projectId': projectId,
-      'projectDate': projectDate.toString(),
+      'id': id,
       'dancerName': dancerName,
+      'createdTime': createdTime.toString(),
+      'modifiedTime': modifiedTime.toString(),
       'songId': songId,
-      'shotVersion': shotVersion,
-      'formationVersion': formationVersion,
+      'shotTableId': shotTableId,
+      'formationTableId': formationTableId,
     };
   }
 }

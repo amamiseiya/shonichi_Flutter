@@ -1,29 +1,17 @@
 import 'dart:async';
 
 import '../model/lyric.dart';
-import '../provider/provider_sqlite.dart';
+import '../provider/sqlite_provider.dart';
 
 class LyricRepository {
-  final lyricProvider = ProviderSqlite();
+  final provider = LyricSQLiteProvider();
 
-  Future<void> addLyric(Lyric lyric) async =>
-      await lyricProvider.insert('lyrictable', lyric.toMap());
+  Future<void> create(SNLyric lyric) async => await provider.create(lyric);
 
-  Future<void> deleteLyric(Lyric lyric) async =>
-      await lyricProvider.delete('lyrictable',
-          where: 'startTime = ?', whereArgs: [lyric.startTime.inMilliseconds]);
+  Future<List<SNLyric>> retrieve(int songId) async =>
+      await provider.retrieve(songId);
 
-  Future<void> updateLyric(Lyric lyric) async =>
-      await lyricProvider.update('lyrictable', lyric.toMap(),
-          where: 'startTime = ?', whereArgs: [lyric.startTime.inMilliseconds]);
+  Future<void> update(SNLyric lyric) async => await provider.update(lyric);
 
-  Future<List<Lyric>> fetchLyricsForSong(int id) {
-    final list = lyricProvider.query('lyrictable',
-        where: 'songId = ?',
-        whereArgs: [
-          id
-        ]).then((onValue) =>
-        List.generate(onValue.length, (i) => Lyric.fromMap(onValue[i])));
-    return list;
-  }
+  Future<void> delete(SNLyric lyric) async => await provider.delete(lyric);
 }

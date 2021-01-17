@@ -45,14 +45,14 @@
 /* Begin PBXContainerItemProxy section */
 		BE83F96524AB389600F4015F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = BE83F94324AB389600F4015F /* Project object */;
+			containerPortal = BE83F94324AB389600F4015F /* SNProject object */;
 			proxyType = 1;
 			remoteGlobalIDString = BE83F94A24AB389600F4015F;
 			remoteInfo = shonichi;
 		};
 		BE83F97024AB389600F4015F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = BE83F94324AB389600F4015F /* Project object */;
+			containerPortal = BE83F94324AB389600F4015F /* SNProject object */;
 			proxyType = 1;
 			remoteGlobalIDString = BE83F94A24AB389600F4015F;
 			remoteInfo = shonichi;
@@ -341,7 +341,7 @@
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		BE83F94324AB389600F4015F /* Project object */ = {
+		BE83F94324AB389600F4015F /* SNProject object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1150;
@@ -919,5 +919,5 @@
 		};
 /* End XCVersionGroup section */
 	};
-	rootObject = BE83F94324AB389600F4015F /* Project object */;
+	rootObject = BE83F94324AB389600F4015F /* SNProject object */;
 }

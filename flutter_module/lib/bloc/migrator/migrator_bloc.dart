@@ -4,29 +4,31 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shonichi_flutter_module/bloc/project/project_selection_bloc.dart';
 
-import '../model/project.dart';
-import '../model/song.dart';
-import '../model/shot.dart';
-import '../model/character.dart';
-import '../bloc/project_bloc.dart';
-import '../bloc/song_bloc.dart';
-import '../repository/project_repository.dart';
-import '../repository/song_repository.dart';
-import '../repository/shot_repository.dart';
-import '../repository/storage_repository.dart';
-import '../util/des.dart';
-import '../util/reg_exp.dart';
-import '../util/data_convert.dart';
+import '../../model/project.dart';
+import '../../model/song.dart';
+import '../../model/shot.dart';
+import '../../model/character.dart';
+import '../project/project_crud_bloc.dart';
+import '../song/song_crud_bloc.dart';
+import '../../repository/project_repository.dart';
+import '../../repository/song_repository.dart';
+import '../../repository/shot_repository.dart';
+import '../../repository/storage_repository.dart';
+import '../../util/des.dart';
+import '../../util/reg_exp.dart';
+import '../../util/data_convert.dart';
 
 part 'migrator_event.dart';
 part 'migrator_state.dart';
 
 class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
-  final ProjectBloc projectBloc;
-  final SongBloc songBloc;
+  final ProjectCrudBloc projectBloc;
+  final ProjectSelectionBloc projectSelectionBloc;
+  final SongCrudBloc songBloc;
   StreamSubscription projectBlocSubscription;
-  Project currentProject;
+  SNProject currentProject;
 
   final ProjectRepository projectRepository;
   final SongRepository songRepository;
@@ -36,31 +38,29 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
 
   String storyboardTableTitles;
 
-  MigratorBloc(this.projectBloc, this.songBloc, this.projectRepository,
+  MigratorBloc(this.projectBloc,this.projectSelectionBloc, this.songBloc, this.projectRepository,
       this.songRepository, this.shotRepository, this.storageRepository)
       : assert(projectBloc != null),
+      assert(projectSelectionBloc != null),
         assert(songBloc != null),
         assert(projectRepository != null),
         assert(songRepository != null),
         assert(shotRepository != null),
         assert(storageRepository != null),
-        super(null) {
+        super(MigratorInitial()) {
     storyboardTableTitles = '';
-    for (String title in Shot.titles) {
+    for (String title in SNShot.titles) {
       storyboardTableTitles += '| ' + title + ' ';
     }
     storyboardTableTitles += '|\n';
-    storyboardTableTitles += ('| --- ') * Shot.titles.length;
+    storyboardTableTitles += ('| --- ') * SNShot.titles.length;
     storyboardTableTitles += '|\n';
-    projectBlocSubscription = projectBloc.listen((state) {
+    projectBlocSubscription = projectSelectionBloc.listen((state) {
       if (state is ProjectSelected) {
         currentProject = state.project;
       }
     });
   }
-
-  @override
-  MigratorState get initialState => MigratorInitial();
 
   @override
   Stream<MigratorState> mapEventToState(
@@ -92,9 +92,9 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
   Stream<MigratorState> mapConfirmImportMarkdownToState() async* {
     try {
       markdownSubject.listen((onData) async {
-        final List<Shot> shots = await parseShots(currentProject, onData);
-        for (Shot shot in shots) {
-          await shotRepository.addShot(shot);
+        final List<SNShot> shots = await parseShots(currentProject, onData);
+        for (SNShot shot in shots) {
+          await shotRepository.create(shot);
         }
       });
     } catch (e) {
@@ -102,22 +102,21 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
     }
   }
 
-  Future<List<Shot>> parseShots(Project project, String mdText) async {
+  Future<List<SNShot>> parseShots(SNProject project, String mdText) async {
     String storyboardText = storyboardChapterRegExp.stringMatch(mdText);
     String shotsText =
         RegExp(r'(?<=---\s\|\n).+', dotAll: true).stringMatch(storyboardText);
     final int shotVersion =
-        await shotRepository.getLatestShotVersion(project.songId) + 1;
+        await shotRepository.getLatestShotTable(project.songId) + 1;
     final String kikaku =
-        (await songRepository.fetchSpecifiedSong(project.songId))
-            .subordinateKikaku;
+        (await songRepository.retrieve(project.songId)).subordinateKikaku;
     return shotsText
         .split('\n')
         .where((element) => RegExp(r'^\|.+\|$').hasMatch(element))
         .map((String shotText) {
       List<RegExpMatch> shotProps =
           RegExp(r'(?<=\|\s)[^\|]*(?=\s\|)').allMatches(shotText).toList();
-      return Shot(
+      return SNShot(
           songId: project.songId,
           shotVersion: shotVersion,
           shotName: 'Imported version $shotVersion',
@@ -128,7 +127,7 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
           shotLyric: shotProps[2].group(0),
           shotScene: int.parse(shotProps[3].group(0)),
           shotCharacters:
-              Character.abbrStringToList(shotProps[4].group(0), kikaku),
+              SNCharacter.abbrStringToList(shotProps[4].group(0), kikaku),
           shotType: shotProps[5].group(0),
           shotMovement: shotProps[6].group(0),
           shotAngle: shotProps[7].group(0),
@@ -140,35 +139,34 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
 
   Stream<MigratorState> mapPreviewMarkdownToState() async* {
     try {
-      final Song currentSong =
-          await songRepository.fetchSpecifiedSong(currentProject.songId);
+      final SNSong currentSong =
+          await songRepository.retrieve(currentProject.songId);
       markdownSubject.add(generateIntro(currentProject, currentSong) +
-          generateShotDataTable(await shotRepository.fetchShotsForProject(
-              currentProject.songId, currentProject.shotVersion)));
+          generateShotDataTable(await shotRepository.retrieve(tableId)));
     } catch (e) {
       print(e);
     }
   }
 
-  String generateIntro(Project project, Song song) {
+  String generateIntro(SNProject project, SNSong song) {
     String mdText =
-        '# ' + project.dancerName + ' ' + song.songName + ' 拍摄计划\n\n拍摄日期：\n';
+        '# ' + project.dancerName + ' ' + song.name + ' 拍摄计划\n\n拍摄日期：\n';
     return mdText;
   }
 
-  String generateShotDataTable(List<Shot> shots) {
+  String generateShotDataTable(List<SNShot> shots) {
     String mdText = '# 分镜表\n';
     mdText += storyboardTableTitles;
 
-    for (Shot shot in shots) {
+    for (SNShot shot in shots) {
       mdText += '| ${shot.shotNumber} | ' +
           simpleDurationRegExp.stringMatch(shot.startTime.toString()) +
           ' | ' +
-          shot.shotLyric +
+          shot.lyric +
           ' | ' +
-          shot.shotScene.toString() +
+          shot.sceneNumber.toString() +
           ' | ' +
-          Character.listToAbbrString(shot.shotCharacters) +
+          SNCharacter.listToAbbrString(shot.characters) +
           ' | ' +
           shot.shotType +
           ' | ' +
@@ -176,11 +174,11 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
           ' | ' +
           shot.shotAngle +
           ' | ' +
-          shot.shotContent +
+          shot.text +
           ' | ' +
-          shot.shotImage +
+          shot.image +
           ' | ' +
-          shot.shotComment +
+          shot.comment +
           ' |\n';
     }
     return mdText;

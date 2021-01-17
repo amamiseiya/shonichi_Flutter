@@ -70,13 +70,13 @@ struct DashboardView: View {
                 }
                 List {
                     NavigationLink(destination: ShotEditorView(projectViewModel: projectViewModel, shotViewModel: shotViewModel, songViewModel: songViewModel)) {
-                        Text("Shot Editor")
+                        Text("SNShot Editor")
                     }
                     NavigationLink(destination: SongEditorView(songViewModel: songViewModel)) {
-                        Text("Song Editor")
+                        Text("SNSong Editor")
                     }
                     NavigationLink(destination: FormationEditorView(formationViewModel: formationViewModel)) {
-                        Text("Formation Editor")
+                        Text("SNFormation Editor")
                     }
                     NavigationLink(destination: ModelView(characterViewModel: characterViewModel)) {
                         Text("Model Viewer")

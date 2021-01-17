@@ -2,11 +2,11 @@
 scale 500 width
 
 [*] --> LyricUninitialized
-LyricUninitialized-->FetchingLyric:StartFetching
-FetchingLyric-->LyricFetched
-LyricFetched-->FetchingLyric:ChangeLyricData
-LyricFetched-->FetchingLyric:ImportLyric
-LyricFetched-->FetchingLyric:PressDelete
-LyricFetched-->[*]
+LyricUninitialized-->RetrievingLyric:StartRetrieving
+RetrievingLyric-->LyricRetrieved
+LyricRetrieved-->RetrievingLyric:ChangeLyricData
+LyricRetrieved-->RetrievingLyric:ImportLyric
+LyricRetrieved-->RetrievingLyric:PressDelete
+LyricRetrieved-->[*]
 
 @enduml

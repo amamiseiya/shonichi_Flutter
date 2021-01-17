@@ -1,28 +1,17 @@
 import '../model/song.dart';
-import '../provider/provider_sqlite.dart';
+import '../provider/sqlite_provider.dart';
 
 class SongRepository {
-  final songProvider = ProviderSqlite();
+  final provider = SongSQLiteProvider();
 
-  Future<void> addSong(Song song) async =>
-      await songProvider.insert('songtable', song.toMap());
+  Future<void> create(SNSong song) async => await provider.create(song);
 
-  Future<void> deleteSong(Song song) async => await songProvider
-      .delete('songtable', where: 'songId = ?', whereArgs: [song.songId]);
+  Future<SNSong> retrieve(int id) async => await provider.retrieve(id);
 
-  Future<void> updateSong(Song song) async =>
-      await songProvider.update('songtable', song.toMap(),
-          where: 'songId = ?', whereArgs: [song.songId]);
+  Future<List<SNSong>> retrieveMultiple() async =>
+      await provider.retrieveMultiple();
 
-  Future<List<Song>> fetchSongs() async {
-    final List<Map<String, dynamic>> mapList =
-        await songProvider.query('songtable');
-    return List.generate(mapList.length, (i) => Song.fromMap(mapList[i]));
-  }
+  Future<void> update(SNSong song) async => await provider.update(song);
 
-  Future<Song> fetchSpecifiedSong(int id) async {
-    final List<Map<String, dynamic>> mapList = await songProvider
-        .query('songtable', where: 'songId = ?', whereArgs: [id]);
-    return Song.fromMap(mapList.first);
-  }
+  Future<void> delete(SNSong song) async => await provider.delete(song);
 }

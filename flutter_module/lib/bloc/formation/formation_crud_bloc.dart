@@ -1,80 +1,81 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../model/project.dart';
-import '../model/song.dart';
-import '../model/lyric.dart';
-import '../model/formation.dart';
-import '../model/character.dart';
-import '../bloc/project_bloc.dart';
-import '../bloc/song_bloc.dart';
-import '../bloc/lyric_bloc.dart';
-import '../repository/storage_repository.dart';
-import '../repository/formation_repository.dart';
+import '../../model/project.dart';
+import '../../model/song.dart';
+import '../../model/lyric.dart';
+import '../../model/formation.dart';
+import '../../model/character.dart';
+import '../project/project_selection_bloc.dart';
+import '../song/song_crud_bloc.dart';
+import '../lyric/lyric_crud_bloc.dart';
+import '../../repository/storage_repository.dart';
+import '../../repository/formation_repository.dart';
 
-part 'formation_event.dart';
-part 'formation_state.dart';
+part 'formation_crud_event.dart';
+part 'formation_crud_state.dart';
 
-class FormationBloc extends Bloc<FormationEvent, FormationState> {
+class FormationCrudBloc extends Bloc<FormationCrudEvent, FormationCrudState> {
   final FormationRepository formationRepository;
   final StorageRepository storageRepository;
 
-  final ProjectBloc projectBloc;
-  final SongBloc songBloc;
-  final LyricBloc lyricBloc;
-  StreamSubscription projectBlocSubscription;
+  final ProjectSelectionBloc projectSelectionBloc;
+  final SongCrudBloc songBloc;
+  final LyricCrudBloc lyricBloc;
+  StreamSubscription projectSelectionBlocSubscription;
   StreamSubscription lyricBlocSubscription;
   StreamSubscription currentSongSubscription;
-  Project currentProject;
-  Song currentSong;
+  SNProject currentProject;
+  SNSong currentSong;
 
-  List<Lyric> lyrics;
+  List<SNLyric> lyrics;
 
-  BehaviorSubject<List<Formation>> projectFormationsSubject =
-      BehaviorSubject<List<Formation>>();
-  BehaviorSubject<List<Character>> charactersSubject =
-      BehaviorSubject<List<Character>>();
+  BehaviorSubject<List<SNFormation>> projectFormationsSubject =
+      BehaviorSubject<List<SNFormation>>();
+  BehaviorSubject<List<SNCharacter>> charactersSubject =
+      BehaviorSubject<List<SNCharacter>>();
 
-  BehaviorSubject<Character> characterFilterSubject =
-      BehaviorSubject<Character>.seeded(Character());
+  BehaviorSubject<SNCharacter> characterFilterSubject =
+      BehaviorSubject<SNCharacter>.seeded(SNCharacter());
   BehaviorSubject<Duration> frameFilterSubject =
       BehaviorSubject<Duration>.seeded(Duration(seconds: 0));
   BehaviorSubject<KCurveType> kCurveTypeFilterSubject =
       BehaviorSubject<KCurveType>();
 
-  Stream<List<Formation>> characterFormationsStream;
-  Stream<List<Formation>> frameStream;
-  Stream<Formation> editingFormationStream = Stream.empty();
+  Stream<List<SNFormation>> characterFormationsStream;
+  Stream<List<SNFormation>> frameStream;
+  Stream<SNFormation> editingFormationStream = Stream.empty();
   Stream<List<Offset>> editingKCurveStream;
 
-  Character selectedCharacter = Character();
+  SNCharacter selectedCharacter = SNCharacter();
   Duration selectedTime;
   KCurveType selectedKCurveType;
-  Formation editingFormation;
+  SNFormation editingFormation;
   int draggedPos = -1;
   int draggedPoint = -1;
 
   final programPainterSize = Size(640, 360);
   final kCurvePainterSize = Size(360, 360);
 
-  FormationBloc(this.projectBloc, this.songBloc, this.lyricBloc,
+  FormationCrudBloc(this.projectSelectionBloc, this.songBloc, this.lyricBloc,
       this.formationRepository, this.storageRepository)
-      : assert(projectBloc != null),
+      : assert(projectSelectionBloc != null),
         assert(songBloc != null),
         assert(lyricBloc != null),
         assert(formationRepository != null),
         assert(storageRepository != null),
-        super(null) {
+        super(FormationUninitialized()) {
     lyricBlocSubscription = lyricBloc.listen((state) {
-      if (state is LyricFetched) {
+      if (state is LyricRetrieved) {
         lyrics = state.lyrics;
       }
     });
-    projectBlocSubscription = projectBloc.listen((state) {
+    projectSelectionBlocSubscription = projectSelectionBloc.listen((state) {
       if (state is ProjectSelected) {
         currentProject = state.project;
       }
@@ -94,36 +95,35 @@ class FormationBloc extends Bloc<FormationEvent, FormationState> {
     characterFormationsStream = Rx.combineLatest2(
         projectFormationsSubject,
         characterFilterSubject,
-        (List<Formation> stream, Character filter) =>
-            (filter.characterName == null)
-                ? stream
-                : stream
-                    .where((formation) =>
-                        formation.characterName == filter.characterName)
-                    .toList()).asBroadcastStream();
+        (List<SNFormation> stream, SNCharacter filter) => (filter.name == null)
+            ? stream
+            : stream
+                .where((formation) => formation.characterName == filter.name)
+                .toList()).asBroadcastStream();
     frameStream = Rx.combineLatest2(
         projectFormationsSubject,
         frameFilterSubject,
-        (List<Formation> stream, Duration filter) => (filter.isNegative)
+        (List<SNFormation> stream, Duration filter) => (filter.isNegative)
             ? stream
             : stream
                 .where((formation) => formation.startTime == filter)
                 .toList()).asBroadcastStream();
     editingFormationStream = Rx.combineLatest3(
-        projectFormationsSubject,
-        characterFilterSubject,
-        frameFilterSubject,
-        (List<Formation> stream, Character characterFilter,
-                Duration frameFilter) =>
-            stream
-                .where((formation) =>
-                    formation.characterName == characterFilter.characterName)
-                .firstWhere((formation) =>
-                    formation.startTime == frameFilter)).asBroadcastStream();
+            projectFormationsSubject,
+            characterFilterSubject,
+            frameFilterSubject,
+            (List<SNFormation> stream, SNCharacter characterFilter,
+                    Duration frameFilter) =>
+                stream
+                    .where((formation) =>
+                        formation.characterName == characterFilter.name)
+                    .firstWhere(
+                        (formation) => formation.startTime == frameFilter))
+        .asBroadcastStream();
     editingKCurveStream = Rx.combineLatest2(
         editingFormationStream,
         kCurveTypeFilterSubject,
-        (Formation formation, KCurveType kCurveType) => List.generate(
+        (SNFormation formation, KCurveType kCurveType) => List.generate(
               2,
               (i) =>
                   formation.getFormationPoint(kCurveType, i, kCurvePainterSize),
@@ -131,20 +131,17 @@ class FormationBloc extends Bloc<FormationEvent, FormationState> {
   }
 
   @override
-  FormationState get initialState => FormationUninitialized();
-
-  @override
-  Stream<FormationState> mapEventToState(
-    FormationEvent event,
+  Stream<FormationCrudState> mapEventToState(
+    FormationCrudEvent event,
   ) async* {
     if (event is FirstLoadFormation) {
       yield* mapReloadFormationToState();
     } else if (event is ReloadFormation) {
       print(event.toString());
       yield* mapReloadFormationToState();
-    } else if (event is FinishFetchingFormation) {
+    } else if (event is FinishRetrievingFormation) {
       print(event.toString());
-      yield FormationFetched(event.formations, event.characters);
+      yield FormationRetrieved(event.formations, event.characters);
     } else if (event is ChangeSliderValue) {
       yield* mapChangeSliderValueToState(event.sliderValue);
     } else if (event is ChangeTime) {
@@ -178,22 +175,21 @@ class FormationBloc extends Bloc<FormationEvent, FormationState> {
     }
   }
 
-  Stream<FormationState> mapReloadFormationToState() async* {
+  Stream<FormationCrudState> mapReloadFormationToState() async* {
     try {
       charactersSubject
-          .add(Character.membersSortedByGrade(currentSong.subordinateKikaku));
+          .add(SNCharacter.membersSortedByGrade(currentSong.subordinateKikaku));
       projectFormationsSubject.add(
-          await formationRepository.fetchFormationsForProject(
-              currentProject.songId, currentProject.formationVersion));
+          await formationRepository.retrieve(currentProject.formationTableId));
       // projectFormationsSubject.listen(
-      //     (onData) => add(FinishedFetchingFormation(onData, characters)));
+      //     (onData) => add(FinishedRetrievingFormation(onData, characters)));
       lyricBloc.add(ReloadLyric());
     } catch (e) {
       print(e);
     }
   }
 
-  Stream<FormationState> mapChangeSliderValueToState(
+  Stream<FormationCrudState> mapChangeSliderValueToState(
       double sliderValue) async* {
     try {
       // timeSubject.add(Duration(
@@ -206,7 +202,7 @@ class FormationBloc extends Bloc<FormationEvent, FormationState> {
     }
   }
 
-  Stream<FormationState> mapChangeTimeToState(Duration startTime) async* {
+  Stream<FormationCrudState> mapChangeTimeToState(Duration startTime) async* {
     try {
       frameFilterSubject.add(startTime);
       print('Added to frameFilterSubject');
@@ -215,19 +211,19 @@ class FormationBloc extends Bloc<FormationEvent, FormationState> {
     }
   }
 
-  Stream<FormationState> mapChangeCharacterToState(Character character) async* {
+  Stream<FormationCrudState> mapChangeCharacterToState(
+      SNCharacter character) async* {
     try {
-      selectedCharacter =
-          (selectedCharacter.characterName == character.characterName)
-              ? Character()
-              : character;
+      selectedCharacter = (selectedCharacter.name == character.name)
+          ? SNCharacter()
+          : character;
       characterFilterSubject.add(selectedCharacter);
     } catch (e) {
       print(e);
     }
   }
 
-  Stream<FormationState> mapChangeKCurveTypeToState(
+  Stream<FormationCrudState> mapChangeKCurveTypeToState(
       KCurveType kCurveType) async* {
     try {
       kCurveTypeFilterSubject.add(kCurveType);
@@ -236,22 +232,19 @@ class FormationBloc extends Bloc<FormationEvent, FormationState> {
     }
   }
 
-  Stream<FormationState> mapPressAddFormationToState() async* {
+  Stream<FormationCrudState> mapPressAddFormationToState() async* {
     try {
       // bool isExist = false;
       // characterFormationsStream.listen((onData) {
-      //   for (Formation formation in onData) {
+      //   for (SNFormation formation in onData) {
       //     if (formation.startTime == startTime) {
       //       isExist = true;
       //     }
       //   }
       // });
       // if (!isExist) {
-      formationRepository.addFormation(Formation(
-          songId: currentProject.songId,
-          formationVersion: currentProject.formationVersion,
-          characterName: selectedCharacter.characterName,
-          memberColor: selectedCharacter.memberColor,
+      formationRepository.create(SNFormation(
+          id: Random().nextInt(10000),
           startTime: selectedTime,
           posX: 0.0,
           posY: 0.0,
@@ -262,7 +255,9 @@ class FormationBloc extends Bloc<FormationEvent, FormationState> {
           curveY1X: 0,
           curveY1Y: 0,
           curveY2X: 127,
-          curveY2Y: 127));
+          curveY2Y: 127,
+          tableId: currentProject.formationTableId,
+          characterName: selectedCharacter.name));
       add(ReloadFormation());
       // }
     } catch (e) {
@@ -270,12 +265,12 @@ class FormationBloc extends Bloc<FormationEvent, FormationState> {
     }
   }
 
-  Stream<FormationState> mapPressDeleteFormationToState() async* {
+  Stream<FormationCrudState> mapPressDeleteFormationToState() async* {
     try {
-      formationRepository.deleteFormation(
+      formationRepository.delete(
           songId: currentProject.songId,
-          formationVersion: currentProject.formationVersion,
-          characterName: selectedCharacter.characterName,
+          formationVersion: currentProject.formationTableId,
+          characterName: selectedCharacter.name,
           startTime: selectedTime);
       add(ReloadFormation());
     } catch (e) {
@@ -283,8 +278,8 @@ class FormationBloc extends Bloc<FormationEvent, FormationState> {
     }
   }
 
-  Stream<FormationState> mapOnPanDownProgramToState(DragDownDetails details,
-      List<Formation> frame, BuildContext context) async* {
+  Stream<FormationCrudState> mapOnPanDownProgramToState(DragDownDetails details,
+      List<SNFormation> frame, BuildContext context) async* {
     print('OnPanDown');
     final RenderBox renderBox = context.findRenderObject();
     final Offset localPos = renderBox.globalToLocal(details.globalPosition);
@@ -302,8 +297,10 @@ class FormationBloc extends Bloc<FormationEvent, FormationState> {
     return;
   }
 
-  Stream<FormationState> mapOnPanUpdateProgramToState(DragUpdateDetails details,
-      List<Formation> frame, BuildContext context) async* {
+  Stream<FormationCrudState> mapOnPanUpdateProgramToState(
+      DragUpdateDetails details,
+      List<SNFormation> frame,
+      BuildContext context) async* {
     final RenderBox renderBox = context.findRenderObject();
     final Offset localPos = renderBox.globalToLocal(details.globalPosition);
     print('Pos:${localPos.dx},${localPos.dy}');
@@ -312,18 +309,18 @@ class FormationBloc extends Bloc<FormationEvent, FormationState> {
     }
   }
 
-  Stream<FormationState> mapOnPanEndProgramToState(DragEndDetails details,
-      List<Formation> frame, BuildContext context) async* {
+  Stream<FormationCrudState> mapOnPanEndProgramToState(DragEndDetails details,
+      List<SNFormation> frame, BuildContext context) async* {
     print('OnPanEnd');
     if (draggedPos != -1) {
       frame[draggedPos].checkFormationPos();
       print('${frame[draggedPos].posX},${frame[draggedPos].posY}');
-      await formationRepository.updateFormation(frame[draggedPos]);
+      await formationRepository.update(frame[draggedPos]);
     }
     add(ReloadFormation());
   }
 
-  Stream<FormationState> mapOnPanDownKCurveToState(DragDownDetails details,
+  Stream<FormationCrudState> mapOnPanDownKCurveToState(DragDownDetails details,
       List<Offset> editingKCurve, BuildContext context) async* {
     print('OnPanDown');
     final RenderBox renderBox = context.findRenderObject();
@@ -339,8 +336,10 @@ class FormationBloc extends Bloc<FormationEvent, FormationState> {
     print('draggedPoint = $draggedPoint');
   }
 
-  Stream<FormationState> mapOnPanUpdateKCurveToState(DragUpdateDetails details,
-      List<Offset> editingKCurve, BuildContext context) async* {
+  Stream<FormationCrudState> mapOnPanUpdateKCurveToState(
+      DragUpdateDetails details,
+      List<Offset> editingKCurve,
+      BuildContext context) async* {
     final RenderBox renderBox = context.findRenderObject();
     final Offset localPos = renderBox.globalToLocal(details.globalPosition);
     if (draggedPoint != -1) {
@@ -350,7 +349,7 @@ class FormationBloc extends Bloc<FormationEvent, FormationState> {
     }
   }
 
-  Stream<FormationState> mapOnPanEndKCurveToState(DragEndDetails details,
+  Stream<FormationCrudState> mapOnPanEndKCurveToState(DragEndDetails details,
       List<Offset> editingKCurve, BuildContext context) async* {
     print('OnPanEnd');
     if (draggedPoint != -1) {
@@ -365,7 +364,7 @@ class FormationBloc extends Bloc<FormationEvent, FormationState> {
   }
 
   void dispose() {
-    projectBlocSubscription.cancel();
+    projectSelectionBlocSubscription.cancel();
     lyricBlocSubscription.cancel();
     currentSongSubscription.cancel();
     characterFilterSubject.close();

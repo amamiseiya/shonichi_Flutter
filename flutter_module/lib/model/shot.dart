@@ -1,22 +1,22 @@
 import 'character.dart';
 import '../util/data_convert.dart';
 
-class Shot {
-  int songId;
-  int shotVersion;
-  String shotName;
+class SNShot {
+  int id;
+  int sceneNumber;
+  int shotNumber;
   Duration startTime;
   Duration endTime;
-  int shotNumber;
-  String shotLyric;
-  int shotScene;
-  List<Character> shotCharacters;
+  String lyric;
   String shotType;
   String shotMovement;
   String shotAngle;
-  String shotContent;
-  String shotImage;
-  String shotComment;
+  String text;
+  String image;
+  String comment;
+
+  int tableId;
+  List<SNCharacter> characters;
 
   static List<String> titles = [
     '镜号',
@@ -32,59 +32,56 @@ class Shot {
     '备注'
   ];
 
-  Shot(
-      {this.songId,
-      this.shotVersion,
-      this.shotName,
+  SNShot(
+      {this.id,
+      this.sceneNumber,
+      this.shotNumber,
       this.startTime,
       this.endTime,
-      this.shotNumber,
-      this.shotLyric,
-      this.shotScene,
-      this.shotCharacters,
+      this.lyric,
       this.shotType,
       this.shotMovement,
       this.shotAngle,
-      this.shotContent,
-      this.shotImage,
-      this.shotComment});
+      this.text,
+      this.image,
+      this.comment,
+      this.tableId,
+      this.characters});
 
-  factory Shot.fromMap(Map<String, dynamic> map) {
-    return Shot(
-      songId: map['songId'],
-      shotVersion: map['shotVersion'],
-      shotName: map['shotName'],
+  factory SNShot.fromMap(Map<String, dynamic> map) {
+    return SNShot(
+      id: map['id'],
+      sceneNumber: map['sceneNumber'],
+      shotNumber: map['shotNumber'],
       startTime: Duration(milliseconds: map['startTime']),
       endTime: Duration(milliseconds: map['endTime']),
-      shotNumber: map['shotNumber'],
-      shotLyric: map['shotLyric'],
-      shotScene: map['shotScene'],
-      shotCharacters: Character.stringToList(map['shotCharacters']),
+      lyric: map['lyric'],
       shotType: map['shotType'],
       shotMovement: map['shotMovement'],
       shotAngle: map['shotAngle'],
-      shotContent: map['shotContent'],
-      shotImage: map['shotImage'],
-      shotComment: map['shotComment'],
+      text: map['text'],
+      image: map['image'],
+      comment: map['comment'],
+      tableId: map['tableId'],
+      characters: SNCharacter.stringToList(map['characters']),
     );
   }
 
   Map<String, dynamic> toMap() => {
-        'songId': songId,
-        'shotVersion': shotVersion,
-        'shotName': shotName,
+        'id': id,
+        'sceneNumber': sceneNumber,
+        'shotNumber': shotNumber,
         'startTime': startTime.inMilliseconds,
         'endTime': endTime.inMilliseconds,
-        'shotNumber': shotNumber,
-        'shotLyric': shotLyric,
-        'shotScene': shotScene,
-        'shotCharacters': Character.listToString(shotCharacters),
+        'lyric': lyric,
         'shotType': shotType,
         'shotMovement': shotMovement,
         'shotAngle': shotAngle,
-        'shotContent': shotContent,
-        'shotImage': shotImage,
-        'shotComment': shotComment,
+        'text': text,
+        'image': image,
+        'comment': comment,
+        'tableId': tableId,
+        'characters': SNCharacter.listToString(characters),
       };
 }
 

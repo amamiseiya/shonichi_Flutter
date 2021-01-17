@@ -4,33 +4,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widget/drawer.dart';
 import '../widget/loading.dart';
 import '../widget/error.dart';
-import '../bloc/song_bloc.dart';
+import '../bloc/song/song_crud_bloc.dart';
 import '../model/song.dart';
 import '../util/data_convert.dart';
 
-Future<Song> songEditorDialog(BuildContext context, Song song) {
-  int songId = (song != null) ? song.songId : 114514;
-  String songName = (song != null) ? song.songName : '';
-  String subordinateKikaku = (song != null) ? song.subordinateKikaku : '';
-  int lyricOffset = (song != null) ? song.lyricOffset : 0;
+Future<SNSong> songEditorDialog(BuildContext context, SNSong song) {
+  int id = (song != null) ? song.id : 114514;
+  String name = (song != null) ? song.name : '';
   String coverFileName = (song != null) ? song.coverFileName : '';
-  List<String> videoIntros = (song != null) ? song.videoIntros : [];
-  List<String> videoFileNames = (song != null) ? song.videoFileNames : [];
-  List<int> videoOffsets = (song != null) ? song.videoOffsets : [];
-  TextEditingController _songIdController = TextEditingController()
-    ..text = songId.toString();
-  TextEditingController _songNameController = TextEditingController()
-    ..text = songName;
+  int lyricOffset = (song != null) ? song.lyricOffset : 0;
+  String subordinateKikaku = (song != null) ? song.subordinateKikaku : '';
+  TextEditingController _idController = TextEditingController()
+    ..text = id.toString();
+  TextEditingController _nameController = TextEditingController()..text = name;
   TextEditingController _lyricOffsetController = TextEditingController()
     ..text = lyricOffset.toString();
   TextEditingController _coverFileNameController = TextEditingController()
     ..text = coverFileName;
-  TextEditingController _videoIntrosController = TextEditingController()
-    ..text = listToString(videoIntros);
-  TextEditingController _videoFileNamesController = TextEditingController()
-    ..text = listToString(videoFileNames);
-  TextEditingController _videoOffsetsController = TextEditingController()
-    ..text = intListToString(videoOffsets);
 
   return showDialog(
       context: context,
@@ -44,17 +34,17 @@ Future<Song> songEditorDialog(BuildContext context, Song song) {
                       Form(
                           child: Column(children: [
                         TextFormField(
-                          controller: _songIdController,
+                          controller: _idController,
                           decoration: InputDecoration(hintText: '输入歌曲编号'),
                           onChanged: (value) {
-                            songId = int.parse(value);
+                            id = int.parse(value);
                           },
                         ),
                         TextFormField(
-                          controller: _songNameController,
+                          controller: _nameController,
                           decoration: InputDecoration(hintText: '输入歌曲名称'),
                           onChanged: (value) {
-                            songName = value;
+                            name = value;
                           },
                         ),
                         DropdownButton(
@@ -91,31 +81,31 @@ Future<Song> songEditorDialog(BuildContext context, Song song) {
                             coverFileName = value;
                           },
                         ),
-                        TextFormField(
-                          controller: _videoIntrosController,
-                          decoration: InputDecoration(hintText: '输入视频简介'),
-                          onChanged: (value) {
-                            videoIntros = stringToList(value);
-                          },
-                        ),
-                        TextFormField(
-                          controller: _videoFileNamesController,
-                          decoration: InputDecoration(hintText: '输入视频文件名'),
-                          onChanged: (value) {
-                            videoFileNames = stringToList(value);
-                          },
-                        ),
-                        TextFormField(
-                          controller: _videoOffsetsController,
-                          decoration: InputDecoration(hintText: '输入视频偏移'),
-                          onChanged: (value) {
-                            videoOffsets = stringToIntList(value);
-                          },
-                        ),
+                        // TextFormField(
+                        //   controller: _videoIntrosController,
+                        //   decoration: InputDecoration(hintText: '输入视频简介'),
+                        //   onChanged: (value) {
+                        //     videoIntros = stringToList(value);
+                        //   },
+                        // ),
+                        // TextFormField(
+                        //   controller: _videoFileNamesController,
+                        //   decoration: InputDecoration(hintText: '输入视频文件名'),
+                        //   onChanged: (value) {
+                        //     videoFileNames = stringToList(value);
+                        //   },
+                        // ),
+                        // TextFormField(
+                        //   controller: _videoOffsetsController,
+                        //   decoration: InputDecoration(hintText: '输入视频偏移'),
+                        //   onChanged: (value) {
+                        //     videoOffsets = stringToIntList(value);
+                        //   },
+                        // ),
                       ])),
                       SimpleDialogOption(
                         onPressed: () {
-                          BlocProvider.of<SongBloc>(context)
+                          BlocProvider.of<SongCrudBloc>(context)
                               .add(DeleteSong(song));
                           Navigator.pop(context);
                         },
@@ -124,15 +114,12 @@ Future<Song> songEditorDialog(BuildContext context, Song song) {
                       SimpleDialogOption(
                         onPressed: () => Navigator.pop(
                             context,
-                            Song(
-                                songId: songId,
-                                songName: songName,
+                            SNSong(
+                                id: id,
+                                name: name,
                                 subordinateKikaku: subordinateKikaku,
                                 lyricOffset: lyricOffset,
-                                coverFileName: coverFileName,
-                                videoIntros: videoIntros,
-                                videoFileNames: videoFileNames,
-                                videoOffsets: videoOffsets)),
+                                coverFileName: coverFileName)),
                         child: Text('完成'),
                       ),
                     ]))
@@ -148,23 +135,23 @@ class SongsDataTable extends StatefulWidget {
 }
 
 class SongsDataTableState extends State<SongsDataTable> {
-  SongBloc songBloc;
-  List<Song> songs;
+  SongCrudBloc songBloc;
+  List<SNSong> songs;
   bool _sortAscending = true;
   int _sortColumnIndex;
 
   @override
   void initState() {
     super.initState();
-    songBloc = BlocProvider.of<SongBloc>(context);
-    songBloc.add(ReloadSongList());
+    songBloc = BlocProvider.of<SongCrudBloc>(context);
+    songBloc.add(RetrieveSong());
   }
 
   void _sort(int index, bool ascending) {
     if (ascending) {
-      songs.sort((a, b) => a.songName.compareTo(b.songName));
+      songs.sort((a, b) => a.name.compareTo(b.name));
     } else {
-      songs.sort((a, b) => b.songName.compareTo(a.songName));
+      songs.sort((a, b) => b.name.compareTo(a.name));
     }
     setState(() {
       _sortColumnIndex = index;
@@ -174,10 +161,10 @@ class SongsDataTableState extends State<SongsDataTable> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SongBloc, SongState>(builder: (context, state) {
-      if (state is SongFetched) {
+    return BlocBuilder<SongCrudBloc, SongCrudState>(builder: (context, state) {
+      if (state is SongRetrieved) {
         songs = state.songs;
-      } else if (state is AddingSong || state is UpdatingSong) {
+      } else if (state is CreatingSong || state is UpdatingSong) {
       } else {
         return LoadingAnimationLinear();
       }
@@ -198,7 +185,7 @@ class SongsDataTableState extends State<SongsDataTable> {
             ],
             rows: songs
                 .map((song) => DataRow(cells: [
-                      DataCell(Text(song.songName), onTap: () {
+                      DataCell(Text(song.name), onTap: () {
                         print('Pressed from DataCell');
                         songBloc.add(UpdateSong(song));
                       }),
@@ -222,20 +209,20 @@ class SongListPageState extends State<SongListPage> {
       GlobalKey<SongsDataTableState>();
   // final GlobalKey<SongInspectorState> _songInspectorKey =
   //     GlobalKey<SongInspectorState>();
-  SongBloc songBloc;
-  List<Song> songs;
+  SongCrudBloc songBloc;
+  List<SNSong> songs;
 
   @override
   void initState() {
     super.initState();
     print('New ShotListPage created!');
-    songBloc = BlocProvider.of<SongBloc>(context);
+    songBloc = BlocProvider.of<SongCrudBloc>(context);
   }
 
   // @override
   // void didChangeDependencies() {
   //   super.didChangeDependencies();
-  //   songBloc = BlocProvider.of<SongBloc>(context);
+  //   songBloc = BlocProvider.of<SongCrudBloc>(context);
   //   songBloc.add(RequiredReloadingSongs());
   // }
 
@@ -250,11 +237,11 @@ class SongListPageState extends State<SongListPage> {
     return Scaffold(
         appBar: AppBar(title: Text('所有歌曲查看')),
         drawer: MyDrawer(),
-        body: BlocListener<SongBloc, SongState>(
+        body: BlocListener<SongCrudBloc, SongCrudState>(
             listener: (context, state) {
-              if (state is AddingSong) {
+              if (state is CreatingSong) {
                 songEditorDialog(context, null)
-                    .then((song) => songBloc.add(SubmitAddSong(song)));
+                    .then((song) => songBloc.add(SubmitCreateSong(song)));
               } else if (state is UpdatingSong) {
                 print(state.toString() + ' from listener');
                 songEditorDialog(context, state.song)
@@ -282,7 +269,7 @@ class SongListPageState extends State<SongListPage> {
               tooltip: 'Add', // used by assistive technologies
               child: Icon(Icons.add),
               heroTag: 'addFAB',
-              onPressed: () => songBloc.add(AddSong())),
+              onPressed: () => songBloc.add(CreateSong())),
         ]));
   }
 }

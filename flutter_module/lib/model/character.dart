@@ -2,192 +2,193 @@ import 'package:flutter/material.dart';
 
 import '../util/reg_exp.dart';
 
-class Character {
-  String characterName;
-  String characterNameAbbr;
+class SNCharacter {
+  String name;
+  String nameAbbr;
   Color memberColor;
-  String subordinateKikaku;
   String grade;
   String group;
 
-  Character(
-      {this.characterName,
-      this.characterNameAbbr,
+  String teamName;
+
+  SNCharacter(
+      {this.name,
+      this.nameAbbr,
       this.memberColor,
-      this.subordinateKikaku,
       this.grade,
-      this.group});
+      this.group,
+      this.teamName});
 
   // 返回按年级排列的企划成员
-  static List<Character> membersSortedByGrade(String kikaku) {
-    switch (kikaku) {
+  static List<SNCharacter> membersSortedByGrade(String teamName) {
+    switch (teamName) {
       case 'μ\'s':
         return [
-          Character.rin(),
-          Character.maki(),
-          Character.hanayo(),
-          Character.honoka(),
-          Character.kotori(),
-          Character.umi(),
-          Character.eli(),
-          Character.nozomi(),
-          Character.nico()
+          SNCharacter.rin(),
+          SNCharacter.maki(),
+          SNCharacter.hanayo(),
+          SNCharacter.honoka(),
+          SNCharacter.kotori(),
+          SNCharacter.umi(),
+          SNCharacter.eli(),
+          SNCharacter.nozomi(),
+          SNCharacter.nico()
         ];
       case 'Aqours':
         return [
-          Character.yoshiko(),
-          Character.hanamaru(),
-          Character.ruby(),
-          Character.chika(),
-          Character.riko(),
-          Character.you(),
-          Character.kanan(),
-          Character.dia(),
-          Character.mari()
+          SNCharacter.yoshiko(),
+          SNCharacter.hanamaru(),
+          SNCharacter.ruby(),
+          SNCharacter.chika(),
+          SNCharacter.riko(),
+          SNCharacter.you(),
+          SNCharacter.kanan(),
+          SNCharacter.dia(),
+          SNCharacter.mari()
         ];
       case 'スタァライト九九組':
         return [
-          Character.karen(),
-          Character.hikari(),
-          Character.maya(),
-          Character.junna(),
-          Character.mahiru(),
-          Character.nana(),
-          Character.kuro(),
-          Character.futaba(),
-          Character.kaoruko()
+          SNCharacter.karen(),
+          SNCharacter.hikari(),
+          SNCharacter.maya(),
+          SNCharacter.junna(),
+          SNCharacter.mahiru(),
+          SNCharacter.nana(),
+          SNCharacter.kuro(),
+          SNCharacter.futaba(),
+          SNCharacter.kaoruko()
         ];
     }
     return [];
   }
 
   // 输入全名返回角色
-  factory Character.fromString(String str) {
-    switch (str) {
+  factory SNCharacter.fromString(String name) {
+    switch (name) {
       case '高坂 穂乃果':
-        return Character.honoka();
+        return SNCharacter.honoka();
       case '絢瀬 絵里':
-        return Character.eli();
+        return SNCharacter.eli();
       case '南 ことり':
-        return Character.kotori();
+        return SNCharacter.kotori();
       case '園田 海未':
-        return Character.umi();
+        return SNCharacter.umi();
       case '星空 凛':
-        return Character.rin();
+        return SNCharacter.rin();
       case '西木野 真姫':
-        return Character.maki();
+        return SNCharacter.maki();
       case '東條 希':
-        return Character.nozomi();
+        return SNCharacter.nozomi();
       case '小泉 花陽':
-        return Character.hanayo();
+        return SNCharacter.hanayo();
       case '矢澤 にこ':
-        return Character.nico();
+        return SNCharacter.nico();
       case '高海 千歌':
-        return Character.chika();
+        return SNCharacter.chika();
       case '桜内 梨子':
-        return Character.riko();
+        return SNCharacter.riko();
       case '松浦 果南':
-        return Character.kanan();
+        return SNCharacter.kanan();
       case '黒澤 ダイヤ':
-        return Character.dia();
+        return SNCharacter.dia();
       case '渡辺 曜':
-        return Character.you();
+        return SNCharacter.you();
       case '津島 善子':
-        return Character.yoshiko();
+        return SNCharacter.yoshiko();
       case '国木田 花丸':
-        return Character.hanamaru();
+        return SNCharacter.hanamaru();
       case '小原 鞠莉':
-        return Character.mari();
+        return SNCharacter.mari();
       case '黒澤 ルビィ':
-        return Character.ruby();
+        return SNCharacter.ruby();
       case '愛城 華恋':
-        return Character.karen();
+        return SNCharacter.karen();
       case '神楽 ひかり':
-        return Character.hikari();
+        return SNCharacter.hikari();
       case '天堂 真矢':
-        return Character.maya();
+        return SNCharacter.maya();
       case '星見 純那':
-        return Character.junna();
+        return SNCharacter.junna();
       case '露崎 まひる':
-        return Character.mahiru();
+        return SNCharacter.mahiru();
       case '大場 なな':
-        return Character.nana();
+        return SNCharacter.nana();
       case '西條 クロディーヌ':
-        return Character.kuro();
+        return SNCharacter.kuro();
       case '石動 双葉':
-        return Character.futaba();
+        return SNCharacter.futaba();
       case '花柳 香子':
-        return Character.kaoruko();
+        return SNCharacter.kaoruko();
     }
     return null;
   }
 
-  factory Character.fromAbbrString(String str, String kikaku) {
-    switch (kikaku) {
+  factory SNCharacter.fromAbbrString(String nameAbbr, String teamName) {
+    switch (teamName) {
       case 'μ\'s':
-        switch (str) {
+        switch (nameAbbr) {
           case '果':
-            return Character.honoka();
+            return SNCharacter.honoka();
           case '绘':
-            return Character.eli();
+            return SNCharacter.eli();
           case '鸟':
-            return Character.kotori();
+            return SNCharacter.kotori();
           case '海':
-            return Character.umi();
+            return SNCharacter.umi();
           case '凛':
-            return Character.rin();
+            return SNCharacter.rin();
           case '姬':
-            return Character.maki();
+            return SNCharacter.maki();
           case '希':
-            return Character.nozomi();
+            return SNCharacter.nozomi();
           case '花':
-            return Character.hanayo();
+            return SNCharacter.hanayo();
           case '妮':
-            return Character.nico();
+            return SNCharacter.nico();
         }
         break;
       case 'Aqours':
-        switch (str) {
+        switch (nameAbbr) {
           case '千':
-            return Character.chika();
+            return SNCharacter.chika();
           case '梨':
-            return Character.riko();
+            return SNCharacter.riko();
           case '南':
-            return Character.kanan();
+            return SNCharacter.kanan();
           case '黛':
-            return Character.dia();
+            return SNCharacter.dia();
           case '曜':
-            return Character.you();
+            return SNCharacter.you();
           case '善':
-            return Character.yoshiko();
+            return SNCharacter.yoshiko();
           case '丸':
-            return Character.hanamaru();
+            return SNCharacter.hanamaru();
           case '鞠':
-            return Character.mari();
+            return SNCharacter.mari();
           case '露':
-            return Character.ruby();
+            return SNCharacter.ruby();
         }
         break;
       case 'スタァライト九九組':
-        switch (str) {
+        switch (nameAbbr) {
           case '恋':
-            return Character.karen();
+            return SNCharacter.karen();
           case '光':
-            return Character.hikari();
+            return SNCharacter.hikari();
           case '真':
-            return Character.maya();
+            return SNCharacter.maya();
           case '纯':
-            return Character.junna();
+            return SNCharacter.junna();
           case '露':
-            return Character.mahiru();
+            return SNCharacter.mahiru();
           case '蕉':
-            return Character.nana();
+            return SNCharacter.nana();
           case '克':
-            return Character.kuro();
+            return SNCharacter.kuro();
           case '叶':
-            return Character.futaba();
+            return SNCharacter.futaba();
           case '花':
-            return Character.kaoruko();
+            return SNCharacter.kaoruko();
         }
         break;
     }
@@ -195,254 +196,254 @@ class Character {
   }
 
   // 输入角色列表返回String
-  static String listToString(List<Character> list) {
+  static String listToString(List<SNCharacter> list) {
     String str = '';
-    for (Character character in list) {
-      str += character.characterName + ',';
+    for (SNCharacter character in list) {
+      str += character.name + ',';
     }
     return str;
   }
 
-  static String listToAbbrString(List<Character> characterList) {
+  static String listToAbbrString(List<SNCharacter> characterList) {
     String str = '';
-    for (Character character in characterList) {
-      str += character.characterNameAbbr + ',';
+    for (SNCharacter character in characterList) {
+      str += character.nameAbbr + ',';
     }
     return str;
   }
 
   // 输入String返回角色列表
-  static List<Character> stringToList(String str) {
+  static List<SNCharacter> stringToList(String str) {
     if (str != null) {
       return str
           .split(',')
           .where((row) => characterNameRegExp.hasMatch(row))
-          .map((record) => Character.fromString(record))
+          .map((record) => SNCharacter.fromString(record))
           .toList();
     } else
       return [];
   }
 
-  static List<Character> abbrStringToList(String str, String kikaku) {
+  static List<SNCharacter> abbrStringToList(String str, String teamName) {
     if (str != null) {
       return str
           .split(',')
           .where((row) => chineseCharRegExp.hasMatch(row))
-          .map((record) => Character.fromAbbrString(record, kikaku))
+          .map((record) => SNCharacter.fromAbbrString(record, teamName))
           .toList();
     } else
       return [];
   }
 
-  Character.honoka()
+  SNCharacter.honoka()
       : this(
-            characterName: '高坂 穂乃果',
-            characterNameAbbr: '果',
+            name: '高坂 穂乃果',
+            nameAbbr: '果',
             memberColor: Color(0xFFFFA500),
-            subordinateKikaku: 'μ\'s',
             grade: '2年生',
-            group: 'Printemps');
-  Character.eli()
+            group: 'Printemps',
+            teamName: 'μ\'s');
+  SNCharacter.eli()
       : this(
-            characterName: '絢瀬 絵里',
-            characterNameAbbr: '绘',
+            name: '絢瀬 絵里',
+            nameAbbr: '绘',
             memberColor: Color(0xFF00FFFF),
-            subordinateKikaku: 'μ\'s',
             grade: '3年生',
-            group: 'BiBi');
-  Character.kotori()
+            group: 'BiBi',
+            teamName: 'μ\'s');
+  SNCharacter.kotori()
       : this(
-            characterName: '南 ことり',
-            characterNameAbbr: '鸟',
+            name: '南 ことり',
+            nameAbbr: '鸟',
             memberColor: Color(0xFF808080),
-            subordinateKikaku: 'μ\'s',
             grade: '2年生',
-            group: 'Printemps');
-  Character.umi()
+            group: 'Printemps',
+            teamName: 'μ\'s');
+  SNCharacter.umi()
       : this(
-            characterName: '園田 海未',
-            characterNameAbbr: '海',
+            name: '園田 海未',
+            nameAbbr: '海',
             memberColor: Color(0xFF0000FF),
-            subordinateKikaku: 'μ\'s',
             grade: '2年生',
-            group: 'lily white');
-  Character.rin()
+            group: 'lily white',
+            teamName: 'μ\'s');
+  SNCharacter.rin()
       : this(
-            characterName: '星空 凛',
-            characterNameAbbr: '凛',
+            name: '星空 凛',
+            nameAbbr: '凛',
             memberColor: Color(0xFFFFFF00),
-            subordinateKikaku: 'μ\'s',
             grade: '1年生',
-            group: 'lily white');
-  Character.maki()
+            group: 'lily white',
+            teamName: 'μ\'s');
+  SNCharacter.maki()
       : this(
-            characterName: '西木野 真姫',
-            characterNameAbbr: '姬',
+            name: '西木野 真姫',
+            nameAbbr: '姬',
             memberColor: Color(0xFFFF0000),
-            subordinateKikaku: 'μ\'s',
             grade: '1年生',
-            group: 'BiBi');
-  Character.nozomi()
+            group: 'BiBi',
+            teamName: 'μ\'s');
+  SNCharacter.nozomi()
       : this(
-            characterName: '東條 希',
-            characterNameAbbr: '希',
+            name: '東條 希',
+            nameAbbr: '希',
             memberColor: Color(0xFF800080),
-            subordinateKikaku: 'μ\'s',
             grade: '3年生',
-            group: 'lily white');
-  Character.hanayo()
+            group: 'lily white',
+            teamName: 'μ\'s');
+  SNCharacter.hanayo()
       : this(
-            characterName: '小泉 花陽',
-            characterNameAbbr: '花',
+            name: '小泉 花陽',
+            nameAbbr: '花',
             memberColor: Color(0xFF008000),
-            subordinateKikaku: 'μ\'s',
             grade: '1年生',
-            group: 'Printemps');
-  Character.nico()
+            group: 'Printemps',
+            teamName: 'μ\'s');
+  SNCharacter.nico()
       : this(
-            characterName: '矢澤 にこ',
-            characterNameAbbr: '妮',
+            name: '矢澤 にこ',
+            nameAbbr: '妮',
             memberColor: Color(0xFFFFC0CB),
-            subordinateKikaku: 'μ\'s',
             grade: '3年生',
-            group: 'BiBi');
-  Character.chika()
+            group: 'BiBi',
+            teamName: 'μ\'s');
+  SNCharacter.chika()
       : this(
-            characterName: '高海 千歌',
-            characterNameAbbr: '千',
+            name: '高海 千歌',
+            nameAbbr: '千',
             memberColor: Color(0xFFF08300),
-            subordinateKikaku: 'Aqours',
             grade: '2年生',
-            group: 'CYaRon!');
-  Character.riko()
+            group: 'CYaRon!',
+            teamName: 'Aqours');
+  SNCharacter.riko()
       : this(
-            characterName: '桜内 梨子',
-            characterNameAbbr: '梨',
+            name: '桜内 梨子',
+            nameAbbr: '梨',
             memberColor: Color(0xFFFF9999),
-            subordinateKikaku: 'Aqours',
             grade: '2年生',
-            group: 'Guilty Kiss');
-  Character.kanan()
+            group: 'Guilty Kiss',
+            teamName: 'Aqours');
+  SNCharacter.kanan()
       : this(
-            characterName: '松浦 果南',
-            characterNameAbbr: '南',
+            name: '松浦 果南',
+            nameAbbr: '南',
             memberColor: Color(0xFF229977),
-            subordinateKikaku: 'Aqours',
             grade: '3年生',
-            group: 'AZALEA');
-  Character.dia()
+            group: 'AZALEA',
+            teamName: 'Aqours');
+  SNCharacter.dia()
       : this(
-            characterName: '黒澤 ダイヤ',
-            characterNameAbbr: '黛',
+            name: '黒澤 ダイヤ',
+            nameAbbr: '黛',
             memberColor: Color(0xFFFF4A4A),
-            subordinateKikaku: 'Aqours',
             grade: '3年生',
-            group: 'AZALEA');
-  Character.you()
+            group: 'AZALEA',
+            teamName: 'Aqours');
+  SNCharacter.you()
       : this(
-            characterName: '渡辺 曜',
-            characterNameAbbr: '曜',
+            name: '渡辺 曜',
+            nameAbbr: '曜',
             memberColor: Color(0xFF68D1FF),
-            subordinateKikaku: 'Aqours',
             grade: '2年生',
-            group: 'CYaRon!');
-  Character.yoshiko()
+            group: 'CYaRon!',
+            teamName: 'Aqours');
+  SNCharacter.yoshiko()
       : this(
-            characterName: '津島 善子',
-            characterNameAbbr: '善',
+            name: '津島 善子',
+            nameAbbr: '善',
             memberColor: Color(0xFF7A7A7A),
-            subordinateKikaku: 'Aqours',
             grade: '1年生',
-            group: 'Guilty Kiss');
-  Character.hanamaru()
+            group: 'Guilty Kiss',
+            teamName: 'Aqours');
+  SNCharacter.hanamaru()
       : this(
-            characterName: '国木田 花丸',
-            characterNameAbbr: '丸',
+            name: '国木田 花丸',
+            nameAbbr: '丸',
             memberColor: Color(0xFFDBB623),
-            subordinateKikaku: 'Aqours',
             grade: '1年生',
-            group: 'AZALEA');
-  Character.mari()
+            group: 'AZALEA',
+            teamName: 'Aqours');
+  SNCharacter.mari()
       : this(
-            characterName: '小原 鞠莉',
-            characterNameAbbr: '鞠',
+            name: '小原 鞠莉',
+            nameAbbr: '鞠',
             memberColor: Color(0xFFD47AFF),
-            subordinateKikaku: 'Aqours',
             grade: '3年生',
-            group: 'Guilty Kiss');
-  Character.ruby()
+            group: 'Guilty Kiss',
+            teamName: 'Aqours');
+  SNCharacter.ruby()
       : this(
-            characterName: '黒澤 ルビィ',
-            characterNameAbbr: '露',
+            name: '黒澤 ルビィ',
+            nameAbbr: '露',
             memberColor: Color(0xFFFF5599),
-            subordinateKikaku: 'Aqours',
             grade: '1年生',
-            group: 'CYaRon!');
-  Character.karen()
+            group: 'CYaRon!',
+            teamName: 'Aqours');
+  SNCharacter.karen()
       : this(
-          characterName: '愛城 華恋',
-          characterNameAbbr: '恋',
+          name: '愛城 華恋',
+          nameAbbr: '恋',
           memberColor: Color(0xFFFB5458),
-          subordinateKikaku: 'スタァライト九九組',
+          teamName: 'スタァライト九九組',
         );
-  Character.hikari()
+  SNCharacter.hikari()
       : this(
-          characterName: '神楽 ひかり',
-          characterNameAbbr: '光',
+          name: '神楽 ひかり',
+          nameAbbr: '光',
           memberColor: Color(0xFF6292E9),
-          subordinateKikaku: 'スタァライト九九組',
+          teamName: 'スタァライト九九組',
         );
-  Character.maya()
+  SNCharacter.maya()
       : this(
-          characterName: '天堂 真矢',
-          characterNameAbbr: '真',
+          name: '天堂 真矢',
+          nameAbbr: '真',
           memberColor: Color(0xFFCBC6CC),
-          subordinateKikaku: 'スタァライト九九組',
+          teamName: 'スタァライト九九組',
         );
-  Character.junna()
+  SNCharacter.junna()
       : this(
-          characterName: '星見 純那',
-          characterNameAbbr: '纯',
+          name: '星見 純那',
+          nameAbbr: '纯',
           memberColor: Color(0xFF95CAEE),
-          subordinateKikaku: 'スタァライト九九組',
+          teamName: 'スタァライト九九組',
         );
-  Character.mahiru()
+  SNCharacter.mahiru()
       : this(
-          characterName: '露崎 まひる',
-          characterNameAbbr: '露',
+          name: '露崎 まひる',
+          nameAbbr: '露',
           memberColor: Color(0xFF61BF99),
-          subordinateKikaku: 'スタァライト九九組',
+          teamName: 'スタァライト九九組',
         );
-  Character.nana()
+  SNCharacter.nana()
       : this(
-          characterName: '大場 なな',
-          characterNameAbbr: '蕉',
+          name: '大場 なな',
+          nameAbbr: '蕉',
           memberColor: Color(0xFFFDD162),
-          subordinateKikaku: 'スタァライト九九組',
+          teamName: 'スタァライト九九組',
         );
 
-  Character.kuro()
+  SNCharacter.kuro()
       : this(
-          characterName: '西條 クロディーヌ',
-          characterNameAbbr: '克',
+          name: '西條 クロディーヌ',
+          nameAbbr: '克',
           memberColor: Color(0xFFFE9952),
-          subordinateKikaku: 'スタァライト九九組',
+          teamName: 'スタァライト九九組',
         );
-  Character.futaba()
+  SNCharacter.futaba()
       : this(
-          characterName: '石動 双葉',
-          characterNameAbbr: '叶',
+          name: '石動 双葉',
+          nameAbbr: '叶',
           memberColor: Color(0xFF8C67AA),
-          subordinateKikaku: 'スタァライト九九組',
+          teamName: 'スタァライト九九組',
         );
-  Character.kaoruko()
+  SNCharacter.kaoruko()
       : this(
-          characterName: '花柳 香子',
-          characterNameAbbr: '花',
+          name: '花柳 香子',
+          nameAbbr: '花',
           memberColor: Color(0xFFE08696),
-          subordinateKikaku: 'スタァライト九九組',
+          teamName: 'スタァライト九九組',
         );
 
-  //? Character('Koizumi Hanayo', 0x008000, 'μ\'s'); //这样写会怎么样？
+  //? SNCharacter('Koizumi Hanayo', 0x008000, 'μ\'s'); //这样写会怎么样？
 
 }

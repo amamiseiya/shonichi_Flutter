@@ -47,6 +47,7 @@ dependencies:
   flutter_markdown:
   image_picker:
   intl:
+  leancloud_storage:
   path:
   path_provider:
   provider:

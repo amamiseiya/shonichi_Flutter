@@ -13,7 +13,9 @@ import Flutter
 struct NewDashboardView: View {
     
     var body: some View {
-        
+        Group{
+            
+        }
     }
     
 }

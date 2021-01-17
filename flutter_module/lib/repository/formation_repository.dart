@@ -1,48 +1,20 @@
 import 'dart:async';
 
 import '../model/formation.dart';
-import '../provider/provider_sqlite.dart';
+import '../provider/sqlite_provider.dart';
 
 class FormationRepository {
-  final formationProvider = ProviderSqlite();
+  final provider = FormationSQLiteProvider();
 
-  Future<void> addFormation(Formation formation) async =>
-      await formationProvider.insert('formationtable', formation.toMap());
+  Future<void> create(SNFormation formation) async =>
+      await provider.create(formation);
 
-  Future<void> deleteFormation(
-          {int songId,
-          int formationVersion,
-          String characterName,
-          Duration startTime}) async =>
-      await formationProvider.delete('formationtable',
-          where:
-              'songId = ? AND formationVersion = ? AND characterName = ? AND startTime = ?',
-          whereArgs: [
-            songId,
-            formationVersion,
-            characterName,
-            startTime.inMilliseconds
-          ]);
+  Future<List<SNFormation>> retrieve(int tableId) async =>
+      await provider.retrieve(tableId);
 
-  Future<void> updateFormation(Formation formation) async =>
-      await formationProvider.update('formationtable', formation.toMap(),
-          where:
-              'songId = ? AND formationVersion = ? AND characterName = ? AND startTime = ?',
-          whereArgs: [
-            formation.songId,
-            formation.formationVersion,
-            formation.characterName,
-            formation.startTime.inMilliseconds
-          ]);
+  Future<void> update(SNFormation formation) async =>
+      await provider.update(formation);
 
-  Future<List<Formation>> fetchFormationsForProject(
-      int songId, int formationVersion) {
-    return formationProvider.query('formationtable',
-        where: 'songId = ? AND formationVersion = ?',
-        whereArgs: [
-          songId,
-          formationVersion
-        ]).then((onValue) =>
-        List.generate(onValue.length, (i) => Formation.fromMap(onValue[i])));
-  }
+  Future<void> delete(SNFormation formation) async =>
+      await provider.delete(formation);
 }

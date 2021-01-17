@@ -1,49 +1,50 @@
 import '../util/data_convert.dart';
+import 'attachment.dart';
 
-class Song {
-  int songId;
-  String songName;
-  String subordinateKikaku;
-  int lyricOffset;
+class SNSong {
+  int id;
+  String name;
   String coverFileName;
-  List<String> videoIntros;
-  List<String> videoFileNames;
-  List<int> videoOffsets;
+  int lyricOffset;
+
+  String subordinateKikaku;
 
   static List<String> titles = ['起始时间', '歌词内容', 'Solo Part'];
 
-  Song(
-      {this.songId,
-      this.songName,
-      this.subordinateKikaku,
-      this.lyricOffset,
-      this.coverFileName,
-      this.videoIntros,
-      this.videoFileNames,
-      this.videoOffsets});
+  SNSong({
+    this.id,
+    this.name,
+    this.coverFileName,
+    this.lyricOffset,
+    this.subordinateKikaku,
+    // this.videoIntros,
+    // this.videoFileNames,
+    // this.videoOffsets
+  });
 
-  factory Song.fromMap(Map<String, dynamic> map) {
-    return Song(
-        songId: map['songId'],
-        songName: map['songName'],
-        subordinateKikaku: map['subordinateKikaku'],
-        lyricOffset: map['lyricOffset'],
-        coverFileName: map['coverFileName'],
-        videoIntros: stringToList(map['videoIntros']),
-        videoFileNames: stringToList(map['videoFileNames']),
-        videoOffsets: stringToIntList(map['videoOffsets']));
+  factory SNSong.fromMap(Map<String, dynamic> map) {
+    return SNSong(
+      id: map['id'],
+      name: map['name'],
+      coverFileName: map['coverFileName'],
+      lyricOffset: map['lyricOffset'],
+      subordinateKikaku: map['subordinateKikaku'],
+      // videoIntros: stringToList(map['videoIntros']),
+      // videoFileNames: stringToList(map['videoFileNames']),
+      // videoOffsets: stringToIntList(map['videoOffsets'])
+    );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'songId': songId,
-      'songName': songName,
-      'subordinateKikaku': subordinateKikaku,
-      'lyricOffset': lyricOffset,
+      'songId': id,
+      'songName': name,
       'coverFileName': coverFileName,
-      'videoIntros': listToString(videoIntros),
-      'videoFileNames': listToString(videoFileNames),
-      'videoOffsets': intListToString(videoOffsets)
+      'lyricOffset': lyricOffset,
+      'subordinateKikaku': subordinateKikaku,
+      // 'videoIntros': listToString(videoIntros),
+      // 'videoFileNames': listToString(videoFileNames),
+      // 'videoOffsets': intListToString(videoOffsets)
     };
   }
 }
