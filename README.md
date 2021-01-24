@@ -112,9 +112,9 @@ MigratorPage
 您可以点击添加按钮，来新建一个项目。
 或是通过预置的按钮，将整个数据库重置为默认的测试数据。
 
-### 其它还用我说吗？
+### 然后就根据功能介绍来使用吧！
 
-明明直接看软件就能看懂的。
+如题。
 
 ## 软件分析
 
@@ -165,3 +165,6 @@ Repository
 将对象提供给Bloc使用。
 
 https://leancloud.cn/docs/sdk_setup-flutter.html
+
+
+### 由BLoC修改至GetX

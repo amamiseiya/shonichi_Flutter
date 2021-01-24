@@ -1,19 +1,11 @@
 part of 'formation_crud_bloc.dart';
 
-abstract class FormationCrudEvent extends Equatable {
-  const FormationCrudEvent();
-}
+@immutable
+abstract class FormationCrudEvent extends Equatable {}
 
-class FirstLoadFormation extends FormationCrudEvent {
+class RetrieveFormation extends FormationCrudEvent {
   @override
-  String toString() => 'FirstLoadFormation';
-  @override
-  List<Object> get props => [];
-}
-
-class ReloadFormation extends FormationCrudEvent {
-  @override
-  String toString() => 'ReloadFormation';
+  String toString() => 'RetrieveFormation';
   @override
   List<Object> get props => [];
 }
@@ -28,16 +20,16 @@ class FinishRetrievingFormation extends FormationCrudEvent {
   List<Object> get props => [formations, characters];
 }
 
-class PressAddFormation extends FormationCrudEvent {
+class CreateFormation extends FormationCrudEvent {
   @override
-  String toString() => 'PressAddFormation';
+  String toString() => 'CreateFormation';
   @override
   List<Object> get props => [];
 }
 
-class PressDeleteFormation extends FormationCrudEvent {
+class DeleteFormation extends FormationCrudEvent {
   @override
-  String toString() => 'PressDeleteFormation';
+  String toString() => 'DeleteFormation';
   @override
   List<Object> get props => [];
 }

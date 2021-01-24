@@ -1,8 +1,7 @@
 part of 'formation_crud_bloc.dart';
 
-abstract class FormationCrudState extends Equatable {
-  const FormationCrudState();
-}
+@immutable
+abstract class FormationCrudState extends Equatable {}
 
 class FormationUninitialized extends FormationCrudState {
   @override
@@ -28,20 +27,20 @@ class FormationRetrieved extends FormationCrudState {
   List<Object> get props => [formations, characters];
 }
 
-class FrameLoaded extends FormationCrudState {
+class FrameRetrieved extends FormationCrudState {
   final List<SNFormation> frame;
-  FrameLoaded(this.frame);
+  FrameRetrieved(this.frame);
   @override
-  String toString() => 'FrameLoaded';
+  String toString() => 'FrameRetrieved';
   @override
   List<Object> get props => [frame];
 }
 
-class CharacterFormationLoaded extends FormationCrudState {
+class CharacterFormationRetrieved extends FormationCrudState {
   final List<SNFormation> formations;
-  CharacterFormationLoaded(this.formations);
+  CharacterFormationRetrieved(this.formations);
   @override
-  String toString() => 'CharacterFormationLoaded';
+  String toString() => 'CharacterFormationRetrieved';
   @override
   List<Object> get props => [formations];
 }

@@ -25,6 +25,7 @@ class ProjectSelectionBloc
     ProjectSelectionEvent event,
   ) async* {
     if (event is SelectProject) {
+      print(event.toString());
       yield* mapSelectProjectToState(event.id);
     }
   }
@@ -33,6 +34,7 @@ class ProjectSelectionBloc
     try {
       final currentProject = await projectRepository.retrieve(id);
       yield ProjectSelected(currentProject);
+      print(state.toString());
     } catch (e) {
       print(e);
     }

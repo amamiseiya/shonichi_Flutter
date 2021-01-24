@@ -45,6 +45,7 @@ dependencies:
   # firebase_analytics: ^1.0.4
   flutter_bloc:
   flutter_markdown:
+  get:
   image_picker:
   intl:
   leancloud_storage:

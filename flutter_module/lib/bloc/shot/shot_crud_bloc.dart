@@ -73,6 +73,7 @@ class ShotCrudBloc extends Bloc<ShotCrudEvent, ShotCrudState> {
     projectSelectionBlocSubscription = projectSelectionBloc.listen((state) {
       if (state is ProjectSelected) {
         currentProject = state.project;
+        print('currentProject fetched.');
       }
     });
 

@@ -38,10 +38,16 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
 
   String storyboardTableTitles;
 
-  MigratorBloc(this.projectBloc,this.projectSelectionBloc, this.songBloc, this.projectRepository,
-      this.songRepository, this.shotRepository, this.storageRepository)
+  MigratorBloc(
+      this.projectBloc,
+      this.projectSelectionBloc,
+      this.songBloc,
+      this.projectRepository,
+      this.songRepository,
+      this.shotRepository,
+      this.storageRepository)
       : assert(projectBloc != null),
-      assert(projectSelectionBloc != null),
+        assert(projectSelectionBloc != null),
         assert(songBloc != null),
         assert(projectRepository != null),
         assert(songRepository != null),
@@ -106,7 +112,7 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
     String storyboardText = storyboardChapterRegExp.stringMatch(mdText);
     String shotsText =
         RegExp(r'(?<=---\s\|\n).+', dotAll: true).stringMatch(storyboardText);
-    final int shotVersion =
+    final int tableId =
         await shotRepository.getLatestShotTable(project.songId) + 1;
     final String kikaku =
         (await songRepository.retrieve(project.songId)).subordinateKikaku;
@@ -117,23 +123,21 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
       List<RegExpMatch> shotProps =
           RegExp(r'(?<=\|\s)[^\|]*(?=\s\|)').allMatches(shotText).toList();
       return SNShot(
-          songId: project.songId,
-          shotVersion: shotVersion,
-          shotName: 'Imported version $shotVersion',
-          startTime: simpleDurationToDuration(shotProps[1].group(0)),
-          endTime: simpleDurationToDuration(shotProps[1].group(0)) +
-              Duration(seconds: 3),
-          shotNumber: int.parse(shotProps[0].group(0)),
-          shotLyric: shotProps[2].group(0),
-          shotScene: int.parse(shotProps[3].group(0)),
-          shotCharacters:
-              SNCharacter.abbrStringToList(shotProps[4].group(0), kikaku),
-          shotType: shotProps[5].group(0),
-          shotMovement: shotProps[6].group(0),
-          shotAngle: shotProps[7].group(0),
-          shotContent: shotProps[8].group(0),
-          shotImage: shotProps[9].group(0),
-          shotComment: shotProps[10].group(0));
+        id: int.parse(shotProps[0].group(0)),
+        sceneNumber: int.parse(shotProps[1].group(0)),
+        shotNumber: int.parse(shotProps[2].group(0)),
+        startTime: simpleDurationToDuration(shotProps[3].group(0)),
+        endTime: simpleDurationToDuration(shotProps[4].group(0)),
+        lyric: shotProps[5].group(0),
+        shotType: shotProps[6].group(0),
+        shotMovement: shotProps[7].group(0),
+        shotAngle: shotProps[8].group(0),
+        text: shotProps[9].group(0),
+        image: shotProps[10].group(0),
+        comment: shotProps[11].group(0),
+        tableId: tableId,
+        characters: SNCharacter.abbrStringToList(shotProps[4].group(0), kikaku),
+      );
     }).toList();
   }
 
@@ -142,7 +146,8 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
       final SNSong currentSong =
           await songRepository.retrieve(currentProject.songId);
       markdownSubject.add(generateIntro(currentProject, currentSong) +
-          generateShotDataTable(await shotRepository.retrieve(tableId)));
+          generateShotDataTable(
+              await shotRepository.retrieve(currentProject.shotTableId)));
     } catch (e) {
       print(e);
     }
@@ -159,14 +164,18 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
     mdText += storyboardTableTitles;
 
     for (SNShot shot in shots) {
-      mdText += '| ${shot.shotNumber} | ' +
-          simpleDurationRegExp.stringMatch(shot.startTime.toString()) +
-          ' | ' +
-          shot.lyric +
+      mdText += ' | ' +
+          shot.id.toString() +
           ' | ' +
           shot.sceneNumber.toString() +
           ' | ' +
-          SNCharacter.listToAbbrString(shot.characters) +
+          shot.shotNumber.toString() +
+          ' | ' +
+          simpleDurationRegExp.stringMatch(shot.startTime.toString()) +
+          ' | ' +
+          simpleDurationRegExp.stringMatch(shot.endTime.toString()) +
+          ' | ' +
+          shot.lyric +
           ' | ' +
           shot.shotType +
           ' | ' +
@@ -179,6 +188,10 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
           shot.image +
           ' | ' +
           shot.comment +
+          ' | ' +
+          shot.tableId.toString() +
+          ' | ' +
+          SNCharacter.listToAbbrString(shot.characters) +
           ' |\n';
     }
     return mdText;

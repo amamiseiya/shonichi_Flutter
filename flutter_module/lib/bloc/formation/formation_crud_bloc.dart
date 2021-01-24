@@ -134,11 +134,8 @@ class FormationCrudBloc extends Bloc<FormationCrudEvent, FormationCrudState> {
   Stream<FormationCrudState> mapEventToState(
     FormationCrudEvent event,
   ) async* {
-    if (event is FirstLoadFormation) {
-      yield* mapReloadFormationToState();
-    } else if (event is ReloadFormation) {
-      print(event.toString());
-      yield* mapReloadFormationToState();
+    if (event is RetrieveFormation) {
+      yield* mapRetrieveFormationToState();
     } else if (event is FinishRetrievingFormation) {
       print(event.toString());
       yield FormationRetrieved(event.formations, event.characters);
@@ -150,10 +147,10 @@ class FormationCrudBloc extends Bloc<FormationCrudEvent, FormationCrudState> {
       yield* mapChangeCharacterToState(event.character);
     } else if (event is ChangeKCurveType) {
       yield* mapChangeKCurveTypeToState(event.kCurveType);
-    } else if (event is PressAddFormation) {
-      yield* mapPressAddFormationToState();
-    } else if (event is PressDeleteFormation) {
-      yield* mapPressDeleteFormationToState();
+    } else if (event is CreateFormation) {
+      yield* mapCreateFormationToState();
+    } else if (event is DeleteFormation) {
+      yield* mapDeleteFormationToState();
     } else if (event is OnPanDownProgram) {
       yield* mapOnPanDownProgramToState(
           event.details, event.frame, event.context);
@@ -175,7 +172,7 @@ class FormationCrudBloc extends Bloc<FormationCrudEvent, FormationCrudState> {
     }
   }
 
-  Stream<FormationCrudState> mapReloadFormationToState() async* {
+  Stream<FormationCrudState> mapRetrieveFormationToState() async* {
     try {
       charactersSubject
           .add(SNCharacter.membersSortedByGrade(currentSong.subordinateKikaku));
@@ -232,7 +229,7 @@ class FormationCrudBloc extends Bloc<FormationCrudEvent, FormationCrudState> {
     }
   }
 
-  Stream<FormationCrudState> mapPressAddFormationToState() async* {
+  Stream<FormationCrudState> mapCreateFormationToState() async* {
     try {
       // bool isExist = false;
       // characterFormationsStream.listen((onData) {
@@ -258,21 +255,17 @@ class FormationCrudBloc extends Bloc<FormationCrudEvent, FormationCrudState> {
           curveY2Y: 127,
           tableId: currentProject.formationTableId,
           characterName: selectedCharacter.name));
-      add(ReloadFormation());
+      add(RetrieveFormation());
       // }
     } catch (e) {
       print(e);
     }
   }
 
-  Stream<FormationCrudState> mapPressDeleteFormationToState() async* {
+  Stream<FormationCrudState> mapDeleteFormationToState() async* {
     try {
-      formationRepository.delete(
-          songId: currentProject.songId,
-          formationVersion: currentProject.formationTableId,
-          characterName: selectedCharacter.name,
-          startTime: selectedTime);
-      add(ReloadFormation());
+      formationRepository.delete(editingFormation);
+      add(RetrieveFormation());
     } catch (e) {
       print(e);
     }
@@ -317,7 +310,7 @@ class FormationCrudBloc extends Bloc<FormationCrudEvent, FormationCrudState> {
       print('${frame[draggedPos].posX},${frame[draggedPos].posY}');
       await formationRepository.update(frame[draggedPos]);
     }
-    add(ReloadFormation());
+    add(RetrieveFormation());
   }
 
   Stream<FormationCrudState> mapOnPanDownKCurveToState(DragDownDetails details,
@@ -358,8 +351,8 @@ class FormationCrudBloc extends Bloc<FormationCrudEvent, FormationCrudState> {
           '${editingFormation.curveX1X},${editingFormation.curveX1Y},${editingFormation.curveX2X},${editingFormation.curveX2Y}');
       print(
           '${editingFormation.curveY1X},${editingFormation.curveY1Y},${editingFormation.curveY2X},${editingFormation.curveY2Y}');
-      await formationRepository.updateFormation(editingFormation);
-      add(ReloadFormation());
+      await formationRepository.update(editingFormation);
+      add(RetrieveFormation());
     }
   }
 

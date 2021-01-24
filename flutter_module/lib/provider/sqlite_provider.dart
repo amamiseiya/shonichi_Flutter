@@ -9,6 +9,7 @@ import '../model/character.dart';
 import '../model/project.dart';
 import '../model/song.dart';
 import '../model/lyric.dart';
+import '../model/shot_table.dart';
 import '../model/shot.dart';
 import '../model/formation.dart';
 
@@ -73,7 +74,8 @@ abstract class SQLiteProvider {
         SNProject(
                 id: 1001,
                 dancerName: '舞团A',
-                createdTime: DateTime.parse('2019-11-24'),
+                createdTime: DateTime.parse('20191124'),
+                modifiedTime: DateTime.parse('20191124'),
                 songId: 1,
                 shotTableId: 1,
                 formationTableId: 1)
@@ -83,13 +85,14 @@ abstract class SQLiteProvider {
         SNProject(
                 id: 1002,
                 dancerName: '舞团B',
-                createdTime: DateTime.parse('2020-01-01'),
+                createdTime: DateTime.parse('20200101'),
+                modifiedTime: DateTime.parse('20200101'),
                 songId: 2,
                 shotTableId: 2,
                 formationTableId: 2)
             .toMap());
     await db.insert(
-        'songtable',
+        'sn_song',
         SNSong(
                 id: 1,
                 name: 'Brightest Melody',
@@ -121,7 +124,26 @@ abstract class SQLiteProvider {
     )) {
       await db.insert('sn_lyric', lyric.toMap());
     }
-
+    await db.insert(
+      'sn_shot_table',
+      SNShotTable(
+              id: 1,
+              name: 'Default ShotTable for Brightest Melody',
+              authorId: 1,
+              songId: 1)
+          .toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    await db.insert(
+      'sn_shot_table',
+      SNShotTable(
+              id: 2,
+              name: 'Default ShotTable for Star Diamond',
+              authorId: 1,
+              songId: 2)
+          .toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
     await db.insert(
       'sn_shot',
       SNShot(
@@ -137,7 +159,7 @@ abstract class SQLiteProvider {
           text: 'taiga!waiya!saiba!faiba!',
           image: '',
           comment: 'No additional comment.',
-          tableId: 1,
+          tableId: 2,
           characters: [SNCharacter.karen(), SNCharacter.hikari()]).toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -156,7 +178,7 @@ abstract class SQLiteProvider {
           text: 'jyajya!',
           image: '',
           comment: 'No additional comment.',
-          tableId: 1,
+          tableId: 2,
           characters: [SNCharacter.mahiru(), SNCharacter.kuro()]).toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );

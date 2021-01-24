@@ -37,8 +37,8 @@ class SNSong {
 
   Map<String, dynamic> toMap() {
     return {
-      'songId': id,
-      'songName': name,
+      'id': id,
+      'name': name,
       'coverFileName': coverFileName,
       'lyricOffset': lyricOffset,
       'subordinateKikaku': subordinateKikaku,

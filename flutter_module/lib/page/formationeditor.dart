@@ -69,7 +69,7 @@ class FormationEditorPageState extends State<FormationEditorPage> {
               tooltip: 'Add', // used by assistive technologies
               child: Icon(Icons.add),
               heroTag: 'addFAB',
-              onPressed: () => formationBloc.add(PressAddFormation())),
+              onPressed: () => formationBloc.add(CreateFormation())),
           FloatingActionButton(
               tooltip: 'Edit', // used by assistive technologies
               child: Icon(Icons.edit),
@@ -79,7 +79,7 @@ class FormationEditorPageState extends State<FormationEditorPage> {
               tooltip: 'Delete', // used by assistive technologies
               child: Icon(Icons.delete),
               heroTag: 'deleteFAB',
-              onPressed: () => formationBloc.add(PressDeleteFormation())),
+              onPressed: () => formationBloc.add(DeleteFormation())),
         ]));
   }
 }
@@ -96,7 +96,7 @@ class FormationEditorState extends State<FormationEditor> {
   @override
   void initState() {
     formationBloc = BlocProvider.of<FormationCrudBloc>(context);
-    formationBloc.add(ReloadFormation());
+    formationBloc.add(RetrieveFormation());
     super.initState();
   }
 
