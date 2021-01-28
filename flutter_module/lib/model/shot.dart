@@ -19,17 +19,18 @@ class SNShot {
   List<SNCharacter> characters;
 
   static List<String> titles = [
+    '场号',
     '镜号',
     '起始时间',
-    '歌词内容',
-    '场号',
-    '角色',
+    '结束时间',
+    '歌词',
     '景别',
     '运动',
     '角度',
     '拍摄内容',
     '画面',
-    '备注'
+    '备注',
+    '角色',
   ];
 
   SNShot(

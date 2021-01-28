@@ -2,48 +2,20 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 
 import '../widget/drawer.dart';
 import '../widget/loading.dart';
 import '../widget/error.dart';
-import '../bloc/formation/formation_crud_bloc.dart';
+import '../controller/lyric_controller.dart';
+import '../controller/formation_controller.dart';
 import '../model/formation.dart';
+import '../model/character.dart';
 import '../util/reg_exp.dart';
 
-Future<SNFormation> formationEditorDialog(
-    BuildContext context, SNFormation formation) {
-  return showDialog(context: context, builder: (context) => Container());
-}
-
-class FormationEditorPage extends StatefulWidget {
-  @override
-  FormationEditorPageState createState() => FormationEditorPageState();
-}
-
-class FormationEditorPageState extends State<FormationEditorPage> {
-  final GlobalKey<FormationEditorState> _formationEditorKey =
-      GlobalKey<FormationEditorState>();
-  FormationCrudBloc formationBloc;
-
-  // @override
-  // bool get wantKeepAlive => true;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    formationBloc = BlocProvider.of<FormationCrudBloc>(context);
-  }
-
-  @override
-  void dispose() {
-    formationBloc.dispose();
-    super.dispose();
-  }
-
+class FormationEditorPage extends GetView<FormationController> {
   @override
   Widget build(BuildContext context) {
-    print('New FormationEditorPage created!');
     return Scaffold(
         appBar: AppBar(
           // leading: IconButton(
@@ -62,14 +34,24 @@ class FormationEditorPageState extends State<FormationEditorPage> {
         ),
         drawer: MyDrawer(),
         // body is the majority of the screen.
-        body: FormationEditor(key: _formationEditorKey),
+        body: GetX(initState: (_) {
+          Future.delayed(Duration(seconds: 1))
+              .then((_) => controller.retrieveFormationsForTable());
+          print('New FormationEditorPage created!');
+        }, builder: (_) {
+          if (controller.formationsForTable.value == null) {
+            return LoadingAnimationLinear();
+          } else {
+            return FormationEditor();
+          }
+        }),
         floatingActionButton:
             Column(mainAxisAlignment: MainAxisAlignment.end, children: [
           FloatingActionButton(
               tooltip: 'Add', // used by assistive technologies
               child: Icon(Icons.add),
               heroTag: 'addFAB',
-              onPressed: () => formationBloc.add(CreateFormation())),
+              onPressed: () => controller.createFormation()),
           FloatingActionButton(
               tooltip: 'Edit', // used by assistive technologies
               child: Icon(Icons.edit),
@@ -79,27 +61,12 @@ class FormationEditorPageState extends State<FormationEditorPage> {
               tooltip: 'Delete', // used by assistive technologies
               child: Icon(Icons.delete),
               heroTag: 'deleteFAB',
-              onPressed: () => formationBloc.add(DeleteFormation())),
+              onPressed: () => controller.deleteFormation()),
         ]));
   }
 }
 
-class FormationEditor extends StatefulWidget {
-  FormationEditor({Key key}) : super(key: key);
-  @override
-  FormationEditorState createState() => FormationEditorState();
-}
-
-class FormationEditorState extends State<FormationEditor> {
-  FormationCrudBloc formationBloc;
-
-  @override
-  void initState() {
-    formationBloc = BlocProvider.of<FormationCrudBloc>(context);
-    formationBloc.add(RetrieveFormation());
-    super.initState();
-  }
-
+class FormationEditor extends GetView<FormationController> {
   @override
   Widget build(BuildContext context) {
     print('New FormationEditor rebuilded!');
@@ -123,16 +90,16 @@ class FormationEditorState extends State<FormationEditor> {
                     children: <Widget>[
                       CharacterFilterButton(),
                       SizedBox(
-                          width: formationBloc.programPainterSize.width,
-                          height: formationBloc.programPainterSize.height,
+                          width: controller.programPainterSize.width,
+                          height: controller.programPainterSize.height,
                           child: StreamBuilder(
-                              stream: formationBloc.frameStream,
+                              stream: controller.formationsForTime.stream,
                               builder: (BuildContext context,
                                   AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   return ProgramAnimator(
-                                      frame: snapshot.data,
-                                      size: formationBloc.programPainterSize);
+                                      formationsForTime: snapshot.data,
+                                      size: controller.programPainterSize);
                                 } else {
                                   return LoadingAnimationLinear();
                                 }
@@ -141,32 +108,32 @@ class FormationEditorState extends State<FormationEditor> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
                             SizedBox(
-                                width: formationBloc.kCurvePainterSize.width,
-                                height: formationBloc.kCurvePainterSize.height,
+                                width: controller.kCurvePainterSize.width,
+                                height: controller.kCurvePainterSize.height,
                                 child: StreamBuilder(
-                                    stream: formationBloc.editingKCurveStream,
+                                    stream: controller.editingKCurve.stream,
                                     builder: (BuildContext context,
                                         AsyncSnapshot snapshot) {
                                       if (snapshot.hasData) {
                                         return GestureDetector(
                                             onPanDown: (details) =>
-                                                formationBloc.add(
-                                                    OnPanDownKCurve(
-                                                        details,
-                                                        snapshot.data,
-                                                        context)),
+                                                controller.onPanDownKCurve(
+                                                    details,
+                                                    snapshot.data,
+                                                    context),
                                             onPanUpdate: (details) =>
-                                                formationBloc.add(
-                                                    OnPanUpdateKCurve(
-                                                        details,
-                                                        snapshot.data,
-                                                        context)),
-                                            onPanEnd: (details) => formationBloc
-                                                .add(OnPanEndKCurve(details,
-                                                    snapshot.data, context)),
+                                                controller.onPanUpdateKCurve(
+                                                    details,
+                                                    snapshot.data,
+                                                    context),
+                                            onPanEnd: (details) =>
+                                                controller.onPanEndKCurve(
+                                                    details,
+                                                    snapshot.data,
+                                                    context),
                                             child: CustomPaint(
-                                              size: formationBloc
-                                                  .kCurvePainterSize,
+                                              size:
+                                                  controller.kCurvePainterSize,
                                               painter:
                                                   KCurvePainter(snapshot.data),
                                             ));
@@ -190,7 +157,8 @@ class FormationEditorState extends State<FormationEditor> {
                             // width:MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height / 2,
                             child: StreamBuilder(
-                                stream: formationBloc.characterFormationsStream,
+                                stream:
+                                    controller.formationsForCharacter.stream,
                                 builder: (BuildContext context,
                                     AsyncSnapshot snapshot) {
                                   if (!snapshot.hasData) {
@@ -200,16 +168,18 @@ class FormationEditorState extends State<FormationEditor> {
                                       children: snapshot.data
                                           .map<Widget>((formation) => ListTile(
                                                 selected: false,
-                                                onTap: () => formationBloc.add(
-                                                    ChangeTime(
-                                                        formation.startTime)),
+                                                onTap: () =>
+                                                    controller.changeTime(
+                                                        formation.startTime),
                                                 leading: CircleAvatar(
-                                                    backgroundColor:
-                                                        formation.memberColor,
-                                                    child: Text(RegExp(
-                                                            r'(?<= ).+')
-                                                        .stringMatch(formation
-                                                            .characterName))),
+                                                    backgroundColor: SNCharacter
+                                                            .fromString(formation
+                                                                .characterName)
+                                                        .memberColor,
+                                                    child: Text(
+                                                        characterNameFirstNameRegExp
+                                                            .stringMatch(formation
+                                                                .characterName))),
                                                 title: Text(simpleDurationRegExp
                                                     .stringMatch(formation
                                                         .startTime
@@ -230,23 +200,13 @@ class FormationEditorState extends State<FormationEditor> {
   }
 }
 
-class TimeSlider extends StatefulWidget {
-  @override
-  _TimeSliderState createState() => _TimeSliderState();
-}
-
-class _TimeSliderState extends State<TimeSlider> {
-  FormationCrudBloc formationBloc;
-
-  @override
-  void initState() {
-    formationBloc = BlocProvider.of<FormationCrudBloc>(context);
-    super.initState();
-  }
+class TimeSlider extends GetView<FormationController> {
+  final LyricController lyricController = Get.find();
 
   @override
   Widget build(BuildContext context) => StreamBuilder(
-      stream: formationBloc.frameFilterSubject,
+      stream: controller.timeFilter.stream,
+      initialData: Duration(seconds: 0),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           double sliderValue = snapshot.data.inMilliseconds.toDouble();
@@ -255,61 +215,51 @@ class _TimeSliderState extends State<TimeSlider> {
                 //   thumbShape: PaddleSliderValueIndicatorShape(),
                 thumbColor: Colors.pink,
               ),
-              child: Slider(
-                value: (formationBloc.lyrics != null) ? sliderValue : 0.0,
-                // label: 'yeah tiger',
-                // value: currentTime.inSeconds.toDouble(),
-                min: 0.0,
-                max: (formationBloc.lyrics != null)
-                    ? formationBloc.lyrics.last.endTime.inMilliseconds
-                        .toDouble()
-                    : 1.0,
-                divisions: (formationBloc.lyrics != null)
-                    ? formationBloc.lyrics.last.endTime.inMilliseconds ~/ 100
-                    : null,
-                onChanged: (value) {
-                  setState(() => sliderValue = value);
-                  print(sliderValue);
-                },
-                onChangeEnd: (value) =>
-                    formationBloc.add(ChangeSliderValue(value)),
-              ));
+              child: Obx(() => Slider(
+                    value: (lyricController.lyrics.value != null)
+                        ? sliderValue
+                        : 0.0,
+                    // label: 'yeah tiger',
+                    // value: currentTime.inSeconds.toDouble(),
+                    min: 0.0,
+                    max: (lyricController.lyrics.value != null)
+                        ? lyricController.lyrics.last.endTime.inMilliseconds
+                            .toDouble()
+                        : 1.0,
+                    divisions: (lyricController.lyrics.value != null)
+                        ? lyricController.lyrics.last.endTime.inMilliseconds ~/
+                            100
+                        : null,
+                    onChanged: (value) {
+                      sliderValue = value;
+                      print(sliderValue);
+                    },
+                    onChangeEnd: (value) => controller.changeSliderValue(value),
+                  )));
         } else {
-          return LoadingAnimationLinear();
+          return Column(
+              children: [LoadingAnimationLinear(), Text('TimeSlider')]);
         }
       });
 }
 
-class CharacterFilterButton extends StatefulWidget {
-  @override
-  _CharacterFilterButtonState createState() => _CharacterFilterButtonState();
-}
-
-class _CharacterFilterButtonState extends State<CharacterFilterButton> {
-  FormationCrudBloc formationBloc;
-
-  @override
-  void initState() {
-    formationBloc = BlocProvider.of<FormationCrudBloc>(context);
-    super.initState();
-  }
-
+class CharacterFilterButton extends GetView<FormationController> {
   @override
   Widget build(BuildContext context) => StreamBuilder(
-      stream: formationBloc.charactersSubject,
+      stream: controller.characters.stream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           return Wrap(
             children: snapshot.data
-                .map<Widget>((character) => FlatButton(
-                      color: (formationBloc.selectedCharacter.name ==
+                .map<Widget>((character) => Obx(() => FlatButton(
+                      color: (controller.characterFilter.value.name ==
                               character.name)
                           ? Colors.blueAccent.shade100
                           : Colors.grey.shade300,
-                      onPressed: () => setState(
-                          () => formationBloc.add(ChangeCharacter(character))),
-                      child: Text(character.name),
-                    ))
+                      onPressed: () => controller.changeCharacter(character),
+                      child: Text(characterNameFirstNameRegExp
+                          .stringMatch(character.name)),
+                    )))
                 .toList(),
           );
         } else {
@@ -318,28 +268,38 @@ class _CharacterFilterButtonState extends State<CharacterFilterButton> {
       });
 }
 
-class ProgramAnimator extends StatefulWidget {
-  final List<SNFormation> frame;
-  final Size size;
-  ProgramAnimator({Key key, this.frame, this.size}) : super(key: key);
+class KCurveFilterButton extends GetView<FormationController> {
   @override
-  _ProgramAnimatorState createState() => _ProgramAnimatorState(frame, size);
+  Widget build(BuildContext context) => SizedBox(
+      child: Obx(() => Column(
+          children: KCurveType.values
+              .sublist(0, 2)
+              .map<Widget>((type) => FlatButton(
+                  color: (controller.kCurveTypeFilter.value == type)
+                      ? Colors.blueAccent.shade100
+                      : Colors.grey.shade300,
+                  onPressed: () => controller.changeKCurveType(type),
+                  child: Text(type.toString())))
+              .toList())));
+}
+
+class ProgramAnimator extends StatefulWidget {
+  final List<SNFormation> formationsForTime;
+  final Size size;
+  ProgramAnimator({this.formationsForTime, this.size});
+  @override
+  _ProgramAnimatorState createState() => _ProgramAnimatorState();
 }
 
 class _ProgramAnimatorState extends State<ProgramAnimator>
     with SingleTickerProviderStateMixin {
+  final FormationController formationController = Get.find();
   AnimationController _controller;
-  FormationCrudBloc formationBloc;
-  final List<SNFormation> frame;
-  final Size size;
-
-  _ProgramAnimatorState(this.frame, this.size);
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this);
-    formationBloc = BlocProvider.of<FormationCrudBloc>(context);
   }
 
   @override
@@ -351,40 +311,42 @@ class _ProgramAnimatorState extends State<ProgramAnimator>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onPanDown: (details) =>
-            formationBloc.add(OnPanDownProgram(details, frame, context)),
-        onPanUpdate: (details) =>
-            formationBloc.add(OnPanUpdateProgram(details, frame, context)),
-        onPanEnd: (details) =>
-            formationBloc.add(OnPanEndProgram(details, frame, context)),
+        onPanDown: (details) => formationController.onPanDownProgram(
+            details, widget.formationsForTime, context),
+        onPanUpdate: (details) => formationController.onPanUpdateProgram(
+            details, widget.formationsForTime, context),
+        onPanEnd: (details) => formationController.onPanEndProgram(
+            details, widget.formationsForTime, context),
         child: CustomPaint(
-          size: size,
-          painter: ProgramPainter(frame),
+          size: widget.size,
+          painter: ProgramPainter(widget.formationsForTime),
         ));
   }
 }
 
+//! 在Size不够的情况下会有问题
 class ProgramPainter extends CustomPainter {
-  final List<SNFormation> frame;
-  ProgramPainter(this.frame);
+  final List<SNFormation> formationsForTime;
+  ProgramPainter(this.formationsForTime);
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (SNFormation characterFormation in frame) {
+    for (SNFormation characterFormation in formationsForTime) {
       canvas.drawCircle(
           characterFormation.getFormationPos(size),
           20,
           Paint()
             ..isAntiAlias = !true
-            ..color = Colors.blueAccent
-            //TODO: implement member color displaying
+            ..color = SNCharacter.fromString(characterFormation.characterName)
+                .memberColor
             ..strokeWidth = 5
             ..style = PaintingStyle.stroke);
     }
   }
 
   @override
-  bool shouldRepaint(ProgramPainter oldDelegate) => frame != oldDelegate.frame;
+  bool shouldRepaint(ProgramPainter oldDelegate) =>
+      formationsForTime != oldDelegate.formationsForTime;
 }
 
 class KCurvePainter extends CustomPainter {
@@ -451,38 +413,7 @@ class KCurvePainter extends CustomPainter {
       oldDelegate.editingKCurve != editingKCurve;
 }
 
-class KCurveFilterButton extends StatefulWidget {
-  @override
-  _KCurveFilterButtonState createState() => _KCurveFilterButtonState();
-}
-
-class _KCurveFilterButtonState extends State<KCurveFilterButton> {
-  FormationCrudBloc formationBloc;
-
-  @override
-  void initState() {
-    formationBloc = BlocProvider.of<FormationCrudBloc>(context);
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) => SizedBox(
-      width: 200,
-      height: 40,
-      child: Row(children: <Widget>[
-        FlatButton(
-            color: (formationBloc.selectedKCurveType == KCurveType.X)
-                ? Colors.blueAccent.shade100
-                : Colors.grey.shade300,
-            onPressed: () => setState(
-                () => formationBloc.add(ChangeKCurveType(KCurveType.X))),
-            child: Text('X')),
-        FlatButton(
-            color: (formationBloc.selectedKCurveType == KCurveType.Y)
-                ? Colors.blueAccent.shade100
-                : Colors.grey.shade300,
-            onPressed: () => setState(
-                () => formationBloc.add(ChangeKCurveType(KCurveType.Y))),
-            child: Text('Y')),
-      ]));
+Future<SNFormation> formationEditorDialog(
+    BuildContext context, SNFormation formation) {
+  return showDialog(context: context, builder: (context) => Container());
 }

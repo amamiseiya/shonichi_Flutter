@@ -9,7 +9,7 @@ import '../../model/song.dart';
 import '../../model/lyric.dart';
 import '../song/song_crud_bloc.dart';
 import '../../repository/lyric_repository.dart';
-import '../../repository/storage_repository.dart';
+import '../../repository/attachment_repository.dart';
 
 part 'lyric_crud_event.dart';
 part 'lyric_crud_state.dart';
@@ -20,14 +20,14 @@ class LyricCrudBloc extends Bloc<LyricCrudEvent, LyricCrudState> {
   SNSong currentSong;
 
   final LyricRepository lyricRepository;
-  final StorageRepository storageRepository;
+  final AttachmentRepository attachmentRepository;
   BehaviorSubject<List<SNLyric>> songLyricsSubject =
       BehaviorSubject<List<SNLyric>>();
 
-  LyricCrudBloc(this.songBloc, this.lyricRepository, this.storageRepository)
+  LyricCrudBloc(this.songBloc, this.lyricRepository, this.attachmentRepository)
       : assert(songBloc != null),
         assert(lyricRepository != null),
-        assert(storageRepository != null),
+        assert(attachmentRepository != null),
         super(LyricUninitialized()) {
     currentSongSubscription = songBloc.currentSongSubject.listen((onData) {
       currentSong = onData;
@@ -58,7 +58,8 @@ class LyricCrudBloc extends Bloc<LyricCrudEvent, LyricCrudState> {
     try {
       yield RetrievingLyric();
       print(state.toString());
-      songLyricsSubject.add(await lyricRepository.retrieve(currentSong.id));
+      songLyricsSubject
+          .add(await lyricRepository.retrieveForSong(currentSong.id));
       songLyricsSubject.listen((onData) => add(FinishRetrievingLyric(onData)));
     } catch (e) {
       print(e);

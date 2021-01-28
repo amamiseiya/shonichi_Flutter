@@ -1,21 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:get/get.dart';
 
 import '../widget/drawer.dart';
 import '../widget/loading.dart';
-import '../model/project.dart';
-import '../model/song.dart';
-import '../bloc/project/project_crud_bloc.dart';
-import '../bloc/song/song_crud_bloc.dart';
-import '../bloc/shot/shot_crud_bloc.dart';
-import '../bloc/lyric/lyric_crud_bloc.dart';
-import '../bloc/migrator/migrator_bloc.dart';
+import '../controller/migrator_controller.dart';
 
 class MigratorPage extends StatelessWidget {
-  final GlobalKey<ExporterMarkdownState> _documentExporterKey =
-      GlobalKey<ExporterMarkdownState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +27,7 @@ class MigratorPage extends StatelessWidget {
         ),
         drawer: MyDrawer(),
         // body is the majority of the screen.
-        body: ExporterMarkdown(key: _documentExporterKey),
+        body: MarkdownExporter(),
         floatingActionButton:
             Column(mainAxisAlignment: MainAxisAlignment.end, children: [
           FloatingActionButton(
@@ -54,32 +45,7 @@ class MigratorPage extends StatelessWidget {
   }
 }
 
-class ExporterMarkdown extends StatefulWidget {
-  ExporterMarkdown({Key key}) : super(key: key);
-  @override
-  ExporterMarkdownState createState() => ExporterMarkdownState();
-}
-
-class ExporterMarkdownState extends State<ExporterMarkdown> {
-  ProjectCrudBloc projectBloc;
-  SongCrudBloc songBloc;
-  LyricCrudBloc lyricBloc;
-  ShotCrudBloc shotBloc;
-  MigratorBloc migratorBloc;
-  SNProject currentProject;
-  SNSong currentSong;
-  bool needEncrypt = false;
-
-  @override
-  void initState() {
-    projectBloc = BlocProvider.of<ProjectCrudBloc>(context);
-    lyricBloc = BlocProvider.of<LyricCrudBloc>(context);
-    songBloc = BlocProvider.of<SongCrudBloc>(context);
-    shotBloc = BlocProvider.of<ShotCrudBloc>(context);
-    migratorBloc = BlocProvider.of<MigratorBloc>(context);
-    super.initState();
-  }
-
+class MarkdownExporter extends GetView<MigratorController> {
   @override
   Widget build(BuildContext context) {
     return Row(children: [
@@ -87,19 +53,22 @@ class ExporterMarkdownState extends State<ExporterMarkdown> {
       Expanded(
           flex: 1,
           child: Column(children: [
-            CheckboxListTile(
-                title: Text('导入导出加密：'),
-                value: needEncrypt,
-                onChanged: (value) =>
-                    setState(() => needEncrypt = !needEncrypt)),
+            GetBuilder(
+                builder: (_) => CheckboxListTile(
+                    title: Text('导入导出加密：'),
+                    value: controller.needEncrypt,
+                    onChanged: (newValue) {
+                      controller.needEncrypt = newValue;
+                      controller.update();
+                    })),
             FlatButton(
               child: Text('导入Markdown'),
               onPressed: () async {
-                if (needEncrypt) {
+                if (controller.needEncrypt) {
                   await desKeyDialog(context)
-                      .then((value) => migratorBloc.add(ImportMarkdown(value)));
+                      .then((key) => controller.importMarkdown(key));
                 } else {
-                  migratorBloc.add(ImportMarkdown(null));
+                  controller.importMarkdown(null);
                 }
                 await showDialog(
                     context: context,
@@ -114,7 +83,7 @@ class ExporterMarkdownState extends State<ExporterMarkdown> {
                               Text('将导入的项目数据如上。确定是否继续？'),
                               FlatButton(
                                   onPressed: () {
-                                    migratorBloc.add(ConfirmImportMarkdown());
+                                    controller.confirmImportMarkdown();
                                     Navigator.of(context).pop();
                                   },
                                   child: Text('确认'))
@@ -126,17 +95,18 @@ class ExporterMarkdownState extends State<ExporterMarkdown> {
             FlatButton(
               child: Text('生成Markdown'),
               onPressed: () {
-                migratorBloc.add(PreviewMarkdown());
+                controller.previewMarkdown();
               },
             ),
             FlatButton(
               child: Text('写入文件'),
               onPressed: () {
-                if (needEncrypt) {
-                  desKeyDialog(context)
-                      .then((value) => migratorBloc.add(ExportMarkdown(value)));
+                if (controller.needEncrypt) {
+                  desKeyDialog(context).then(
+                      (key) => controller.exportMarkdown(key),
+                      onError: (_) {});
                 } else {
-                  migratorBloc.add(ExportMarkdown(null));
+                  controller.exportMarkdown(null);
                 }
               },
             ),
@@ -177,25 +147,12 @@ Future<String> desKeyDialog(BuildContext context) {
       });
 }
 
-class MarkdownPreview extends StatefulWidget {
-  @override
-  _MarkdownPreviewState createState() => _MarkdownPreviewState();
-}
-
-class _MarkdownPreviewState extends State<MarkdownPreview> {
-  MigratorBloc migratorBloc;
-
-  @override
-  void initState() {
-    migratorBloc = BlocProvider.of<MigratorBloc>(context);
-    super.initState();
-  }
-
+class MarkdownPreview extends GetView<MigratorController> {
   @override
   Widget build(BuildContext context) {
     return Card(
         child: StreamBuilder(
-            stream: migratorBloc.markdownSubject,
+            stream: controller.markdownText.stream,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
                 return Markdown(data: snapshot.data);

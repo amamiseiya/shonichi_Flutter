@@ -22,6 +22,13 @@ class SNSong {
     // this.videoOffsets
   });
 
+  factory SNSong.initialValue() => SNSong(
+      id: 114514,
+      name: '',
+      coverFileName: '',
+      lyricOffset: 0,
+      subordinateKikaku: '');
+
   factory SNSong.fromMap(Map<String, dynamic> map) {
     return SNSong(
       id: map['id'],

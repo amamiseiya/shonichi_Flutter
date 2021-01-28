@@ -6,12 +6,14 @@ class SongRepository {
 
   Future<void> create(SNSong song) async => await provider.create(song);
 
-  Future<SNSong> retrieve(int id) async => await provider.retrieve(id);
+  Future<SNSong> retrieveById(int id) async => await provider.retrieveById(id);
 
-  Future<List<SNSong>> retrieveMultiple() async =>
-      await provider.retrieveMultiple();
+  Future<List<SNSong>> retrieveAll() async => await provider.retrieveAll();
 
   Future<void> update(SNSong song) async => await provider.update(song);
 
   Future<void> delete(SNSong song) async => await provider.delete(song);
+
+  Future<void> deleteMultiple(List<SNSong> songs) async =>
+      await provider.deleteMultiple(songs);
 }

@@ -14,7 +14,7 @@ import '../../model/character.dart';
 import '../project/project_selection_bloc.dart';
 import '../song/song_crud_bloc.dart';
 import '../lyric/lyric_crud_bloc.dart';
-import '../../repository/storage_repository.dart';
+import '../../repository/attachment_repository.dart';
 import '../../repository/formation_repository.dart';
 
 part 'formation_crud_event.dart';
@@ -22,7 +22,7 @@ part 'formation_crud_state.dart';
 
 class FormationCrudBloc extends Bloc<FormationCrudEvent, FormationCrudState> {
   final FormationRepository formationRepository;
-  final StorageRepository storageRepository;
+  final AttachmentRepository attachmentRepository;
 
   final ProjectSelectionBloc projectSelectionBloc;
   final SongCrudBloc songBloc;
@@ -63,12 +63,12 @@ class FormationCrudBloc extends Bloc<FormationCrudEvent, FormationCrudState> {
   final kCurvePainterSize = Size(360, 360);
 
   FormationCrudBloc(this.projectSelectionBloc, this.songBloc, this.lyricBloc,
-      this.formationRepository, this.storageRepository)
+      this.formationRepository, this.attachmentRepository)
       : assert(projectSelectionBloc != null),
         assert(songBloc != null),
         assert(lyricBloc != null),
         assert(formationRepository != null),
-        assert(storageRepository != null),
+        assert(attachmentRepository != null),
         super(FormationUninitialized()) {
     lyricBlocSubscription = lyricBloc.listen((state) {
       if (state is LyricRetrieved) {
@@ -95,11 +95,12 @@ class FormationCrudBloc extends Bloc<FormationCrudEvent, FormationCrudState> {
     characterFormationsStream = Rx.combineLatest2(
         projectFormationsSubject,
         characterFilterSubject,
-        (List<SNFormation> stream, SNCharacter filter) => (filter.name == null)
+        (List<SNFormation> stream, SNCharacter filter) => (filter.name ==
+                null) // ! 想要修改
             ? stream
             : stream
                 .where((formation) => formation.characterName == filter.name)
-                .toList()).asBroadcastStream();
+                .toList());
     frameStream = Rx.combineLatest2(
         projectFormationsSubject,
         frameFilterSubject,
@@ -107,19 +108,17 @@ class FormationCrudBloc extends Bloc<FormationCrudEvent, FormationCrudState> {
             ? stream
             : stream
                 .where((formation) => formation.startTime == filter)
-                .toList()).asBroadcastStream();
+                .toList());
     editingFormationStream = Rx.combineLatest3(
-            projectFormationsSubject,
-            characterFilterSubject,
-            frameFilterSubject,
-            (List<SNFormation> stream, SNCharacter characterFilter,
-                    Duration frameFilter) =>
-                stream
-                    .where((formation) =>
-                        formation.characterName == characterFilter.name)
-                    .firstWhere(
-                        (formation) => formation.startTime == frameFilter))
-        .asBroadcastStream();
+        projectFormationsSubject,
+        characterFilterSubject,
+        frameFilterSubject,
+        (List<SNFormation> stream, SNCharacter characterFilter,
+                Duration frameFilter) =>
+            stream
+                .where((formation) =>
+                    formation.characterName == characterFilter.name)
+                .firstWhere((formation) => formation.startTime == frameFilter));
     editingKCurveStream = Rx.combineLatest2(
         editingFormationStream,
         kCurveTypeFilterSubject,
@@ -127,7 +126,7 @@ class FormationCrudBloc extends Bloc<FormationCrudEvent, FormationCrudState> {
               2,
               (i) =>
                   formation.getFormationPoint(kCurveType, i, kCurvePainterSize),
-            )).asBroadcastStream();
+            ));
   }
 
   @override
@@ -176,8 +175,8 @@ class FormationCrudBloc extends Bloc<FormationCrudEvent, FormationCrudState> {
     try {
       charactersSubject
           .add(SNCharacter.membersSortedByGrade(currentSong.subordinateKikaku));
-      projectFormationsSubject.add(
-          await formationRepository.retrieve(currentProject.formationTableId));
+      projectFormationsSubject.add(await formationRepository
+          .retrieveForTable(currentProject.formationTableId));
       // projectFormationsSubject.listen(
       //     (onData) => add(FinishedRetrievingFormation(onData, characters)));
       lyricBloc.add(ReloadLyric());

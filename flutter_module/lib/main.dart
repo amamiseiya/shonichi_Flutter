@@ -1,119 +1,93 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:leancloud_storage/leancloud.dart';
+import 'package:shonichi_flutter_module/repository/shot_table_repository.dart';
 
 import 'l10n/localization_intl.dart';
 import 'widget/loading.dart';
-import 'page/homepage.dart';
-import 'bloc/project/project_crud_bloc.dart';
-import 'bloc/project/project_selection_bloc.dart';
-import 'bloc/song/song_crud_bloc.dart';
-import 'bloc/shot/shot_crud_bloc.dart';
-import 'bloc/formation/formation_crud_bloc.dart';
-import 'bloc/lyric/lyric_crud_bloc.dart';
-import 'bloc/migrator/migrator_bloc.dart';
+import 'page/home_page.dart';
+import 'controller/project_controller.dart';
+import 'controller/song_controller.dart';
+import 'controller/lyric_controller.dart';
+import 'controller/shot_table_controller.dart';
+import 'controller/shot_controller.dart';
+import 'controller/formation_controller.dart';
+import 'controller/migrator_controller.dart';
 import 'repository/project_repository.dart';
 import 'repository/song_repository.dart';
-import 'repository/shot_repository.dart';
 import 'repository/lyric_repository.dart';
-import 'repository/storage_repository.dart';
+import 'repository/shot_table_repository.dart';
+import 'repository/shot_repository.dart';
 import 'repository/formation_repository.dart';
+import 'repository/attachment_repository.dart';
 
 //-------------------------main()-----------------------------
 //------------------------------------------------------------
 Future<void> main() async {
+  await initServices();
+  runApp(GetMaterialApp(
+    title: 'shonichi',
+    home: HomePage(),
+    localizationsDelegates: [
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      MyLocalizationsDelegate(),
+    ],
+    supportedLocales: [
+      const Locale('en', 'US'),
+      const Locale('zh', 'CN'),
+      const Locale('ja', 'JP')
+    ],
+    localeListResolutionCallback: (locales, supportedLocales) {},
+    routes: <String, WidgetBuilder>{
+      // '/home_page': (BuildContext context) => HomePage(),
+      // '/shot_editor_page': (BuildContext context) => ShotEditorPage(),
+      // '/song_info_page': (BuildContext context) => SongInfoPage(),
+      // '/formation_editor_page': (BuildContext context) => FormationEditorPage(),
+      // '/song_list_page': (BuildContext context) => SongListPage(),
+      // '/migrator_page': (BuildContext context) => MigratorPage(),
+    },
+  ));
+}
+
+Future<void> initServices() async {
+  await Get.putAsync(() => APIService().init());
+
   final ProjectRepository projectRepository = ProjectRepository();
   final SongRepository songRepository = SongRepository();
   final LyricRepository lyricRepository = LyricRepository();
   final FormationRepository formationRepository = FormationRepository();
+  final ShotTableRepository shotTableRepository = ShotTableRepository();
   final ShotRepository shotRepository = ShotRepository();
-  final StorageRepository storageRepository = StorageRepository();
+  final AttachmentRepository attachmentRepository = AttachmentRepository();
 
-  LeanCloud.initialize(
-      'QLubFJnOVAq4nsON9K6SoV9X-gzGzoHsz', '6XtOUj6cgDICX6kVoHiO0qEs',
-      server: 'https://qlubfjno.lc-cn-n1-shared.com',
-      queryCache: new LCQueryCache());
-  LCLogger.setLevel(LCLogger.DebugLevel);
+  ProjectController projectController = Get.put(ProjectController(
+      projectRepository, songRepository, attachmentRepository));
+  SongController songController =
+      Get.put(SongController(songRepository, attachmentRepository));
+  LyricController lyricController =
+      Get.put(LyricController(lyricRepository, attachmentRepository));
+  ShotTableController shotTableController = Get.put(ShotTableController());
+  ShotController shotController = Get.put(ShotController(
+      songRepository, lyricRepository, shotRepository, attachmentRepository));
+  FormationController formationController =
+      Get.put(FormationController(formationRepository, attachmentRepository));
+  MigratorController migratorController = Get.put(MigratorController(
+      projectRepository,
+      songRepository,
+      shotTableRepository,
+      shotRepository,
+      attachmentRepository));
+}
 
-  LCObject object = LCObject('TestObject');
-  object['words'] = 'Hello world!';
-  await object.save();
-
-  runApp(MultiBlocProvider(
-      providers: [
-        BlocProvider<ProjectCrudBloc>(
-          create: (context) => ProjectCrudBloc(
-              projectRepository, songRepository, storageRepository)
-            ..add(InitializeApp()),
-        ),
-        BlocProvider<ProjectSelectionBloc>(
-            create: (context) => ProjectSelectionBloc(projectRepository)),
-        BlocProvider<SongCrudBloc>(
-          create: (context) => SongCrudBloc(
-              BlocProvider.of<ProjectCrudBloc>(context),
-              BlocProvider.of<ProjectSelectionBloc>(context),
-              songRepository,
-              storageRepository),
-        ),
-        BlocProvider<LyricCrudBloc>(
-          create: (context) => LyricCrudBloc(
-              BlocProvider.of<SongCrudBloc>(context),
-              lyricRepository,
-              storageRepository),
-        ),
-        BlocProvider<FormationCrudBloc>(
-          create: (context) => FormationCrudBloc(
-              BlocProvider.of<ProjectSelectionBloc>(context),
-              BlocProvider.of<SongCrudBloc>(context),
-              BlocProvider.of<LyricCrudBloc>(context),
-              formationRepository,
-              storageRepository),
-        ),
-        BlocProvider<ShotCrudBloc>(
-          create: (context) => ShotCrudBloc(
-              BlocProvider.of<ProjectCrudBloc>(context),
-              BlocProvider.of<ProjectSelectionBloc>(context),
-              BlocProvider.of<SongCrudBloc>(context),
-              BlocProvider.of<LyricCrudBloc>(context),
-              songRepository,
-              lyricRepository,
-              shotRepository,
-              storageRepository),
-        ),
-        BlocProvider<MigratorBloc>(
-          create: (context) => MigratorBloc(
-              BlocProvider.of<ProjectCrudBloc>(context),
-              BlocProvider.of<ProjectSelectionBloc>(context),
-              BlocProvider.of<SongCrudBloc>(context),
-              projectRepository,
-              songRepository,
-              shotRepository,
-              storageRepository),
-        ),
-      ],
-      child: GetMaterialApp(
-        title: 'shonichi',
-        home: HomePage(),
-        localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          MyLocalizationsDelegate(),
-        ],
-        supportedLocales: [
-          const Locale('en', 'US'),
-          const Locale('zh', 'CN'),
-          const Locale('ja', 'JP')
-        ],
-        localeListResolutionCallback: (locales, supportedLocales) {},
-        routes: <String, WidgetBuilder>{
-          // '/home_page': (BuildContext context) => HomePage(),
-          // '/shot_editor_page': (BuildContext context) => ShotEditorPage(),
-          // '/song_info_page': (BuildContext context) => SongInfoPage(),
-          // '/formation_editor_page': (BuildContext context) => FormationEditorPage(),
-          // '/song_list_page': (BuildContext context) => SongListPage(),
-          // '/migrator_page': (BuildContext context) => MigratorPage(),
-        },
-      )));
+class APIService extends GetxService {
+  Future<APIService> init() async {
+    LeanCloud.initialize(
+        'QLubFJnOVAq4nsON9K6SoV9X-gzGzoHsz', '6XtOUj6cgDICX6kVoHiO0qEs',
+        server: 'https://qlubfjno.lc-cn-n1-shared.com',
+        queryCache: new LCQueryCache());
+    LCLogger.setLevel(LCLogger.DebugLevel);
+    return this;
+  }
 }

@@ -8,40 +8,38 @@ import '../bloc/shot/shot_crud_bloc.dart';
 import '../bloc/song/song_crud_bloc.dart';
 
 class CharacterSelector extends StatefulWidget {
-  final SNShot currentShot;
+  final SNShot editingShot;
   final Function updateShot;
-  final SNSong currentSong;
+  final SNSong editingSong;
 
   CharacterSelector(
       {Key key,
-      @required this.currentShot,
+      @required this.editingShot,
       @required this.updateShot,
-      @required this.currentSong})
+      @required this.editingSong})
       : super(key: key);
+
+  // ! 这样使用是不对的
   @override
   CharacterSelectorState createState() =>
-      CharacterSelectorState(currentShot, updateShot, currentSong);
+      CharacterSelectorState(editingShot, updateShot, editingSong);
 }
 
 class CharacterSelectorState extends State<CharacterSelector>
     with TickerProviderStateMixin {
-  SongCrudBloc songBloc;
-  ShotCrudBloc shotBloc;
-  final SNShot currentShot;
+  final SNShot editingShot;
   final Function updateShot;
-  final SNSong currentSong;
+  final SNSong editingSong;
   Animation<double> animation;
   AnimationController _animationController;
   bool chipVisible = true;
   bool selectorVisible = false;
 
-  CharacterSelectorState(this.currentShot, this.updateShot, this.currentSong);
+  CharacterSelectorState(this.editingShot, this.updateShot, this.editingSong);
 
   @override
   void initState() {
     super.initState();
-    shotBloc = BlocProvider.of<ShotCrudBloc>(context);
-    songBloc = BlocProvider.of<SongCrudBloc>(context);
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 100));
     _animationController.addListener(() {
@@ -109,14 +107,14 @@ class CharacterSelectorState extends State<CharacterSelector>
                     height: 90,
                     child: Wrap(
                       children: SNCharacter.membersSortedByGrade(
-                              currentSong.subordinateKikaku)
+                              editingSong.subordinateKikaku)
                           .map((character) {
                         return GestureDetector(
                             onTap: () {
-                              if (!currentShot.characters
+                              if (!editingShot.characters
                                   .any((c) => c.name == character.name)) {
-                                currentShot.characters.add(character);
-                                updateShot(currentShot);
+                                editingShot.characters.add(character);
+                                updateShot(editingShot);
                               }
                               setState(() {
                                 chipVisible = true;
@@ -132,12 +130,12 @@ class CharacterSelectorState extends State<CharacterSelector>
           ]),
           Wrap(
             children: <Widget>[] +
-                currentShot.characters.map((character) {
+                editingShot.characters.map((character) {
                   return ActionChip(
                     backgroundColor: character.memberColor,
                     onPressed: () {
-                      currentShot.characters.remove(character);
-                      updateShot(currentShot);
+                      editingShot.characters.remove(character);
+                      updateShot(editingShot);
                     },
                     label: Text(character.nameAbbr),
                   );

@@ -10,7 +10,7 @@ import '../../model/song.dart';
 import '../project/project_crud_bloc.dart';
 import '../project/project_selection_bloc.dart';
 import '../../repository/song_repository.dart';
-import '../../repository/storage_repository.dart';
+import '../../repository/attachment_repository.dart';
 
 part 'song_crud_event.dart';
 part 'song_crud_state.dart';
@@ -21,22 +21,22 @@ class SongCrudBloc extends Bloc<SongCrudEvent, SongCrudState> {
   StreamSubscription projectSelectionBlocSubscription;
 
   final SongRepository songRepository;
-  final StorageRepository storageRepository;
+  final AttachmentRepository attachmentRepository;
 
   BehaviorSubject<SNSong> currentSongSubject = BehaviorSubject<SNSong>();
 
   SongCrudBloc(this.projectCrudBloc, this.projectSelectionBloc,
-      this.songRepository, this.storageRepository)
+      this.songRepository, this.attachmentRepository)
       : assert(projectCrudBloc != null),
         assert(projectSelectionBloc != null),
         assert(songRepository != null),
-        assert(storageRepository != null),
+        assert(attachmentRepository != null),
         super(SongUninitialized()) {
     projectSelectionBlocSubscription =
         projectSelectionBloc.listen((state) async {
       if (state is ProjectSelected) {
         currentSongSubject
-            .add(await songRepository.retrieve(state.project.songId));
+            .add(await songRepository.retrieveById(state.project.songId));
       }
     });
   }
@@ -67,7 +67,7 @@ class SongCrudBloc extends Bloc<SongCrudEvent, SongCrudState> {
   Stream<SongCrudState> mapRetrieveSongToState() async* {
     try {
       yield RetrievingSong();
-      final songs = await songRepository.retrieveMultiple();
+      final songs = await songRepository.retrieveAll();
       yield SongRetrieved(songs);
     } catch (e) {
       print(e);

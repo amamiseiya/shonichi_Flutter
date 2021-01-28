@@ -7,10 +7,11 @@ class ProjectRepository {
   Future<void> create(SNProject project) async =>
       await provider.create(project);
 
-  Future<SNProject> retrieve(int id) async => await provider.retrieve(id);
+  Future<SNProject> retrieveById(int id) async =>
+      await provider.retrieveById(id);
 
-  Future<List<SNProject>> retrieveMultiple(int count) async =>
-      await provider.retrieveMultiple(count);
+  Future<List<SNProject>> retrieveLatestN(int count) async =>
+      await provider.retrieveLatestN(count);
 
   Future<void> update(SNProject project) async =>
       await provider.update(project);
@@ -18,11 +19,6 @@ class ProjectRepository {
   Future<void> delete(SNProject project) async =>
       await provider.delete(project);
 
-  Future<void> deleteMultiple(List<SNProject> projects) async {
-    if (projects.isNotEmpty) {
-      for (SNProject project in projects) {
-        await provider.delete(project);
-      }
-    }
-  }
+  Future<void> deleteMultiple(List<SNProject> projects) async =>
+      await provider.deleteMultiple(projects);
 }

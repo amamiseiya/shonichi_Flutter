@@ -7,7 +7,7 @@ import '../../model/project.dart';
 import '../../model/song.dart';
 import '../../repository/project_repository.dart';
 import '../../repository/song_repository.dart';
-import '../../repository/storage_repository.dart';
+import '../../repository/attachment_repository.dart';
 
 part 'project_selection_event.dart';
 part 'project_selection_state.dart';
@@ -32,7 +32,7 @@ class ProjectSelectionBloc
 
   Stream<ProjectSelectionState> mapSelectProjectToState(int id) async* {
     try {
-      final currentProject = await projectRepository.retrieve(id);
+      final currentProject = await projectRepository.retrieveById(id);
       yield ProjectSelected(currentProject);
       print(state.toString());
     } catch (e) {

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 enum KCurveType { X, Y, Z, Rotation, Camera }
@@ -34,6 +36,24 @@ class SNFormation {
       this.curveY2Y,
       this.characterName,
       this.tableId});
+
+  factory SNFormation.initialValue(
+          Duration startTime, int formationTableId, String characterName) =>
+      SNFormation(
+          id: Random().nextInt(10000),
+          startTime: startTime,
+          posX: 0.0,
+          posY: 0.0,
+          curveX1X: 0,
+          curveX1Y: 0,
+          curveX2X: 127,
+          curveX2Y: 127,
+          curveY1X: 0,
+          curveY1Y: 0,
+          curveY2X: 127,
+          curveY2Y: 127,
+          tableId: formationTableId,
+          characterName: characterName);
 
   factory SNFormation.fromMap(Map<String, dynamic> map) {
     return SNFormation(

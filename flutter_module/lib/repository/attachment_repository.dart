@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import '../model/project.dart';
 import '../model/song.dart';
 
-class StorageRepository {
+class AttachmentRepository {
   Future<File> getSongCoverFile(SNSong song) async {
     final Directory appDocDir = await getApplicationDocumentsDirectory();
     return File(ppath.join(appDocDir.path, song.name, song.coverFileName));

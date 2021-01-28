@@ -5,7 +5,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:shonichi_flutter_module/bloc/project/project_selection_bloc.dart';
 
 import '../../model/project.dart';
 import '../../model/song.dart';
@@ -13,12 +12,13 @@ import '../../model/lyric.dart';
 import '../../model/shot.dart';
 import '../../model/character.dart';
 import '../project/project_crud_bloc.dart';
+import '../project/project_selection_bloc.dart';
 import '../song/song_crud_bloc.dart';
 import '../lyric/lyric_crud_bloc.dart';
 import '../../repository/song_repository.dart';
 import '../../repository/lyric_repository.dart';
 import '../../repository/shot_repository.dart';
-import '../../repository/storage_repository.dart';
+import '../../repository/attachment_repository.dart';
 
 part 'shot_crud_event.dart';
 part 'shot_crud_state.dart';
@@ -34,7 +34,7 @@ class ShotCrudBloc extends Bloc<ShotCrudEvent, ShotCrudState> {
   final SongRepository songRepository;
   final LyricRepository lyricRepository;
   final ShotRepository shotRepository;
-  final StorageRepository storageRepository;
+  final AttachmentRepository attachmentRepository;
 
   // 继承来的状态
   StreamSubscription projectSelectionBlocSubscription;
@@ -60,7 +60,7 @@ class ShotCrudBloc extends Bloc<ShotCrudEvent, ShotCrudState> {
       this.songRepository,
       this.lyricRepository,
       this.shotRepository,
-      this.storageRepository)
+      this.attachmentRepository)
       : assert(projectCrudBloc != null),
         assert(projectSelectionBloc != null),
         assert(songBloc != null),
@@ -68,18 +68,18 @@ class ShotCrudBloc extends Bloc<ShotCrudEvent, ShotCrudState> {
         assert(songRepository != null),
         assert(lyricRepository != null),
         assert(shotRepository != null),
-        assert(storageRepository != null),
+        assert(attachmentRepository != null),
         super(ShotUninitialized()) {
     projectSelectionBlocSubscription = projectSelectionBloc.listen((state) {
       if (state is ProjectSelected) {
         currentProject = state.project;
-        print('currentProject fetched.');
+        print('currentProject fetched');
       }
     });
 
     currentSongSubscription = songBloc.currentSongSubject.listen((song) async {
       currentSong = song;
-      lyricsSubject.add(await lyricRepository.retrieve(song.id));
+      lyricsSubject.add(await lyricRepository.retrieveForSong(song.id));
     });
 
     coverageStream = Rx.combineLatest2(
@@ -103,7 +103,7 @@ class ShotCrudBloc extends Bloc<ShotCrudEvent, ShotCrudState> {
     statisticsStream = shotsSubject.asyncMap((List<SNShot> shots) {
       Map<String, int> characterCountMap = Map.fromIterable(
           SNCharacter.membersSortedByGrade(currentSong.subordinateKikaku),
-          key: (character) => character.characterName,
+          key: (character) => character.name,
           value: (character) => 0);
       for (SNShot shot in shots) {
         for (SNCharacter character in shot.characters) {
@@ -137,11 +137,11 @@ class ShotCrudBloc extends Bloc<ShotCrudEvent, ShotCrudState> {
   Stream<ShotCrudState> mapRetrieveShotToState() async* {
     try {
       yield RetrievingShot();
-      print('Retrieving shots.');
+      print('Retrieving shots');
       yield (ShotRetrieved(
-          await shotRepository.retrieve(currentProject.shotTableId)));
+          await shotRepository.retrieveForTable(currentProject.shotTableId)));
 
-      // shotsSubject.add(await shotRepository.fetchShotsForProject(
+      // shotsSubject.add(await shotRepository.fetchShotsForTable(
       //     currentProject.songId, currentProject.shotVersion));
       // shotsSubject.listen((shots) => add(FinishRetrievingShot(shots)));
     } catch (e) {

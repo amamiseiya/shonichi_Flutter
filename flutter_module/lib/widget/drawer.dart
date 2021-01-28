@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-import '../page/homepage.dart';
-import '../page/shoteditorpage.dart';
-import '../page/songinfopage.dart';
-import '../page/songlistpage.dart';
-import '../page/migratorpage.dart';
-import '../page/formationeditor.dart';
+import '../page/home_page.dart';
+import '../page/shot_editor_page.dart';
+import '../page/song_detail_page.dart';
+import '../page/song_list_page.dart';
+import '../page/migrator_page.dart';
+import '../page/formation_editor_page.dart';
 
 class MyDrawer extends StatelessWidget {
   // final HomePage homePage = HomePage();
@@ -23,49 +24,37 @@ class MyDrawer extends StatelessWidget {
         ListTile(
           title: Text('首页'),
           onTap: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => HomePage()));
+            Get.to(HomePage());
           },
         ),
         ListTile(
           title: Text('分镜脚本编辑'),
           onTap: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => ShotEditorPage()));
+            Get.to(ShotEditorPage());
           },
         ),
         ListTile(
           title: Text('歌曲信息查看'),
           onTap: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => SongInfoPage()));
+            Get.to(SongDetailPage());
           },
         ),
         ListTile(
           title: Text('舞蹈队形编辑'),
           onTap: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => FormationEditorPage()));
+            Get.to(FormationEditorPage());
           },
         ),
         ListTile(
           title: Text('所有歌曲查看'),
           onTap: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => SongListPage()));
+            Get.to(SongListPage());
           },
         ),
         ListTile(
           title: Text('文档导出'),
           onTap: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => MigratorPage()));
+            Get.to(MigratorPage());
           },
         ),
       ],

@@ -9,7 +9,7 @@ class _LoadingAnimationLinearState extends State<LoadingAnimationLinear> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        height: MediaQuery.of(context).size.height,
+        height: 2.0,
         width: MediaQuery.of(context).size.width,
         child: Align(
             alignment: Alignment.topCenter,

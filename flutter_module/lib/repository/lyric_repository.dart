@@ -8,8 +8,8 @@ class LyricRepository {
 
   Future<void> create(SNLyric lyric) async => await provider.create(lyric);
 
-  Future<List<SNLyric>> retrieve(int songId) async =>
-      await provider.retrieve(songId);
+  Future<List<SNLyric>> retrieveForSong(int songId) async =>
+      await provider.retrieveForSong(songId);
 
   Future<void> update(SNLyric lyric) async => await provider.update(lyric);
 

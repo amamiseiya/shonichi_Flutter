@@ -15,7 +15,7 @@ import '../song/song_crud_bloc.dart';
 import '../../repository/project_repository.dart';
 import '../../repository/song_repository.dart';
 import '../../repository/shot_repository.dart';
-import '../../repository/storage_repository.dart';
+import '../../repository/attachment_repository.dart';
 import '../../util/des.dart';
 import '../../util/reg_exp.dart';
 import '../../util/data_convert.dart';
@@ -33,7 +33,7 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
   final ProjectRepository projectRepository;
   final SongRepository songRepository;
   final ShotRepository shotRepository;
-  final StorageRepository storageRepository;
+  final AttachmentRepository attachmentRepository;
   BehaviorSubject<String> markdownSubject = BehaviorSubject<String>();
 
   String storyboardTableTitles;
@@ -45,14 +45,14 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
       this.projectRepository,
       this.songRepository,
       this.shotRepository,
-      this.storageRepository)
+      this.attachmentRepository)
       : assert(projectBloc != null),
         assert(projectSelectionBloc != null),
         assert(songBloc != null),
         assert(projectRepository != null),
         assert(songRepository != null),
         assert(shotRepository != null),
-        assert(storageRepository != null),
+        assert(attachmentRepository != null),
         super(MigratorInitial()) {
     storyboardTableTitles = '';
     for (String title in SNShot.titles) {
@@ -85,7 +85,7 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
 
   Stream<MigratorState> mapImportMarkdownToState(String key) async* {
     try {
-      String mdText = await storageRepository.importMarkdown(currentProject);
+      String mdText = await attachmentRepository.importMarkdown(currentProject);
       if (key != null) {
         mdText = desDecrypt(mdText, key);
       }
@@ -112,10 +112,10 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
     String storyboardText = storyboardChapterRegExp.stringMatch(mdText);
     String shotsText =
         RegExp(r'(?<=---\s\|\n).+', dotAll: true).stringMatch(storyboardText);
-    final int tableId =
-        await shotRepository.getLatestShotTable(project.songId) + 1;
+    final int tableId = 0;
+    // await shotRepository.getLatestShotTable(project.songId) + 1;
     final String kikaku =
-        (await songRepository.retrieve(project.songId)).subordinateKikaku;
+        (await songRepository.retrieveById(project.songId)).subordinateKikaku;
     return shotsText
         .split('\n')
         .where((element) => RegExp(r'^\|.+\|$').hasMatch(element))
@@ -144,10 +144,10 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
   Stream<MigratorState> mapPreviewMarkdownToState() async* {
     try {
       final SNSong currentSong =
-          await songRepository.retrieve(currentProject.songId);
+          await songRepository.retrieveById(currentProject.songId);
       markdownSubject.add(generateIntro(currentProject, currentSong) +
-          generateShotDataTable(
-              await shotRepository.retrieve(currentProject.shotTableId)));
+          generateShotDataTable(await shotRepository
+              .retrieveForTable(currentProject.shotTableId)));
     } catch (e) {
       print(e);
     }
@@ -201,10 +201,10 @@ class MigratorBloc extends Bloc<MigratorEvent, MigratorState> {
     try {
       markdownSubject.listen((onData) async {
         if (key != null) {
-          await storageRepository.exportMarkdown(
+          await attachmentRepository.exportMarkdown(
               currentProject, desEncrypt(onData, key));
         } else {
-          await storageRepository.exportMarkdown(currentProject, onData);
+          await attachmentRepository.exportMarkdown(currentProject, onData);
         }
       });
       yield MarkdownExported();

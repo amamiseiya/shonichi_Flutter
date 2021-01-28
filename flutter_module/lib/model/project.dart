@@ -17,6 +17,15 @@ class SNProject {
       this.shotTableId,
       this.formationTableId});
 
+  factory SNProject.initialValue() => SNProject(
+      id: 114514,
+      dancerName: '',
+      createdTime: DateTime.now(),
+      modifiedTime: DateTime.now(),
+      songId: 114514,
+      shotTableId: 114514,
+      formationTableId: 114514);
+
   factory SNProject.fromMap(Map<String, dynamic> map) {
     return SNProject(
       id: map['id'],

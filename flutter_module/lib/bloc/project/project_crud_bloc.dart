@@ -9,7 +9,7 @@ import '../../model/project.dart';
 import '../../model/song.dart';
 import '../../repository/project_repository.dart';
 import '../../repository/song_repository.dart';
-import '../../repository/storage_repository.dart';
+import '../../repository/attachment_repository.dart';
 
 part 'project_crud_event.dart';
 part 'project_crud_state.dart';
@@ -17,13 +17,13 @@ part 'project_crud_state.dart';
 class ProjectCrudBloc extends Bloc<ProjectCrudEvent, ProjectCrudState> {
   final ProjectRepository projectRepository;
   final SongRepository songRepository;
-  final StorageRepository storageRepository;
+  final AttachmentRepository attachmentRepository;
 
   ProjectCrudBloc(
-      this.projectRepository, this.songRepository, this.storageRepository)
+      this.projectRepository, this.songRepository, this.attachmentRepository)
       : assert(projectRepository != null),
         assert(songRepository != null),
-        assert(storageRepository != null),
+        assert(attachmentRepository != null),
         super(ProjectUninitialized());
 
   @override
@@ -50,11 +50,12 @@ class ProjectCrudBloc extends Bloc<ProjectCrudEvent, ProjectCrudState> {
   Stream<ProjectCrudState> mapRetrieveProjectToState() async* {
     try {
       yield RetrievingProject();
-      final projects = await projectRepository.retrieveMultiple(4);
+      final projects = await projectRepository.retrieveLatestN(4);
       if (projects.isNotEmpty) {
-        final SNSong song = await songRepository.retrieve(projects[0].songId);
+        final SNSong song =
+            await songRepository.retrieveById(projects[0].songId);
         yield ProjectRetrieved(
-            projects, await storageRepository.getSongCoverFile(song));
+            projects, await attachmentRepository.getSongCoverFile(song));
       } else {
         yield NoProjectRetrieved();
       }

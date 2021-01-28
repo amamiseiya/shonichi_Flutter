@@ -193,17 +193,17 @@ class ProjectSQLiteProvider extends SQLiteProvider {
       project.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print('Create operation succeed.');
+    print('Create operation succeed');
   }
 
-  Future<SNProject> retrieve(int id) async {
+  Future<SNProject> retrieveById(int id) async {
     final db = await database;
     final mapList =
         await db.query('sn_project', where: 'id = ?', whereArgs: [id]);
     return SNProject.fromMap(mapList.first);
   }
 
-  Future<List<SNProject>> retrieveMultiple(int count) async {
+  Future<List<SNProject>> retrieveLatestN(int count) async {
     final db = await database;
     final mapList =
         await db.query('sn_project', orderBy: 'id DESC', limit: count);
@@ -218,7 +218,7 @@ class ProjectSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [project.id],
     );
-    print('Update operation succeed.');
+    print('Update operation succeed');
   }
 
   Future<void> delete(SNProject project) async {
@@ -228,7 +228,19 @@ class ProjectSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [project.id],
     );
-    print('Delete operation succeed.');
+    print('Delete operation succeed');
+  }
+
+  Future<void> deleteMultiple(List<SNProject> projects) async {
+    final db = await database;
+    projects.forEach((SNProject project) async {
+      await db.delete(
+        'sn_project',
+        where: 'id = ?',
+        whereArgs: [project.id],
+      );
+    });
+    print('Delete operation succeed');
   }
 }
 
@@ -240,16 +252,16 @@ class SongSQLiteProvider extends SQLiteProvider {
       song.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print('Create operation succeed.');
+    print('Create operation succeed');
   }
 
-  Future<SNSong> retrieve(int id) async {
+  Future<SNSong> retrieveById(int id) async {
     final db = await database;
     final mapList = await db.query('sn_song', where: 'id = ?', whereArgs: [id]);
     return SNSong.fromMap(mapList.first);
   }
 
-  Future<List<SNSong>> retrieveMultiple() async {
+  Future<List<SNSong>> retrieveAll() async {
     final db = await database;
     final mapList = await db.query('sn_song', orderBy: 'id DESC');
     return List.generate(mapList.length, (i) => SNSong.fromMap(mapList[i]));
@@ -263,7 +275,7 @@ class SongSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [song.id],
     );
-    print('Update operation succeed.');
+    print('Update operation succeed');
   }
 
   Future<void> delete(SNSong song) async {
@@ -273,7 +285,112 @@ class SongSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [song.id],
     );
-    print('Delete operation succeed.');
+    print('Delete operation succeed');
+  }
+
+  Future<void> deleteMultiple(List<SNSong> songs) async {
+    final db = await database;
+    songs.forEach((song) async {
+      await db.delete(
+        'sn_song',
+        where: 'id = ?',
+        whereArgs: [song.id],
+      );
+    });
+  }
+}
+
+class LyricSQLiteProvider extends SQLiteProvider {
+  Future<void> create(SNLyric lyric) async {
+    final db = await database;
+    await db.insert(
+      'sn_lyric',
+      lyric.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    print('Create operation succeed');
+  }
+
+  Future<List<SNLyric>> retrieveForSong(int songId) async {
+    final db = await database;
+    final mapList = await db.query('sn_lyric',
+        where: 'songId = ?', whereArgs: [songId], orderBy: 'startTime');
+    return List.generate(mapList.length, (i) => SNLyric.fromMap(mapList[i]));
+  }
+
+  Future<void> update(SNLyric lyric) async {
+    final db = await database;
+    await db.update(
+      'sn_lyric',
+      lyric.toMap(),
+      where: 'id = ?',
+      whereArgs: [lyric.id],
+    );
+    print('Update operation succeed');
+  }
+
+  Future<void> delete(SNLyric lyric) async {
+    final db = await database;
+    await db.delete(
+      'sn_lyric',
+      where: 'id = ?',
+      whereArgs: [lyric.id],
+    );
+    print('Delete operation succeed');
+  }
+}
+
+class ShotTableSQLiteProvider extends SQLiteProvider {
+  Future<void> create(SNShotTable shotTable) async {
+    final db = await database;
+    await db.insert(
+      'sn_shot_table',
+      shotTable.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    print('Create operation succeed');
+  }
+
+  Future<SNShotTable> retrieveById(int id) async {
+    final db = await database;
+    final mapList =
+        await db.query('sn_shot_table', where: 'id = ?', whereArgs: [id]);
+    return SNShotTable.fromMap(mapList.first);
+  }
+
+  Future<List<SNShotTable>> retrieveAll() async {
+    final db = await database;
+    final mapList = await db.query('sn_shot_table', orderBy: 'id DESC');
+    return List.generate(
+        mapList.length, (i) => SNShotTable.fromMap(mapList[i]));
+  }
+
+  Future<void> update(SNShotTable shotTable) async {
+    final db = await database;
+    await db.update(
+      'sn_shot_table',
+      shotTable.toMap(),
+      where: 'id = ?',
+      whereArgs: [shotTable.id],
+    );
+    print('Update operation succeed');
+  }
+
+  Future<void> delete(SNShotTable shotTable) async {
+    final db = await database;
+    await db.delete(
+      'sn_shot_table',
+      where: 'id = ?',
+      whereArgs: [shotTable.id],
+    );
+    print('Delete operation succeed');
+  }
+
+  Future<SNShotTable> getLatestShotTable(int songId) async {
+    final db = await database;
+    final List<Map<String, dynamic>> mapList = await db.query('sn_shot_table',
+        where: 'songId = ?', whereArgs: [songId], orderBy: 'id DESC', limit: 1);
+    return SNShotTable.fromMap(mapList.first);
   }
 }
 
@@ -285,10 +402,10 @@ class ShotSQLiteProvider extends SQLiteProvider {
       shot.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print('Create operation succeed.');
+    print('Create operation succeed');
   }
 
-  Future<List<SNShot>> retrieve(int tableId) async {
+  Future<List<SNShot>> retrieveForTable(int tableId) async {
     final db = await database;
     final mapList = await db.query('sn_shot',
         where: 'tableId = ?', whereArgs: [tableId], orderBy: 'startTime DESC');
@@ -303,7 +420,7 @@ class ShotSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [shot.id],
     );
-    print('Update operation succeed.');
+    print('Update operation succeed');
   }
 
   Future<void> delete(SNShot shot) async {
@@ -313,7 +430,7 @@ class ShotSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [shot.id],
     );
-    print('Delete operation succeed.');
+    print('Delete operation succeed');
   }
 
   Future<void> deleteMultiple(List<SNShot> shots) async {
@@ -325,58 +442,7 @@ class ShotSQLiteProvider extends SQLiteProvider {
         whereArgs: [shot.id],
       );
     });
-    print('Delete operation succeed.');
-  }
-
-  Future<int> getLatestShotTable(int songId) async {
-    // final db = await database;
-    // final List<Map<String, dynamic>> latestShot = await db.query(
-    //     'sn_shot',
-    //     where: 'songId = ?',
-    //     whereArgs: [songId],
-    //     orderBy: 'shotVersion DESC',
-    //     limit: 1);
-    // return latestShot.first['shotVersion'];
-  }
-}
-
-class LyricSQLiteProvider extends SQLiteProvider {
-  Future<void> create(SNLyric lyric) async {
-    final db = await database;
-    await db.insert(
-      'sn_lyric',
-      lyric.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-    print('Create operation succeed.');
-  }
-
-  Future<List<SNLyric>> retrieve(int songId) async {
-    final db = await database;
-    final mapList = await db.query('sn_lyric',
-        where: 'songId = ?', whereArgs: [songId], orderBy: 'startTime DESC');
-    return List.generate(mapList.length, (i) => SNLyric.fromMap(mapList[i]));
-  }
-
-  Future<void> update(SNLyric lyric) async {
-    final db = await database;
-    await db.update(
-      'sn_lyric',
-      lyric.toMap(),
-      where: 'id = ?',
-      whereArgs: [lyric.id],
-    );
-    print('Update operation succeed.');
-  }
-
-  Future<void> delete(SNLyric lyric) async {
-    final db = await database;
-    await db.delete(
-      'sn_lyric',
-      where: 'id = ?',
-      whereArgs: [lyric.id],
-    );
-    print('Delete operation succeed.');
+    print('Delete operation succeed');
   }
 }
 
@@ -388,10 +454,10 @@ class FormationSQLiteProvider extends SQLiteProvider {
       formation.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print('Create operation succeed.');
+    print('Create operation succeed');
   }
 
-  Future<List<SNFormation>> retrieve(int tableId) async {
+  Future<List<SNFormation>> retrieveForTable(int tableId) async {
     final db = await database;
     final mapList = await db.query('sn_formation',
         where: 'tableId = ?', whereArgs: [tableId], orderBy: 'startTime DESC');
@@ -407,7 +473,7 @@ class FormationSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [formation.id],
     );
-    print('Update operation succeed.');
+    print('Update operation succeed');
   }
 
   Future<void> delete(SNFormation formation) async {
@@ -417,6 +483,6 @@ class FormationSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [formation.id],
     );
-    print('Delete operation succeed.');
+    print('Delete operation succeed');
   }
 }
