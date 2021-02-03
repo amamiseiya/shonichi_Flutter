@@ -11,17 +11,35 @@ import UIKit
 import Flutter
 
 struct NewDashboardView: View {
-    
     var body: some View {
-        Group{
-            
+        MyViewController()
+        MyUIView()
+    }
+}
+
+struct MyViewController: UIViewControllerRepresentable {
+
+    func makeUIViewController(context: Context) -> UIViewController {
+            let myViewController = FlutterUIViewController()
+
+            return myViewController
         }
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+        }
+}
+
+struct MyUIView: UIViewRepresentable {
+    
+    func makeUIView(context: Context) -> UIView {
+        return UIView()
+    }
+    
+    func updateUIView(_ uiView: UIView, context: Context){
     }
     
 }
 
-
-class ViewController: UIViewController {
+class FlutterUIViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 

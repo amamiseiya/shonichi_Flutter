@@ -41,9 +41,10 @@ dependencies:
   dio:
   equatable:
   # 为什么我一加Firebase就出问题？
-  # firebase_core: ^0.2.5
-  # firebase_analytics: ^1.0.4
-  flutter_bloc:
+  # firebase_core: ^0.4.0+9
+  # firebase_database:
+  # 已经不再使用BLoC
+  # flutter_bloc:
   flutter_markdown:
   get:
   image_picker:

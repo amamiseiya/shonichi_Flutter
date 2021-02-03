@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../model/song.dart';
 import '../model/shot.dart';
 import '../model/character.dart';
-import '../bloc/shot/shot_crud_bloc.dart';
-import '../bloc/song/song_crud_bloc.dart';
 
 class CharacterSelector extends StatefulWidget {
   final SNShot editingShot;

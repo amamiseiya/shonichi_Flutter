@@ -11,6 +11,11 @@ target 'shonichi' do
   # Pods for shonichi
 
   install_all_flutter_pods(flutter_application_path)
+  
+  # add the Firebase pod for Google Analytics
+  pod 'Firebase/Analytics'
+  # add pods for any other desired Firebase products
+  # https://firebase.google.com/docs/ios/setup#available-pods
 
   target 'shonichiTests' do
     inherit! :search_paths

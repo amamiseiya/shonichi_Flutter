@@ -2,19 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../page/home_page.dart';
-import '../page/shot_editor_page.dart';
-import '../page/song_detail_page.dart';
-import '../page/song_list_page.dart';
-import '../page/migrator_page.dart';
-import '../page/formation_editor_page.dart';
+import '../page/shot_editor.dart';
+import '../page/song_detail.dart';
+import '../page/song_list.dart';
+import '../page/migrator.dart';
+import '../page/formation_editor.dart';
 
 class MyDrawer extends StatelessWidget {
-  // final HomePage homePage = HomePage();
-  // final ShotEditorPage shotEditorPage = ShotEditorPage();
-  // final SongInfoPage songInfoPage = SongInfoPage();
-  // final FormationEditorPage formationEditorPage = formationEditorPage();
-  // final SongListPage songListPage = SongListPage();
-  // final MigratorPage migratorPage = MigratorPage();
   @override
   Widget build(BuildContext context) {
     return Drawer(

@@ -7,9 +7,9 @@ import '../widget/tutorial.dart';
 import '../widget/drawer.dart';
 import '../widget/loading.dart';
 import '../widget/error.dart';
-import '../controller/project_controller.dart';
+import '../controller/project.dart';
 import '../model/project.dart';
-import '../provider/sqlite_provider.dart';
+import '../provider/sqlite/sqlite.dart';
 
 class HomePage extends GetView<ProjectController> {
   @override
@@ -21,7 +21,7 @@ class HomePage extends GetView<ProjectController> {
           //   tooltip: 'Navigation menu',
           //   onPressed: () => Scaffold.of(context).openDrawer(),
           // ),
-          title: Text('主界面'),
+          title: Text('Home Page'.tr),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.search),
@@ -52,14 +52,16 @@ class HomePage extends GetView<ProjectController> {
               tooltip: 'Add', // used by assistive technologies
               child: Icon(Icons.add),
               heroTag: 'addFAB',
-              onPressed: () =>
-                  Get.to(showProjectEditorDialog(null))), //! 和Lyric页面的实现方式不同
+              onPressed: () => Get.dialog(ProjectEditorDialog(null)).then(
+                  (project) =>
+                      controller.submitCreate(project))), //! 和Lyric页面的实现方式不同
           FloatingActionButton(
               tooltip: 'Edit', // used by assistive technologies
               child: Icon(Icons.edit),
               heroTag: 'editFAB',
-              onPressed: () => Get.to(
-                  showProjectEditorDialog(controller.editingProject.value))),
+              onPressed: () => Get.dialog(
+                      ProjectEditorDialog(controller.editingProject.value))
+                  .then((project) => controller.submitUpdate(project))),
           FloatingActionButton(
               tooltip: 'Delete', // used by assistive technologies
               child: Icon(Icons.delete),
@@ -88,7 +90,7 @@ class Dashboard extends GetView<ProjectController> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0))),
                 child: Text(
-                  'お帰りなさい♪',
+                  'Welcome back!'.tr,
                   textScaleFactor: 1.8,
                 )),
             Material(
@@ -101,7 +103,7 @@ class Dashboard extends GetView<ProjectController> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        '当前项目：',
+                        'Current project:'.tr,
                         textScaleFactor: 1.2,
                       ),
                       Ink.image(
@@ -131,7 +133,7 @@ class Dashboard extends GetView<ProjectController> {
                     borderRadius: BorderRadius.all(Radius.circular(10.0))),
                 child: Column(children: <Widget>[
                   Text(
-                    '或是选择其它项目：',
+                    'Or another project:'.tr,
                     textScaleFactor: 1.2,
                   ),
                   Column(
@@ -157,7 +159,7 @@ class Dashboard extends GetView<ProjectController> {
                     borderRadius: BorderRadius.all(Radius.circular(10.0))),
                 child: Column(children: [
                   Text(
-                    '您也可以自行输入项目ID：',
+                    'Input project ID:'.tr,
                     textScaleFactor: 1.2,
                   ),
                   TextField(
@@ -177,74 +179,83 @@ class Dashboard extends GetView<ProjectController> {
   }
 }
 
-Widget showProjectEditorDialog(SNProject project) {
-  SNProject p = (project != null) ? project : SNProject.initialValue();
-  TextEditingController _idController = TextEditingController()
-    ..text = p.id.toString();
-  TextEditingController _dancerNameController = TextEditingController()
-    ..text = p.dancerName;
-  TextEditingController _songIdController = TextEditingController()
-    ..text = p.songId.toString();
-  TextEditingController _shotVersionController = TextEditingController()
-    ..text = p.shotTableId.toString();
-  TextEditingController _formationVersionController = TextEditingController()
-    ..text = p.formationTableId.toString();
-  return SimpleDialog(
-    title: Text('编辑项目'),
-    children: <Widget>[
-      Column(children: [
-        Form(
-            child: Column(children: [
-          TextFormField(
-            controller: _idController,
-            decoration: InputDecoration(hintText: '输入项目编号'),
-            onEditingComplete: () {
-              p.id = int.parse(_idController.text);
-            },
-          ),
-          FlatButton(
-            onPressed: () => showDatePicker(
-              context: Get.context,
-              initialDate: p.createdTime,
-              firstDate: DateTime.now().subtract(Duration(days: 3650)),
-              lastDate: DateTime.now().add(Duration(days: 3650)),
-            ).then((value) => p.createdTime = value),
-            child: Text('选择日期'),
-          ),
-          TextFormField(
-            controller: _dancerNameController,
-            decoration: InputDecoration(hintText: '输入舞团名称'),
-            onEditingComplete: () {
-              p.dancerName = _dancerNameController.text;
-            },
-          ),
-          TextFormField(
-            controller: _songIdController,
-            decoration: InputDecoration(hintText: '输入歌曲编号'),
-            onEditingComplete: () {
-              p.songId = int.parse(_songIdController.text);
-            },
-          ),
-          TextFormField(
-            controller: _shotVersionController,
-            decoration: InputDecoration(hintText: '输入分镜编号'),
-            onEditingComplete: () {
-              p.shotTableId = int.parse(_shotVersionController.text);
-            },
-          ),
-          TextFormField(
-            controller: _formationVersionController,
-            decoration: InputDecoration(hintText: '输入队形编号'),
-            onEditingComplete: () {
-              p.formationTableId = int.parse(_formationVersionController.text);
-            },
-          ),
-        ])),
-        SimpleDialogOption(
-          onPressed: () => Get.back(result: p),
-          child: Text('完成'),
-        ),
-      ])
-    ],
-  );
+class ProjectEditorDialog extends StatelessWidget {
+  SNProject p;
+
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _dancerNameController = TextEditingController();
+  final TextEditingController _songIdController = TextEditingController();
+  final TextEditingController _shotVersionController = TextEditingController();
+  final TextEditingController _formationVersionController =
+      TextEditingController();
+
+  ProjectEditorDialog(project) {
+    p = (project != null) ? project : SNProject.initialValue();
+    _idController.text = p.id.toString();
+    _dancerNameController.text = p.dancerName;
+    _songIdController.text = p.songId.toString();
+    _shotVersionController.text = p.shotTableId.toString();
+    _formationVersionController.text = p.formationTableId.toString();
+  }
+
+  @override
+  Widget build(BuildContext context) => SimpleDialog(
+        title: Text('编辑项目'),
+        children: <Widget>[
+          Column(children: [
+            Form(
+                child: Column(children: [
+              TextFormField(
+                controller: _idController,
+                decoration: InputDecoration(hintText: '输入项目编号'),
+                onEditingComplete: () {
+                  p.id = int.parse(_idController.text);
+                },
+              ),
+              FlatButton(
+                onPressed: () => showDatePicker(
+                  context: Get.context,
+                  initialDate: p.createdTime,
+                  firstDate: DateTime.now().subtract(Duration(days: 3650)),
+                  lastDate: DateTime.now().add(Duration(days: 3650)),
+                ).then((value) => p.createdTime = value),
+                child: Text('选择日期'),
+              ),
+              TextFormField(
+                controller: _dancerNameController,
+                decoration: InputDecoration(hintText: '输入舞团名称'),
+                onEditingComplete: () {
+                  p.dancerName = _dancerNameController.text;
+                },
+              ),
+              TextFormField(
+                controller: _songIdController,
+                decoration: InputDecoration(hintText: '输入歌曲编号'),
+                onEditingComplete: () {
+                  p.songId = int.parse(_songIdController.text);
+                },
+              ),
+              TextFormField(
+                controller: _shotVersionController,
+                decoration: InputDecoration(hintText: '输入分镜编号'),
+                onEditingComplete: () {
+                  p.shotTableId = int.parse(_shotVersionController.text);
+                },
+              ),
+              TextFormField(
+                controller: _formationVersionController,
+                decoration: InputDecoration(hintText: '输入队形编号'),
+                onEditingComplete: () {
+                  p.formationTableId =
+                      int.parse(_formationVersionController.text);
+                },
+              ),
+            ])),
+            SimpleDialogOption(
+              onPressed: () => Get.back(result: p),
+              child: Text('Submit'.tr),
+            ),
+          ])
+        ],
+      );
 }

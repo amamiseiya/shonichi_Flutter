@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>326646427946-gpraaco1fpngemtqrj7bulpn2amr3ps6.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.326646427946-gpraaco1fpngemtqrj7bulpn2amr3ps6</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAXghUTThOY08ZN8NUsUj_Q4mO6o2CUZzA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>326646427946</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>studio.seiya.shonichi</string>
+	<key>PROJECT_ID</key>
+	<string>odottemita-satsuei-flutter</string>
+	<key>STORAGE_BUCKET</key>
+	<string>odottemita-satsuei-flutter.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:326646427946:ios:ed2e0cda76bf4a2ff32e53</string>
+	<key>DATABASE_URL</key>
+	<string>https://odottemita-satsuei-flutter.firebaseio.com</string>
+</dict>
+</plist>

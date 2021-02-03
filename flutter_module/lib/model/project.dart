@@ -1,3 +1,5 @@
+import 'package:leancloud_storage/leancloud.dart';
+
 class SNProject {
   int id;
   String dancerName;
@@ -38,6 +40,18 @@ class SNProject {
     );
   }
 
+  factory SNProject.fromLCObject(LCObject object) {
+    return SNProject(
+      // id: object.objectId,
+      dancerName: object['dancerName'],
+      createdTime: object.createdAt,
+      modifiedTime: object.updatedAt,
+      songId: object['songId'],
+      shotTableId: object['shotTableId'],
+      formationTableId: object['formationTableId'],
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -48,5 +62,14 @@ class SNProject {
       'shotTableId': shotTableId,
       'formationTableId': formationTableId,
     };
+  }
+
+  LCObject toLCObject(LCObject object) {
+    object['dancerName'] = dancerName;
+    object['songId'] = songId;
+    object['shotTableId'] = shotTableId;
+    object['formationTableId'] = formationTableId;
+
+    return object;
   }
 }
