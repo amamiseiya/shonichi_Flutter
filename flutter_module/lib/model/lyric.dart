@@ -1,12 +1,12 @@
 import 'character.dart';
 
 class SNLyric {
-  int id;
+  String id;
   Duration startTime;
   Duration endTime;
   String text;
 
-  int songId;
+  String songId;
   List<SNCharacter> soloPart;
 
   SNLyric(
@@ -19,7 +19,6 @@ class SNLyric {
 
   factory SNLyric.fromMap(Map<String, dynamic> map) {
     return SNLyric(
-        id: map['id'],
         startTime: Duration(milliseconds: map['startTime']),
         endTime: Duration(milliseconds: map['endTime']),
         text: map['text'],
@@ -29,7 +28,6 @@ class SNLyric {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'startTime': startTime.inMilliseconds,
       'endTime': endTime.inMilliseconds,
       'text': text,
@@ -39,7 +37,7 @@ class SNLyric {
   }
 
   static List<SNLyric> parseFromLrc(
-      String lrcStr, int songId, int lyricOffset) {
+      String lrcStr, String songId, int lyricOffset) {
     try {
       // assert(lyricOffset % 100 == 0);
       List<SNLyric> result = lrcStr

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shonichi_flutter_module/controller/migrator.dart';
 
 import '../widget/tutorial.dart';
 import '../widget/drawer.dart';
@@ -40,14 +41,15 @@ class HomePage extends GetView<ProjectController> {
             builder: (_) => Dashboard()),
         floatingActionButton:
             Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-          FloatingActionButton(
-              tooltip: 'Reset', // used by assistive technologies
-              backgroundColor: Colors.red,
-              child: Icon(
-                Icons.refresh,
-              ),
-              heroTag: 'resetFAB',
-              onPressed: () => SQLiteProvider.cheatCodeReset()),
+          GetBuilder<MigratorController>(
+              builder: (controller) => FloatingActionButton(
+                  tooltip: 'Reset', // used by assistive technologies
+                  backgroundColor: Colors.red,
+                  child: Icon(
+                    Icons.refresh,
+                  ),
+                  heroTag: 'resetFAB',
+                  onPressed: () => controller.importJson())),
           FloatingActionButton(
               tooltip: 'Add', // used by assistive technologies
               child: Icon(Icons.add),
@@ -166,7 +168,7 @@ class Dashboard extends GetView<ProjectController> {
                     decoration: InputDecoration(
                         fillColor: Colors.blue.shade100, filled: true),
                     onSubmitted: (value) {
-                      controller.select(int.parse(value));
+                      controller.select(value);
                     },
                   )
                 ])),
@@ -209,7 +211,7 @@ class ProjectEditorDialog extends StatelessWidget {
                 controller: _idController,
                 decoration: InputDecoration(hintText: '输入项目编号'),
                 onEditingComplete: () {
-                  p.id = int.parse(_idController.text);
+                  p.id = _idController.text;
                 },
               ),
               FlatButton(
@@ -224,35 +226,32 @@ class ProjectEditorDialog extends StatelessWidget {
               TextFormField(
                 controller: _dancerNameController,
                 decoration: InputDecoration(hintText: '输入舞团名称'),
-                onEditingComplete: () {
-                  p.dancerName = _dancerNameController.text;
-                },
+                onEditingComplete: () {},
               ),
               TextFormField(
                 controller: _songIdController,
                 decoration: InputDecoration(hintText: '输入歌曲编号'),
-                onEditingComplete: () {
-                  p.songId = int.parse(_songIdController.text);
-                },
+                onEditingComplete: () {},
               ),
               TextFormField(
                 controller: _shotVersionController,
                 decoration: InputDecoration(hintText: '输入分镜编号'),
-                onEditingComplete: () {
-                  p.shotTableId = int.parse(_shotVersionController.text);
-                },
+                onEditingComplete: () {},
               ),
               TextFormField(
                 controller: _formationVersionController,
                 decoration: InputDecoration(hintText: '输入队形编号'),
-                onEditingComplete: () {
-                  p.formationTableId =
-                      int.parse(_formationVersionController.text);
-                },
+                onEditingComplete: () {},
               ),
             ])),
             SimpleDialogOption(
-              onPressed: () => Get.back(result: p),
+              onPressed: () {
+                p.dancerName = _dancerNameController.text;
+                p.songId = _songIdController.text;
+                p.shotTableId = _shotVersionController.text;
+                p.formationTableId = _formationVersionController.text;
+                Get.back(result: p);
+              },
               child: Text('Submit'.tr),
             ),
           ])

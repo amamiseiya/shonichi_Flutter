@@ -23,22 +23,23 @@ class ProjectController extends GetxController {
         assert(songRepository != null),
         assert(attachmentRepository != null);
 
-  void retrieve() async {
+  Future<void> retrieve() async {
     try {
-      projects(await projectRepository.retrieveLatestN(4));
-      if (projects.isNotEmpty) {
-        final SNSong song =
-            await songRepository.retrieveById(projects[0].songId);
+      final ps = await projectRepository.retrieveLatestN(4);
+      if (ps.isNotEmpty) {
+        final SNSong song = await songRepository.retrieveById(ps[0].songId);
         editingCover.value = await attachmentRepository.getSongCoverFile(song);
+        projects(ps);
       } else {
         editingCover = null;
+        projects(ps);
       }
     } catch (e) {
       print(e);
     }
   }
 
-  void submitCreate(SNProject project) async {
+  Future<void> submitCreate(SNProject project) async {
     try {
       if (project != null) {
         await projectRepository.create(project);
@@ -49,7 +50,7 @@ class ProjectController extends GetxController {
     }
   }
 
-  void submitUpdate(SNProject project) async {
+  Future<void> submitUpdate(SNProject project) async {
     try {
       if (project != null) {
         await projectRepository.update(project);
@@ -60,16 +61,16 @@ class ProjectController extends GetxController {
     }
   }
 
-  void delete(SNProject project) async {
+  Future<void> delete(SNProject project) async {
     try {
-      await projectRepository.delete(project);
+      await projectRepository.delete(project.id);
       retrieve();
     } catch (e) {
       print(e);
     }
   }
 
-  void select(int id) async {
+  Future<void> select(String id) async {
     try {
       if (editingProject == Rx<SNProject>(null) ||
           editingProject.value.id != id) {

@@ -65,7 +65,7 @@ class LyricController extends GetxController {
 
   void delete(SNLyric lyric) async {
     try {
-      await lyricRepository.delete(lyric);
+      await lyricRepository.delete(lyric.id);
       retrieveForSong();
     } catch (e) {
       print(e);

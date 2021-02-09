@@ -44,10 +44,10 @@ class ShotEditorPage extends GetView<ShotController> {
         // body is the majority of the screen.
         body: GetX(
             initState: (_) => shotTableController.editingShotTable(SNShotTable(
-                id: 2,
+                id: 'sn_shot_table_example_2',
                 name: 'Default ShotTable for Star Diamond',
-                authorId: 1,
-                songId: 2)),
+                authorId: '1',
+                songId: 'sn_song_example_2')),
             builder: (_) {
               if (controller.shots.value != null) {
                 return Row(

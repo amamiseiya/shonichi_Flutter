@@ -1,13 +1,15 @@
 import '../model/project.dart';
 import '../provider/sqlite/sqlite.dart';
+import '../provider/leancloud/leancloud.dart';
+import '../provider/firestore/firestore.dart';
 
 class ProjectRepository {
-  final provider = ProjectSQLiteProvider();
+  final provider = ProjectFirestoreProvider();
 
   Future<void> create(SNProject project) async =>
       await provider.create(project);
 
-  Future<SNProject> retrieveById(int id) async =>
+  Future<SNProject> retrieveById(String id) async =>
       await provider.retrieveById(id);
 
   Future<List<SNProject>> retrieveLatestN(int count) async =>
@@ -16,9 +18,8 @@ class ProjectRepository {
   Future<void> update(SNProject project) async =>
       await provider.update(project);
 
-  Future<void> delete(SNProject project) async =>
-      await provider.delete(project);
+  Future<void> delete(String id) async => await provider.delete(id);
 
-  Future<void> deleteMultiple(List<SNProject> projects) async =>
-      await provider.deleteMultiple(projects);
+  Future<void> deleteMultiple(List<String> ids) async =>
+      await provider.deleteMultiple(ids);
 }

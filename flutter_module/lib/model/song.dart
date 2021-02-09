@@ -2,7 +2,7 @@ import '../util/data_convert.dart';
 import 'attachment.dart';
 
 class SNSong {
-  int id;
+  String id;
   String name;
   String coverFileName;
   int lyricOffset;
@@ -23,15 +23,10 @@ class SNSong {
   });
 
   factory SNSong.initialValue() => SNSong(
-      id: 114514,
-      name: '',
-      coverFileName: '',
-      lyricOffset: 0,
-      subordinateKikaku: '');
+      name: '', coverFileName: '', lyricOffset: 0, subordinateKikaku: '');
 
   factory SNSong.fromMap(Map<String, dynamic> map) {
     return SNSong(
-      id: map['id'],
       name: map['name'],
       coverFileName: map['coverFileName'],
       lyricOffset: map['lyricOffset'],
@@ -44,7 +39,6 @@ class SNSong {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'name': name,
       'coverFileName': coverFileName,
       'lyricOffset': lyricOffset,

@@ -1,11 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:leancloud_storage/leancloud.dart';
 
 enum KCurveType { X, Y, Z, Rotation, Camera }
 
 class SNFormation {
-  int id;
+  String id;
   Duration startTime;
   double posX;
   double posY;
@@ -19,7 +20,7 @@ class SNFormation {
   int curveY2Y;
 
   String characterName;
-  int tableId;
+  String tableId;
 
   SNFormation(
       {this.id,
@@ -38,9 +39,8 @@ class SNFormation {
       this.tableId});
 
   factory SNFormation.initialValue(
-          Duration startTime, int formationTableId, String characterName) =>
+          Duration startTime, String characterName, String tableId) =>
       SNFormation(
-          id: Random().nextInt(10000),
           startTime: startTime,
           posX: 0.0,
           posY: 0.0,
@@ -52,12 +52,11 @@ class SNFormation {
           curveY1Y: 0,
           curveY2X: 127,
           curveY2Y: 127,
-          tableId: formationTableId,
-          characterName: characterName);
+          characterName: characterName,
+          tableId: tableId);
 
   factory SNFormation.fromMap(Map<String, dynamic> map) {
     return SNFormation(
-        id: map['id'],
         startTime: Duration(milliseconds: map['startTime']),
         posX: map['posX'],
         posY: map['posY'],
@@ -73,9 +72,26 @@ class SNFormation {
         tableId: map['tableId']);
   }
 
+  factory SNFormation.fromLCObject(LCObject object) {
+    return SNFormation(
+        id: object.objectId,
+        startTime: Duration(milliseconds: object['startTime']),
+        posX: object['posX'],
+        posY: object['posY'],
+        curveX1X: object['curveX1X'],
+        curveX1Y: object['curveX1Y'],
+        curveX2X: object['curveX2X'],
+        curveX2Y: object['curveX2Y'],
+        curveY1X: object['curveY1X'],
+        curveY1Y: object['curveY1Y'],
+        curveY2X: object['curveY2X'],
+        curveY2Y: object['curveY2Y'],
+        characterName: object['characterName'],
+        tableId: object['tableId']);
+  }
+
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
       'startTime': startTime.inMilliseconds,
       'posX': posX,
       'posY': posY,
@@ -90,6 +106,22 @@ class SNFormation {
       'characterName': characterName,
       'tableId': tableId
     };
+  }
+
+  void toLCObject(LCObject object) {
+    object['startTime'] = startTime.inMilliseconds;
+    object['posX'] = posX;
+    object['posY'] = posY;
+    object['curveX1X'] = curveX1X;
+    object['curveX1Y'] = curveX1Y;
+    object['curveX2X'] = curveX2X;
+    object['curveX2Y'] = curveX2Y;
+    object['curveY1X'] = curveY1X;
+    object['curveY1Y'] = curveY1Y;
+    object['curveY2X'] = curveY2X;
+    object['curveY2Y'] = curveY2Y;
+    object['characterName'] = characterName;
+    object['tableId'] = tableId;
   }
 
   // range: ±8 meters

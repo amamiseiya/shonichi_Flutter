@@ -11,7 +11,7 @@ class SongSQLiteProvider extends SQLiteProvider {
     print('Create operation succeed');
   }
 
-  Future<SNSong> retrieveById(int id) async {
+  Future<SNSong> retrieveById(String id) async {
     final db = await database;
     final mapList = await db.query('sn_song', where: 'id = ?', whereArgs: [id]);
     return SNSong.fromMap(mapList.first);
@@ -34,23 +34,23 @@ class SongSQLiteProvider extends SQLiteProvider {
     print('Update operation succeed');
   }
 
-  Future<void> delete(SNSong song) async {
+  Future<void> delete(String id) async {
     final db = await database;
     await db.delete(
       'sn_song',
       where: 'id = ?',
-      whereArgs: [song.id],
+      whereArgs: [id],
     );
     print('Delete operation succeed');
   }
 
-  Future<void> deleteMultiple(List<SNSong> songs) async {
+  Future<void> deleteMultiple(List<String> ids) async {
     final db = await database;
-    songs.forEach((song) async {
+    ids.forEach((id) async {
       await db.delete(
         'sn_song',
         where: 'id = ?',
-        whereArgs: [song.id],
+        whereArgs: [id],
       );
     });
   }

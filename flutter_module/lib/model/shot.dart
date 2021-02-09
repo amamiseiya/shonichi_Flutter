@@ -2,7 +2,7 @@ import 'character.dart';
 import '../util/data_convert.dart';
 
 class SNShot {
-  int id;
+  String id;
   int sceneNumber;
   int shotNumber;
   Duration startTime;
@@ -15,7 +15,7 @@ class SNShot {
   String image;
   String comment;
 
-  int tableId;
+  String tableId;
   List<SNCharacter> characters;
 
   static List<String> titles = [
@@ -51,7 +51,6 @@ class SNShot {
 
   factory SNShot.fromMap(Map<String, dynamic> map) {
     return SNShot(
-      id: map['id'],
       sceneNumber: map['sceneNumber'],
       shotNumber: map['shotNumber'],
       startTime: Duration(milliseconds: map['startTime']),
@@ -69,7 +68,6 @@ class SNShot {
   }
 
   Map<String, dynamic> toMap() => {
-        'id': id,
         'sceneNumber': sceneNumber,
         'shotNumber': shotNumber,
         'startTime': startTime.inMilliseconds,

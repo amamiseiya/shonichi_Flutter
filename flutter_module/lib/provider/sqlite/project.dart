@@ -11,7 +11,7 @@ class ProjectSQLiteProvider extends SQLiteProvider {
     print('Create operation succeed');
   }
 
-  Future<SNProject> retrieveById(int id) async {
+  Future<SNProject> retrieveById(String id) async {
     final db = await database;
     final mapList =
         await db.query('sn_project', where: 'id = ?', whereArgs: [id]);
@@ -36,23 +36,23 @@ class ProjectSQLiteProvider extends SQLiteProvider {
     print('Update operation succeed');
   }
 
-  Future<void> delete(SNProject project) async {
+  Future<void> delete(String id) async {
     final db = await database;
     await db.delete(
       'sn_project',
       where: 'id = ?',
-      whereArgs: [project.id],
+      whereArgs: [id],
     );
     print('Delete operation succeed');
   }
 
-  Future<void> deleteMultiple(List<SNProject> projects) async {
+  Future<void> deleteMultiple(List<String> ids) async {
     final db = await database;
-    projects.forEach((SNProject project) async {
+    ids.forEach((String id) async {
       await db.delete(
         'sn_project',
         where: 'id = ?',
-        whereArgs: [project.id],
+        whereArgs: [id],
       );
     });
     print('Delete operation succeed');

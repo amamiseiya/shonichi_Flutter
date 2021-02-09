@@ -60,7 +60,7 @@ class SongController extends GetxController {
 
   void delete(SNSong song) async {
     try {
-      await songRepository.delete(song);
+      await songRepository.delete(song.id);
       retrieve();
     } catch (e) {
       print(e);
@@ -69,7 +69,8 @@ class SongController extends GetxController {
 
   void deleteMultiple(List<SNSong> songs) async {
     try {
-      await songRepository.deleteMultiple(songs);
+      await songRepository
+          .deleteMultiple(List.generate(songs.length, (i) => songs[i].id));
       retrieve();
     } catch (e) {
       print(e);

@@ -1,73 +1,90 @@
 @startuml Class
 
+SNProject "1..*" -- "1" SNSong
+SNProject "1..*" -- "1" SNShotTable
+SNProject "1..*" -- "1" SNFormationTable
+SNSong "1" -- "1..*" SNShotTable
+SNSong "1" -- "1..*" SNFormationTable
+SNSong "1" *-- "1..*" SNLyric
+SNShotTable "1" *-- "1..*" SNShot
+SNFormationTable "1" *-- "1..*" SNFormation
 
-SNSong "1" o-- "1" SNLyric
-SNSong "1...*" o-- "1" SNShot
-SNSong "1...*" o-- "1" SNFormation
-SNProject "1" o-- "1...*" SNSong
-SNProject "1" o-- "1...*" SNShot
-SNProject "1" o-- "1...*" SNFormation
 
 class SNProject {
-    int projectId
-    DateTime projectDate
+    String id
     String dancerName
-    int songId
-    int shotVersion
-    int formationVersion
+    DateTime createdTime
+    DateTime modifiedTime
+    String songId
+    String shotTableId
+    String formationTableId
     fromMap()
     toMap()
 }
 
 class SNSong {
-    int songId
-    String songName
-    String subordinateKikaku
-    int lyricOffset
+    String id
+    String name
     String coverFileName
-    List<String> videoIntros
-    List<String> videoFileNames
-    List<int> videoOffsets
-    fromMap()
-    toMap()
-}
-
-class SNShot {
-    int songId
-    int shotVersion
-    String shotName
-    Duration startTime
-    Duration endTime
-    int shotNumber
-    String shotLyric
-    int shotScene
-    List<SNCharacter> shotCharacters
-    String shotType
-    String shotMovement
-    String shotAngle
-    String shotContent
-    String shotImage
-    String shotComment
+    int lyricOffset
+    String subordinateKikaku
     fromMap()
     toMap()
 }
 
 class SNLyric {
-    int songId
+    String id
     Duration startTime
     Duration endTime
-    String lyricContent
-    List<SNCharacter> soloCharacters
+    String text
+    String songId
+    List<SNCharacter> soloPart
     fromMap()
     toMap()
 }
 
+
+class SNShotTable {
+  String id
+  String name
+  String authorId
+  String songId
+  fromMap()
+  toMap()
+}
+
+
+class SNShot {
+    String id
+    int sceneNumber
+    int shotNumber
+    Duration startTime
+    Duration endTime
+    String lyric
+    String shotType
+    String shotMovement
+    String shotAngle
+    String text
+    String image
+    String comment
+    String tableId
+    List<SNCharacter> characters
+    fromMap()
+    toMap()
+}
+class SNFormationTable {
+  String id
+  String name
+  String authorId
+  String songId
+
+  fromMap()
+  toMap()
+}
+
 class SNFormation {
-    int songId
-    int formationVersion
-    String characterName
-    Color memberColor
-    int startTime
+    String id
+    Duration startTime
     double posX
     double posY
     int curveX1X
@@ -78,6 +95,8 @@ class SNFormation {
     int curveY1Y
     int curveY2X
     int curveY2Y
+    String characterName
+    String tableId
     fromMap()
     toMap()
 }

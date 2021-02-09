@@ -107,7 +107,6 @@ class ShotController extends GetxController {
   void create() async {
     try {
       final shot = SNShot(
-          id: Random().nextInt(1000),
           sceneNumber: 1010,
           shotNumber: 1,
           startTime: Duration(milliseconds: Random().nextInt(100000)),
@@ -130,7 +129,7 @@ class ShotController extends GetxController {
 
   void delete(SNShot shot) async {
     try {
-      await shotRepository.delete(shot);
+      await shotRepository.delete(shot.id);
       retrieveForTable();
     } catch (e) {
       print(e);
@@ -139,7 +138,8 @@ class ShotController extends GetxController {
 
   void deleteMultiple(List<SNShot> shots) async {
     try {
-      await shotRepository.deleteMultiple(shots);
+      await shotRepository
+          .deleteMultiple(List.generate(shots.length, (i) => shots[i].id));
       retrieveForTable();
     } catch (e) {
       print(e);

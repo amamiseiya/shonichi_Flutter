@@ -2,13 +2,13 @@
 scale 500 width
 
 [*] --> ProjectUninitialized
-ProjectUninitialized-->RetrievingProject:InitializeApp
-RetrievingProject-->NoProjectRetrieved
-RetrievingProject-->ProjectRetrieved
-NoProjectRetrieved-->CreatingProject:AddProject
-ProjectRetrieved-->CreatingProject:AddProject
-ProjectRetrieved-->RetrievingProject:DeleteProject
-CreatingProject-->RetrievingProject:ConfirmAddProject
-ProjectRetrieved-->ProjectSelected:SelectAProject
-ProjectSelected-->[*]
+ProjectUninitialized --> RetrievingProject: InitializeApp
+RetrievingProject --> NoProjectRetrieved
+RetrievingProject --> ProjectRetrieved
+NoProjectRetrieved --> CreatingProject: CreateProject
+ProjectRetrieved --> CreatingProject: CreateProject
+ProjectRetrieved --> RetrievingProject: DeleteProject
+CreatingProject --> RetrievingProject: SubmitCreateProject
+ProjectRetrieved --> [*]
+
 @enduml

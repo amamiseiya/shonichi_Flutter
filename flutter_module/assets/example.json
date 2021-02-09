@@ -1,0 +1,1010 @@
+{
+  "sn_project": [
+    {
+      "id": "sn_project_example_1",
+      "dancerName": "舞团A",
+      "createdTime": "2019-11-24 00:00:00.000",
+      "modifiedTime": "2019-11-24 00:00:00.000",
+      "songId": "sn_song_example_1",
+      "shotTableId": "sn_shot_table_example_1",
+      "formationTableId": "sn_formation_table_example_1"
+    },
+    {
+      "id": "sn_project_example_2",
+      "dancerName": "舞团B",
+      "createdTime": "2020-01-01 00:00:00.000",
+      "modifiedTime": "2020-01-01 00:00:00.000",
+      "songId": "sn_song_example_2",
+      "shotTableId": "sn_shot_table_example_2",
+      "formationTableId": "sn_formation_table_example_2"
+    }
+  ],
+  "sn_song": [
+    {
+      "id": "sn_song_example_1",
+      "name": "Brightest Melody",
+      "coverFileName": "Brightest Melody_cover.jpg",
+      "lyricOffset": 0,
+      "subordinateKikaku": "Aqours"
+    },
+    {
+      "id": "sn_song_example_2",
+      "name": "Star Diamond",
+      "coverFileName": "Star Diamond_cover.jpg",
+      "lyricOffset": -520,
+      "subordinateKikaku": "スタァライト九九組"
+    }
+  ],
+  "sn_lyric": [
+    {
+      "startTime": 1300,
+      "endTime": 4600,
+      "text": "Ah どこへ行っても忘れないよ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 4600,
+      "endTime": 20000,
+      "text": "Brightest Melody",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 20000,
+      "endTime": 23300,
+      "text": "いつまでもここにいたい",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 23300,
+      "endTime": 25700,
+      "text": "みんなの想いは",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 25700,
+      "endTime": 27800,
+      "text": "きっとひとつだよ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 27800,
+      "endTime": 30200,
+      "text": "ずっと歌おうみんなで",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 30200,
+      "endTime": 33600,
+      "text": "だけど先に道がある",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 33600,
+      "endTime": 36000,
+      "text": "いろんなミライ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 36000,
+      "endTime": 39800,
+      "text": "次のトキメキへと",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 39800,
+      "endTime": 42500,
+      "text": "出会い 別れ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 42500,
+      "endTime": 45000,
+      "text": "繰り返すってことが",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 45000,
+      "endTime": 47600,
+      "text": "わかってきたんだ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 47600,
+      "endTime": 49600,
+      "text": "でも笑顔でね",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 49600,
+      "endTime": 52500,
+      "text": "また会おうと言ってみよう",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 52500,
+      "endTime": 59900,
+      "text": "ココロから ね",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 59900,
+      "endTime": 63300,
+      "text": "キラキラひかる夢が",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 63300,
+      "endTime": 68100,
+      "text": "僕らの胸のなかで輝いてた",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 68100,
+      "endTime": 71500,
+      "text": "熱く大きなキラキラ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 71500,
+      "endTime": 73700,
+      "text": "さあ明日に向けて",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 73700,
+      "endTime": 75100,
+      "text": "また始めたい",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 75100,
+      "endTime": 79000,
+      "text": "とびっきりの何か 何かを",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 79000,
+      "endTime": 84200,
+      "text": "それは なんだろうね",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 84200,
+      "endTime": 96600,
+      "text": "楽しみなんだ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 96600,
+      "endTime": 99700,
+      "text": "だいじにねしたいんだ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 99700,
+      "endTime": 102200,
+      "text": "みんな汗かいて",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 102200,
+      "endTime": 104200,
+      "text": "がんばった日々を",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 104200,
+      "endTime": 106900,
+      "text": "いっぱい練習したね",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 106900,
+      "endTime": 110100,
+      "text": "やればできる できるんだと",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 110100,
+      "endTime": 112500,
+      "text": "描いたミライ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 112500,
+      "endTime": 116400,
+      "text": "それがイマになった",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 116400,
+      "endTime": 119100,
+      "text": "別れ 出会い",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 119100,
+      "endTime": 121400,
+      "text": "どちらが最初なのか",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 121400,
+      "endTime": 124100,
+      "text": "わからないままだよ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 124100,
+      "endTime": 126300,
+      "text": "でも気にしない",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 126300,
+      "endTime": 129000,
+      "text": "また会えるね そう思うよ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 129000,
+      "endTime": 133700,
+      "text": "ココロから ね",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 133700,
+      "endTime": 137300,
+      "text": "サラサラ流れる風",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 137300,
+      "endTime": 140100,
+      "text": "僕らを誘ってるの",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 140100,
+      "endTime": 142200,
+      "text": "向かってみよう",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 142200,
+      "endTime": 145600,
+      "text": "立ちどまらない方がいいね",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 145600,
+      "endTime": 147600,
+      "text": "もう行かなくちゃってさ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 147600,
+      "endTime": 149200,
+      "text": "キモチがせつない",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 149200,
+      "endTime": 152900,
+      "text": "そのせつなさを抱きしめ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 152900,
+      "endTime": 178100,
+      "text": "いっしょにBrightest Melody",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 178100,
+      "endTime": 180000,
+      "text": "輝いていたいんだ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 180000,
+      "endTime": 185800,
+      "text": "このまま進もう",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 185800,
+      "endTime": 189000,
+      "text": "Ah どこへ行っても忘れないよ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 189000,
+      "endTime": 190800,
+      "text": "Brightest Melody",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 190800,
+      "endTime": 192600,
+      "text": "歌うたびに",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 192600,
+      "endTime": 196000,
+      "text": "生まれ変わるみたいで",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 196000,
+      "endTime": 198100,
+      "text": "Ah いつまでもいたい",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 198100,
+      "endTime": 199900,
+      "text": "みんなの想いは",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 199900,
+      "endTime": 205100,
+      "text": "きっとひとつだよ きっと",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 205100,
+      "endTime": 208500,
+      "text": "キラキラひかる夢が",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 208500,
+      "endTime": 213300,
+      "text": "僕らの胸のなかで輝いてた",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 213300,
+      "endTime": 216800,
+      "text": "熱く大きなキラキラ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 216800,
+      "endTime": 218900,
+      "text": "さあ明日に向けて",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 218900,
+      "endTime": 220200,
+      "text": "また始めたい",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 220200,
+      "endTime": 224100,
+      "text": "とびっきりの何か 何かを",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 224100,
+      "endTime": 229600,
+      "text": "それは なんだろうね",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 229600,
+      "endTime": 234700,
+      "text": "あたらしい夢 あたらしい歌",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 234700,
+      "endTime": 294700,
+      "text": "つながってくんだ",
+      "songId": "sn_song_example_1",
+      "soloPart": null
+    },
+    {
+      "startTime": 18100,
+      "endTime": 22900,
+      "text": "欠片 それはほんの小さな",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 22900,
+      "endTime": 24200,
+      "text": "Starlight",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 24200,
+      "endTime": 30200,
+      "text": "砂に混じり 鈍く光る一粒",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 30200,
+      "endTime": 34800,
+      "text": "だけどなぜか目を奪われた",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 34800,
+      "endTime": 36300,
+      "text": "Starshine",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 36300,
+      "endTime": 42100,
+      "text": "だって未知の可能性を反射してる",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 42100,
+      "endTime": 44600,
+      "text": "星よ 星よ",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 44600,
+      "endTime": 46000,
+      "text": "キラめいていて",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 46000,
+      "endTime": 48100,
+      "text": "キラめいていて",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 48100,
+      "endTime": 49700,
+      "text": "まだ届かなくても",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 49700,
+      "endTime": 51200,
+      "text": "諦めたりしない",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 51200,
+      "endTime": 52700,
+      "text": "きっときっと",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 52700,
+      "endTime": 56500,
+      "text": "私 追いつくよ",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 56500,
+      "endTime": 59400,
+      "text": "幕が開けて 生まれ変われ",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 59400,
+      "endTime": 63100,
+      "text": "舞台の上で強くなれるから",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 63100,
+      "endTime": 64600,
+      "text": "ぶつかって傷つけて",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 64600,
+      "endTime": 66100,
+      "text": "磨り減って削られて",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 66100,
+      "endTime": 68500,
+      "text": "意味なすアスペクト",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 68500,
+      "endTime": 71400,
+      "text": "たどり着いた軌道までは",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 71400,
+      "endTime": 74800,
+      "text": "照らす必要なんてないんだよ",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 74800,
+      "endTime": 77600,
+      "text": "眩しいけれど 目をそらさずに",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 77600,
+      "endTime": 80500,
+      "text": "この今の私を見て",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 80500,
+      "endTime": 96000,
+      "text": "Star diamond",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 96000,
+      "endTime": 100800,
+      "text": "熱を秘めた夢の純度は",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 100800,
+      "endTime": 102200,
+      "text": "Starlight",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 102200,
+      "endTime": 108100,
+      "text": "透明なほど壊れそうで脆くて",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 108100,
+      "endTime": 112800,
+      "text": "答えだけは見えていたんだ",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 112800,
+      "endTime": 114200,
+      "text": "Starshine",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 114200,
+      "endTime": 115700,
+      "text": "だけど",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 115700,
+      "endTime": 120200,
+      "text": "近づこうとすれば遠のいてく",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 120200,
+      "endTime": 122500,
+      "text": "そっと そっと",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 122500,
+      "endTime": 124100,
+      "text": "衣装の裏に",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 124100,
+      "endTime": 126200,
+      "text": "衣装の裏に",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 126200,
+      "endTime": 127700,
+      "text": "忘れないようにと",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 127700,
+      "endTime": 129200,
+      "text": "縫い付けた想いは",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 129200,
+      "endTime": 130700,
+      "text": "いつもいつも",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 130700,
+      "endTime": 132700,
+      "text": "袖を通すたび",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 132700,
+      "endTime": 134600,
+      "text": "はためく",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 134600,
+      "endTime": 137400,
+      "text": "私たちは 輝き出す",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 137400,
+      "endTime": 141200,
+      "text": "光浴びて 歪にはね返す",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 141200,
+      "endTime": 142600,
+      "text": "迷いなんてないよ",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 142600,
+      "endTime": 144200,
+      "text": "ただ走り出すんだ",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 144200,
+      "endTime": 146500,
+      "text": "存在がクラリティ",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 146500,
+      "endTime": 149400,
+      "text": "生まれてきた物語は",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 149400,
+      "endTime": 152700,
+      "text": "そう私たちが紡いでいるの",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 152700,
+      "endTime": 155800,
+      "text": "他の誰かに 譲ったりしない",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 155800,
+      "endTime": 158600,
+      "text": "目の前の私を見て",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 158600,
+      "endTime": 197600,
+      "text": "Star diamond",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 197600,
+      "endTime": 201400,
+      "text": "誰の心にもきっと",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 201400,
+      "endTime": 209800,
+      "text": "原石が磨かれる時を待ってる",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 209800,
+      "endTime": 212900,
+      "text": "探しに行こう 一緒に",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 212900,
+      "endTime": 216100,
+      "text": "どこまでだって 潜って",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 216100,
+      "endTime": 220500,
+      "text": "ときにキミがそう望むのならば",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 220500,
+      "endTime": 223000,
+      "text": "戦おう",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 223000,
+      "endTime": 225900,
+      "text": "負けられない キミにだけは",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 225900,
+      "endTime": 229700,
+      "text": "舞台の上では向かい合おうね",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 229700,
+      "endTime": 232700,
+      "text": "暴れる剣先も 震える歌声も",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 232700,
+      "endTime": 236500,
+      "text": "受け止めて欲しいよ",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 236500,
+      "endTime": 239400,
+      "text": "幕が開けて 生まれ変われ",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 239400,
+      "endTime": 243200,
+      "text": "舞台の上で強くなれるから",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 243200,
+      "endTime": 244700,
+      "text": "ぶつかって傷つけて",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 244700,
+      "endTime": 246200,
+      "text": "磨り減って削られて",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 246200,
+      "endTime": 248400,
+      "text": "意味なすアスペクト",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 248400,
+      "endTime": 251400,
+      "text": "たどり着いた軌道までは",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 251400,
+      "endTime": 254600,
+      "text": "照らす必要なんてないんだよ",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 254600,
+      "endTime": 257600,
+      "text": "眩しいけれど 目をそらさずに",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 257600,
+      "endTime": 260400,
+      "text": "この今の私を見て",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 260400,
+      "endTime": 263600,
+      "text": "Star diamond",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 263600,
+      "endTime": 266500,
+      "text": "ずっと私を見ていた",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    },
+    {
+      "startTime": 266500,
+      "endTime": 326500,
+      "text": "Star diamond",
+      "songId": "sn_song_example_2",
+      "soloPart": null
+    }
+  ],
+  "sn_shot_table": [
+    {
+      "id": "sn_shot_table_example_1",
+      "name": "Default ShotTable for Brightest Melody",
+      "authorId": "1",
+      "songId": "sn_song_example_1"
+    },
+    {
+      "id": "sn_shot_table_example_2",
+      "name": "Default ShotTable for Star Diamond",
+      "authorId": "1",
+      "songId": "sn_song_example_2"
+    }
+  ],
+  "sn_shot": [
+    {
+      "sceneNumber": 1010,
+      "shotNumber": 1,
+      "startTime": 18100,
+      "endTime": 20000,
+      "lyric": "yarimasune",
+      "shotType": "MEDIUMSHOT",
+      "shotMovement": "逆时针环绕",
+      "shotAngle": "略仰",
+      "text": "taiga!waiya!saiba!faiba!",
+      "image": "",
+      "comment": "No additional comment.",
+      "tableId": "sn_shot_table_example_2",
+      "characters": "愛城 華恋,神楽 ひかり,"
+    },
+    {
+      "sceneNumber": 1020,
+      "shotNumber": 2,
+      "startTime": 22900,
+      "endTime": 23333,
+      "lyric": "iiyo koiyo",
+      "shotType": "CLOSEUP",
+      "shotMovement": "前推",
+      "shotAngle": "略俯",
+      "text": "jyajya!",
+      "image": "",
+      "comment": "No additional comment.",
+      "tableId": "sn_shot_table_example_2",
+      "characters": "露崎 まひる,西條 クロディーヌ,"
+    }
+  ]
+}

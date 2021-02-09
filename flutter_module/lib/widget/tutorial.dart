@@ -38,7 +38,6 @@ class TutorialPage extends GetView<ProjectController> {
           Icons.refresh,
         ),
         onPressed: () {
-          SQLiteProvider.cheatCodeReset();
           controller.retrieve();
         },
       )

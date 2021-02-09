@@ -1,19 +1,21 @@
 import '../model/song.dart';
 import '../provider/sqlite/sqlite.dart';
+import '../provider/firestore/firestore.dart';
 
 class SongRepository {
-  final provider = SongSQLiteProvider();
+  final provider = SongFirestoreProvider();
 
   Future<void> create(SNSong song) async => await provider.create(song);
 
-  Future<SNSong> retrieveById(int id) async => await provider.retrieveById(id);
+  Future<SNSong> retrieveById(String id) async =>
+      await provider.retrieveById(id);
 
   Future<List<SNSong>> retrieveAll() async => await provider.retrieveAll();
 
   Future<void> update(SNSong song) async => await provider.update(song);
 
-  Future<void> delete(SNSong song) async => await provider.delete(song);
+  Future<void> delete(String id) async => await provider.delete(id);
 
-  Future<void> deleteMultiple(List<SNSong> songs) async =>
-      await provider.deleteMultiple(songs);
+  Future<void> deleteMultiple(List<String> ids) async =>
+      await provider.deleteMultiple(ids);
 }

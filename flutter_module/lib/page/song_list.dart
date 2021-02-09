@@ -126,7 +126,7 @@ Future<void> showSongEditorDialog(SNSong song) async {
                 controller: _idController,
                 decoration: InputDecoration(hintText: '输入歌曲编号'),
                 onEditingComplete: () {
-                  s.id = int.parse(_idController.text);
+                  s.id = _idController.text;
                 },
               ),
               TextFormField(

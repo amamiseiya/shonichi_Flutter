@@ -167,3 +167,11 @@ Repository
 https://leancloud.cn/docs/sdk_setup-flutter.html
 
 ### 由BLoC修改至GetX
+
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+
+   source 'https://gitee.com/mirrors/CocoaPods-Specs.git'
+platform :ios, '13.0'

@@ -11,7 +11,7 @@ class ShotSQLiteProvider extends SQLiteProvider {
     print('Create operation succeed');
   }
 
-  Future<List<SNShot>> retrieveForTable(int tableId) async {
+  Future<List<SNShot>> retrieveForTable(String tableId) async {
     final db = await database;
     final mapList = await db.query('sn_shot',
         where: 'tableId = ?', whereArgs: [tableId], orderBy: 'startTime DESC');
@@ -29,23 +29,23 @@ class ShotSQLiteProvider extends SQLiteProvider {
     print('Update operation succeed');
   }
 
-  Future<void> delete(SNShot shot) async {
+  Future<void> delete(String id) async {
     final db = await database;
     await db.delete(
       'sn_shot',
       where: 'id = ?',
-      whereArgs: [shot.id],
+      whereArgs: [id],
     );
     print('Delete operation succeed');
   }
 
-  Future<void> deleteMultiple(List<SNShot> shots) async {
+  Future<void> deleteMultiple(List<String> ids) async {
     final db = await database;
-    shots.forEach((shot) async {
+    ids.forEach((id) async {
       await db.delete(
         'sn_shot',
         where: 'id = ?',
-        whereArgs: [shot.id],
+        whereArgs: [id],
       );
     });
     print('Delete operation succeed');

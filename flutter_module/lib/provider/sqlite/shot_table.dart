@@ -11,7 +11,7 @@ class ShotTableSQLiteProvider extends SQLiteProvider {
     print('Create operation succeed');
   }
 
-  Future<SNShotTable> retrieveById(int id) async {
+  Future<SNShotTable> retrieveById(String id) async {
     final db = await database;
     final mapList =
         await db.query('sn_shot_table', where: 'id = ?', whereArgs: [id]);
@@ -36,17 +36,17 @@ class ShotTableSQLiteProvider extends SQLiteProvider {
     print('Update operation succeed');
   }
 
-  Future<void> delete(SNShotTable shotTable) async {
+  Future<void> delete(String id) async {
     final db = await database;
     await db.delete(
       'sn_shot_table',
       where: 'id = ?',
-      whereArgs: [shotTable.id],
+      whereArgs: [id],
     );
     print('Delete operation succeed');
   }
 
-  Future<SNShotTable> getLatestShotTable(int songId) async {
+  Future<SNShotTable> getLatestShotTable(String songId) async {
     final db = await database;
     final List<Map<String, dynamic>> mapList = await db.query('sn_shot_table',
         where: 'songId = ?', whereArgs: [songId], orderBy: 'id DESC', limit: 1);

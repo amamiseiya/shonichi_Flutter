@@ -1,9 +1,9 @@
 class SNAttachment {
-  int id;
+  String id;
   String name;
   String file;
 
-  int songId;
+  String songId;
 
   SNAttachment({this.id, this.name, this.file, this.songId});
 }

@@ -11,7 +11,7 @@ class FormationSQLiteProvider extends SQLiteProvider {
     print('Create operation succeed');
   }
 
-  Future<List<SNFormation>> retrieveForTable(int tableId) async {
+  Future<List<SNFormation>> retrieveForTable(String tableId) async {
     final db = await database;
     final mapList = await db.query('sn_formation',
         where: 'tableId = ?', whereArgs: [tableId], orderBy: 'startTime DESC');
@@ -30,12 +30,12 @@ class FormationSQLiteProvider extends SQLiteProvider {
     print('Update operation succeed');
   }
 
-  Future<void> delete(SNFormation formation) async {
+  Future<void> delete(String id) async {
     final db = await database;
     await db.delete(
       'sn_formation',
       where: 'id = ?',
-      whereArgs: [formation.id],
+      whereArgs: [id],
     );
     print('Delete operation succeed');
   }

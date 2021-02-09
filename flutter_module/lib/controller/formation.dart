@@ -158,7 +158,8 @@ class FormationController extends GetxController with StateMixin {
       });
       if (isValid) {
         formationRepository.create(SNFormation.initialValue(
-            timeFilter.value, 2, characterFilter.value.name));
+            timeFilter.value, characterFilter.value.name, '2'));
+        // TODO: Implement SNFormationTable selection
         retrieveFormationsForTable();
       }
     } catch (e) {
@@ -168,7 +169,7 @@ class FormationController extends GetxController with StateMixin {
 
   void deleteFormation() async {
     try {
-      formationRepository.delete(editingFormation.value);
+      formationRepository.delete(editingFormation.value.id);
       retrieveFormationsForTable();
     } catch (e) {
       print(e);
