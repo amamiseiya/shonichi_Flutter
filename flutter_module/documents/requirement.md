@@ -68,7 +68,7 @@ class SNSong {
 
     String id
     String name
-    String coverFileName
+    String coverId
     int lyricOffset
     String subordinateKikaku
     fromMap()

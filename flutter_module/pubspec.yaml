@@ -42,6 +42,7 @@ dependencies:
   equatable:
   # 为什么我一加Firebase就出问题？
   firebase_core:
+  firebase_storage:
   cloud_firestore:
   # firebase_database:
   # 已经不再使用BLoC

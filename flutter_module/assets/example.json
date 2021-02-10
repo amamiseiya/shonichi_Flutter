@@ -23,14 +23,14 @@
     {
       "id": "sn_song_example_1",
       "name": "Brightest Melody",
-      "coverFileName": "Brightest Melody_cover.jpg",
+      "coverId": "sn_attachment_images_1.jpg",
       "lyricOffset": 0,
       "subordinateKikaku": "Aqours"
     },
     {
       "id": "sn_song_example_2",
       "name": "Star Diamond",
-      "coverFileName": "Star Diamond_cover.jpg",
+      "coverId": "sn_attachment_images_2.jpg",
       "lyricOffset": -520,
       "subordinateKikaku": "スタァライト九九組"
     }

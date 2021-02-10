@@ -16,7 +16,7 @@
 即使是在停止维护之前，这个应用也全然没有完善到可以实际使用的程度；文档也是写得很乱。
 所以我传上来只是方便自己重写的啦。
 
-## 它都有什么功能：
+## 功能简介
 
 目前为止，这个App只提供了在拍摄前准备阶段需要用到的一系列功能。
 包括项目选择、分镜脚本编辑、歌曲信息查看、舞蹈队型编辑、文档导出。
@@ -124,39 +124,7 @@ MigratorPage
 只是或许。反正最开始，我是为了给我的大学作业凑字数，才写这部分内容的……
 
 ``` Dart
-├─ lib
-│  ├─ bloc                      //BLoC架构下，负责实现后台逻辑的代码
-│  │  ├─ project_bloc.dart      //每一个BLoC模块分为bloc、event、state三部分
-│  │  ├─ project_event.dart
-│  │  ├─ project_state.dart
-│  │  ├─ shot_bloc.dart
-│  │  ├─ shot_event.dart
-│  │  ├─ shot_state.dart
-│  ├─ l10n                      //应用本地化代码
-│  │  ├─ intl_messages.arb
-│  ├─ main.dart                 //应用入口
-│  ├─ model                     //数据模型
-│  │  ├─ lyric.dart
-│  │  ├─ project.dart
-│  │  ├─ shot.dart
-│  ├─ page                      //页面代码
-│  │  ├─ homepage.dart
-│  │  ├─ migratorpage.dart
-│  │  ├─ shoteditorpage.dart
-│  ├─ provider                  //为Repository提供数据的Provider
-│  │  └─ sqlite.dart   //本应用中具体为SQLite数据库
-│  ├─ repository                //为应用提供特定数据的Repository
-│  │  ├─ lyric.dart
-│  │  ├─ project.dart
-│  ├─ util                      //实用方法，如数据结构、编码转换
-│  │  ├─ data_convert.dart
-│  │  ├─ des.dart
-│  │  └─ reg_exp.dart
-│  └─ widget                    //可复用的Widget
-│     ├─ drawer.dart
-│     ├─ loading.dart
-└─ test                         //单元测试代码
-   ├─ des_test.dart
+
 ```
 
 ## 数据存储
@@ -164,14 +132,29 @@ MigratorPage
 Repository
 将对象提供给Bloc使用。
 
-https://leancloud.cn/docs/sdk_setup-flutter.html
+## 文件
+
+歌曲封面
+分镜图示
+
+歌曲
+官方PV
 
 ### 由BLoC修改至GetX
 
+.ios 准备
+
+``` 
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 
-   source 'https://gitee.com/mirrors/CocoaPods-Specs.git'
-platform :ios, '13.0'
+    source 'https://gitee.com/mirrors/CocoaPods-Specs.git'
+
+	platform :ios, '13.0'
+```
+
+## 参考
+
+https://leancloud.cn/docs/sdk_setup-flutter.html

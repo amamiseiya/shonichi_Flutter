@@ -5,23 +5,23 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:leancloud_storage/leancloud.dart';
 
-import 'widget/loading.dart';
-import 'page/home_page.dart';
-import 'controller/project.dart';
-import 'controller/song.dart';
-import 'controller/lyric.dart';
-import 'controller/shot_table.dart';
-import 'controller/shot.dart';
-import 'controller/formation.dart';
-import 'controller/migrator.dart';
-import 'repository/project.dart';
-import 'repository/song.dart';
-import 'repository/lyric.dart';
-import 'repository/shot_table.dart';
-import 'repository/shot.dart';
-import 'repository/formation.dart';
-import 'repository/attachment.dart';
-import 'util/localization.dart';
+import 'widgets/loading.dart';
+import 'pages/home_page.dart';
+import 'controllers/project.dart';
+import 'controllers/song.dart';
+import 'controllers/lyric.dart';
+import 'controllers/shot_table.dart';
+import 'controllers/shot.dart';
+import 'controllers/formation.dart';
+import 'controllers/migrator.dart';
+import 'repositories/project.dart';
+import 'repositories/song.dart';
+import 'repositories/lyric.dart';
+import 'repositories/shot_table.dart';
+import 'repositories/shot.dart';
+import 'repositories/formation.dart';
+import 'repositories/attachment.dart';
+import 'utils/localization.dart';
 
 //-------------------------main()-----------------------------
 //------------------------------------------------------------
