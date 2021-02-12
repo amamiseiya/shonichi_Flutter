@@ -1,6 +1,8 @@
 import 'character.dart';
 
 class SNLyric {
+  static List<String> titles = ['起始时间', '歌词内容', 'Solo Part'];
+
   String id;
   Duration startTime;
   Duration endTime;

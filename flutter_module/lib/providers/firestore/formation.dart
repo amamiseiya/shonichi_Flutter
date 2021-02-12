@@ -6,7 +6,7 @@ class FormationFirestoreProvider extends FirestoreProvider {
 
   Future<void> create(SNFormation formation) async {
     await _formationRef.add(formation.toMap());
-    print('Create operation succeed');
+    print('Provider: Create operation succeed');
   }
 
   Future<List<SNFormation>> retrieveForTable(String tableId) async {
@@ -15,6 +15,9 @@ class FormationFirestoreProvider extends FirestoreProvider {
         .orderBy('startTime', descending: true)
         .get();
     assert(snapshot.docs.isNotEmpty);
+    print('Provider: ' +
+        snapshot.docs.length.toString() +
+        ' formation(s) retrieved');
     return List.generate(snapshot.docs.length, (i) {
       final formation = SNFormation.fromMap(snapshot.docs[i].data());
       formation.id = snapshot.docs[i].id;
@@ -24,11 +27,11 @@ class FormationFirestoreProvider extends FirestoreProvider {
 
   Future<void> update(SNFormation formation) async {
     await _formationRef.doc(formation.id).set(formation.toMap());
-    print('Update operation succeed');
+    print('Provider: Update operation succeed');
   }
 
   Future<void> delete(String id) async {
     await _formationRef.doc(id).delete();
-    print('Delete operation succeed');
+    print('Provider: Delete operation succeed');
   }
 }

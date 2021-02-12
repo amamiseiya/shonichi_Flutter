@@ -5,7 +5,7 @@ class FormationLeanCloudProvider extends LeanCloudProvider {
     final LCObject f = LCObject('SNFormation');
     formation.toLCObject(f);
     await f.save();
-    print('Create operation succeed');
+    print('Provider: Create operation succeed');
   }
 
   Future<List<SNFormation>> retrieveForTable(String tableId) async {
@@ -13,6 +13,9 @@ class FormationLeanCloudProvider extends LeanCloudProvider {
       ..whereEqualTo('tableId', tableId)
       ..orderByDescending('startTime');
     final formations = await query.find();
+    print('Provider: ' +
+        formations.length.toString() +
+        ' formation(s) retrieved');
     return List.generate(
         formations.length, (i) => SNFormation.fromLCObject(formations[i]));
   }
@@ -21,12 +24,12 @@ class FormationLeanCloudProvider extends LeanCloudProvider {
     LCObject f = LCObject.createWithoutData('SNFormation', formation.id);
     formation.toLCObject(f);
     await f.save();
-    print('Update operation succeed');
+    print('Provider: Update operation succeed');
   }
 
   Future<void> delete(String id) async {
     LCObject formation = LCObject.createWithoutData('SNFormation', id);
     await formation.delete();
-    print('Delete operation succeed');
+    print('Provider: Delete operation succeed');
   }
 }

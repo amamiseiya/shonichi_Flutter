@@ -100,7 +100,6 @@ class FormationController extends GetxController with StateMixin {
       formationsForTable(await formationRepository.retrieveForTable(
           projectController.editingProject.value.formationTableId));
       change(0, status: RxStatus.success());
-      print('${formationsForTable.length} formationsForTable retrieved');
       print('characters: $characters');
     } catch (e) {
       print(e);
@@ -114,6 +113,7 @@ class FormationController extends GetxController with StateMixin {
       //         (sliderValue * lyricController.lyrics.last.endTime.inMilliseconds)
       //             .toInt()));
       timeFilter(Duration(milliseconds: sliderValue.round()));
+      print('Added to timeFilter');
     } catch (e) {
       print(e);
     }

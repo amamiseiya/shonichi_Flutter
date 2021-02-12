@@ -2,15 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shonichi_flutter_module/controllers/migrator.dart';
 
 import '../widgets/tutorial.dart';
 import '../widgets/drawer.dart';
 import '../widgets/loading.dart';
 import '../widgets/error.dart';
+import '../controllers/migrator.dart';
 import '../controllers/project.dart';
 import '../models/project.dart';
-import '../providers/sqlite/sqlite.dart';
 
 class HomePage extends GetView<ProjectController> {
   @override
@@ -26,7 +25,7 @@ class HomePage extends GetView<ProjectController> {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.search),
-              tooltip: 'Search',
+              tooltip: 'Search'.tr,
               onPressed: null,
             ),
           ],
@@ -43,7 +42,7 @@ class HomePage extends GetView<ProjectController> {
             Column(mainAxisAlignment: MainAxisAlignment.end, children: [
           GetBuilder<MigratorController>(
               builder: (controller) => FloatingActionButton(
-                  tooltip: 'Reset', // used by assistive technologies
+                  tooltip: 'Reset'.tr, // used by assistive technologies
                   backgroundColor: Colors.red,
                   child: Icon(
                     Icons.refresh,
@@ -51,21 +50,21 @@ class HomePage extends GetView<ProjectController> {
                   heroTag: 'resetFAB',
                   onPressed: () => controller.importJson())),
           FloatingActionButton(
-              tooltip: 'Add', // used by assistive technologies
+              tooltip: 'Add'.tr, // used by assistive technologies
               child: Icon(Icons.add),
-              heroTag: 'addFAB',
-              onPressed: () => Get.dialog(ProjectEditorDialog(null)).then(
+              heroTag: 'createFAB',
+              onPressed: () => Get.dialog(ProjectUpsertDialog(null)).then(
                   (project) =>
                       controller.submitCreate(project))), //! 和Lyric页面的实现方式不同
           FloatingActionButton(
-              tooltip: 'Edit', // used by assistive technologies
+              tooltip: 'Edit'.tr, // used by assistive technologies
               child: Icon(Icons.edit),
               heroTag: 'editFAB',
               onPressed: () => Get.dialog(
-                      ProjectEditorDialog(controller.editingProject.value))
+                      ProjectUpsertDialog(controller.editingProject.value))
                   .then((project) => controller.submitUpdate(project))),
           FloatingActionButton(
-              tooltip: 'Delete', // used by assistive technologies
+              tooltip: 'Delete'.tr, // used by assistive technologies
               child: Icon(Icons.delete),
               heroTag: 'deleteFAB',
               onPressed: () =>
@@ -75,6 +74,8 @@ class HomePage extends GetView<ProjectController> {
 }
 
 class Dashboard extends GetView<ProjectController> {
+  final double _widthFactor = Get.context.isPhone ? 1 : 0.6;
+
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -83,11 +84,11 @@ class Dashboard extends GetView<ProjectController> {
       } else if (controller.projects.isNotEmpty) {
         return FractionallySizedBox(
           alignment: Alignment.center,
-          widthFactor: 0.5,
+          widthFactor: _widthFactor,
           heightFactor: 1.0,
           child: ListView(children: [
             Card(
-                // margin: EdgeInsets.all(10.0),
+                margin: EdgeInsets.all(10.0),
                 elevation: 4.0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -95,41 +96,43 @@ class Dashboard extends GetView<ProjectController> {
                   'Welcome back!'.tr,
                   textScaleFactor: 1.8,
                 )),
-            Material(
-                // margin: EdgeInsets.all(10.0),
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                clipBehavior: Clip.antiAlias,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Current project:'.tr,
-                        textScaleFactor: 1.2,
-                      ),
-                      Ink.image(
-                        image: NetworkImage(controller.editingCoverURL.value),
-                        fit: BoxFit.fitWidth,
-                        // width: 300,
-                        height: 300,
-                        child: InkWell(
-                          onTap: () {
-                            controller.select(controller.projects[0].id);
-                          },
-                        ),
-                      ),
-                      Text(
-                        controller.projects[0].songId.toString(),
-                        textScaleFactor: 1.5,
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      Text('at:' +
-                          controller.projects[0].createdTime.toString()),
-                      Text('with:' + controller.projects[0].dancerName),
-                    ])),
+            Container(
+                margin: EdgeInsets.all(10.0),
+                child: Material(
+                    elevation: 4.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    clipBehavior: Clip.antiAlias,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Current project:'.tr,
+                            textScaleFactor: 1.2,
+                          ),
+                          Ink.image(
+                            image:
+                                NetworkImage(controller.editingCoverURL.value),
+                            fit: BoxFit.fitWidth,
+                            // width: 300,
+                            height: 300,
+                            child: InkWell(
+                              onTap: () {
+                                controller.select(controller.projects[0].id);
+                              },
+                            ),
+                          ),
+                          Text(
+                            controller.projects[0].songId.toString(),
+                            textScaleFactor: 1.5,
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          Text('at:' +
+                              controller.projects[0].createdTime.toString()),
+                          Text('with:' + controller.projects[0].dancerName),
+                        ]))),
             Card(
-                // margin: EdgeInsets.all(10.0),
+                margin: EdgeInsets.all(10.0),
                 elevation: 4.0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -155,7 +158,7 @@ class Dashboard extends GetView<ProjectController> {
                               : Container()))
                 ])),
             Card(
-                // margin: EdgeInsets.all(10.0),
+                margin: EdgeInsets.all(10.0),
                 elevation: 4.0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -181,39 +184,29 @@ class Dashboard extends GetView<ProjectController> {
   }
 }
 
-class ProjectEditorDialog extends StatelessWidget {
+class ProjectUpsertDialog extends StatelessWidget {
   SNProject p;
 
-  final TextEditingController _idController = TextEditingController();
   final TextEditingController _dancerNameController = TextEditingController();
   final TextEditingController _songIdController = TextEditingController();
-  final TextEditingController _shotVersionController = TextEditingController();
-  final TextEditingController _formationVersionController =
-      TextEditingController();
+  final TextEditingController _shotIdController = TextEditingController();
+  final TextEditingController _formationIdController = TextEditingController();
 
-  ProjectEditorDialog(project) {
-    p = (project != null) ? project : SNProject.initialValue();
-    _idController.text = p.id.toString();
+  ProjectUpsertDialog(project) {
+    p = project ?? SNProject.initialValue();
     _dancerNameController.text = p.dancerName;
-    _songIdController.text = p.songId.toString();
-    _shotVersionController.text = p.shotTableId.toString();
-    _formationVersionController.text = p.formationTableId.toString();
+    _songIdController.text = p.songId;
+    _shotIdController.text = p.shotTableId;
+    _formationIdController.text = p.formationTableId;
   }
 
   @override
   Widget build(BuildContext context) => SimpleDialog(
-        title: Text('编辑项目'),
+        title: Text('Edit project'.tr),
         children: <Widget>[
           Column(children: [
             Form(
                 child: Column(children: [
-              TextFormField(
-                controller: _idController,
-                decoration: InputDecoration(hintText: '输入项目编号'),
-                onEditingComplete: () {
-                  p.id = _idController.text;
-                },
-              ),
               FlatButton(
                 onPressed: () => showDatePicker(
                   context: Get.context,
@@ -221,7 +214,7 @@ class ProjectEditorDialog extends StatelessWidget {
                   firstDate: DateTime.now().subtract(Duration(days: 3650)),
                   lastDate: DateTime.now().add(Duration(days: 3650)),
                 ).then((value) => p.createdTime = value),
-                child: Text('选择日期'),
+                child: Text('选择创建日期'),
               ),
               TextFormField(
                 controller: _dancerNameController,
@@ -234,12 +227,12 @@ class ProjectEditorDialog extends StatelessWidget {
                 onEditingComplete: () {},
               ),
               TextFormField(
-                controller: _shotVersionController,
+                controller: _shotIdController,
                 decoration: InputDecoration(hintText: '输入分镜编号'),
                 onEditingComplete: () {},
               ),
               TextFormField(
-                controller: _formationVersionController,
+                controller: _formationIdController,
                 decoration: InputDecoration(hintText: '输入队形编号'),
                 onEditingComplete: () {},
               ),
@@ -248,8 +241,8 @@ class ProjectEditorDialog extends StatelessWidget {
               onPressed: () {
                 p.dancerName = _dancerNameController.text;
                 p.songId = _songIdController.text;
-                p.shotTableId = _shotVersionController.text;
-                p.formationTableId = _formationVersionController.text;
+                p.shotTableId = _shotIdController.text;
+                p.formationTableId = _formationIdController.text;
                 Get.back(result: p);
               },
               child: Text('Submit'.tr),

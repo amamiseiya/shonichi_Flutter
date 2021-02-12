@@ -44,7 +44,7 @@ class SongDetailPage extends GetView<LyricController> {
           FloatingActionButton(
               tooltip: 'Add', // used by assistive technologies
               child: Icon(Icons.add),
-              heroTag: 'addFAB',
+              heroTag: 'createFAB',
               onPressed: () => Get.dialog(ImportDialog())
                   .then((text) => controller.importLyric(text))),
         ]));

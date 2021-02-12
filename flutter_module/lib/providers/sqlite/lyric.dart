@@ -8,7 +8,7 @@ class LyricSQLiteProvider extends SQLiteProvider {
       lyric.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print('Create operation succeed');
+    print('Provider: Create operation succeed');
   }
 
   Future<List<SNLyric>> retrieveForSong(String songId) async {
@@ -26,7 +26,7 @@ class LyricSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [lyric.id],
     );
-    print('Update operation succeed');
+    print('Provider: Update operation succeed');
   }
 
   Future<void> delete(String id) async {
@@ -36,6 +36,6 @@ class LyricSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [id],
     );
-    print('Delete operation succeed');
+    print('Provider: Delete operation succeed');
   }
 }

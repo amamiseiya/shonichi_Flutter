@@ -45,10 +45,16 @@ class ShotController extends GetxController {
         assert(lyricRepository != null),
         assert(shotRepository != null),
         assert(attachmentRepository != null) {
+    selectedShots.listen((shots) {
+      if (shots.length == 1) {
+        editingShot(shots.first);
+      }
+    });
+
     shotTableController.editingShotTable.listen((newShotTable) async {
       await retrieveForTable();
       print(
-          'listening to editingShotTable and ${shots.length} shots retrieved');
+          '${shots.length} shot(s) retrieved -- listening to editingShotTable');
     });
 
     coverageStream = shots.stream.asyncMap(
@@ -89,7 +95,6 @@ class ShotController extends GetxController {
       print('Retrieving shots');
       shots(await shotRepository
           .retrieveForTable(shotTableController.editingShotTable.value.id));
-      print('${shots.length} shots retrieved');
     } catch (e) {
       print(e);
     }

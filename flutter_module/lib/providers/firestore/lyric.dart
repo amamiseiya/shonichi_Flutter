@@ -6,7 +6,7 @@ class LyricFirestoreProvider extends FirestoreProvider {
 
   Future<void> create(SNLyric lyric) async {
     await _lyricRef.add(lyric.toMap());
-    print('Create operation succeed');
+    print('Provider: Create operation succeed');
   }
 
   Future<List<SNLyric>> retrieveForSong(String songId) async {
@@ -15,6 +15,8 @@ class LyricFirestoreProvider extends FirestoreProvider {
         .orderBy('startTime')
         .get();
     assert(snapshot.docs.isNotEmpty);
+    print(
+        'Provider: ' + snapshot.docs.length.toString() + ' lyric(s) retrieved');
     return List.generate(snapshot.docs.length, (i) {
       final lyric = SNLyric.fromMap(snapshot.docs[i].data());
       lyric.id = snapshot.docs[i].id;
@@ -24,11 +26,11 @@ class LyricFirestoreProvider extends FirestoreProvider {
 
   Future<void> update(SNLyric lyric) async {
     await _lyricRef.doc(lyric.id).set(lyric.toMap());
-    print('Update operation succeed');
+    print('Provider: Update operation succeed');
   }
 
   Future<void> delete(String id) async {
     await _lyricRef.doc(id).delete();
-    print('Delete operation succeed');
+    print('Provider: Delete operation succeed');
   }
 }

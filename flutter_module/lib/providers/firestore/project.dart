@@ -6,6 +6,7 @@ class ProjectFirestoreProvider extends FirestoreProvider {
 
   Future<void> create(SNProject project) async {
     await _projectRef.add(project.toMap());
+    print('Provider: Create operation succeed');
   }
 
   Future<SNProject> retrieveById(String id) async {
@@ -13,6 +14,7 @@ class ProjectFirestoreProvider extends FirestoreProvider {
     assert(snapshot.exists);
     final project = SNProject.fromMap(snapshot.data());
     project.id = snapshot.id;
+    print('Provider: Retrieved project: ' + project.toString());
     return project;
   }
 
@@ -22,6 +24,9 @@ class ProjectFirestoreProvider extends FirestoreProvider {
         .limit(count)
         .get();
     // assert(snapshot.docs.isNotEmpty);
+    print('Provider: ' +
+        snapshot.docs.length.toString() +
+        ' project(s) retrieved');
     return List.generate(snapshot.docs.length, (i) {
       final project = SNProject.fromMap(snapshot.docs[i].data());
       project.id = snapshot.docs[i].id;
@@ -31,17 +36,20 @@ class ProjectFirestoreProvider extends FirestoreProvider {
 
   Future<void> update(SNProject project) async {
     await _projectRef.doc(project.id).set(project.toMap());
-    print('Update operation succeed');
+    print('Provider: Update operation succeed');
   }
 
   Future<void> delete(String id) async {
     await _projectRef.doc(id).delete();
-    print('Delete operation succeed');
+    print('Provider: Delete operation succeed');
   }
 
   Future<void> deleteMultiple(List<String> ids) async {
     WriteBatch batch = FirebaseFirestore.instance.batch();
     ids.forEach((id) => batch.delete(_projectRef.doc(id)));
-    return batch.commit();
+    return batch
+        .commit()
+        .then((_) => print('Provider: Batch delete operation succeed'));
+    ;
   }
 }

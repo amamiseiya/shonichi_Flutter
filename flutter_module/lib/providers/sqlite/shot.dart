@@ -8,7 +8,7 @@ class ShotSQLiteProvider extends SQLiteProvider {
       shot.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print('Create operation succeed');
+    print('Provider: Create operation succeed');
   }
 
   Future<List<SNShot>> retrieveForTable(String tableId) async {
@@ -26,7 +26,7 @@ class ShotSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [shot.id],
     );
-    print('Update operation succeed');
+    print('Provider: Update operation succeed');
   }
 
   Future<void> delete(String id) async {
@@ -36,7 +36,7 @@ class ShotSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [id],
     );
-    print('Delete operation succeed');
+    print('Provider: Delete operation succeed');
   }
 
   Future<void> deleteMultiple(List<String> ids) async {
@@ -48,6 +48,6 @@ class ShotSQLiteProvider extends SQLiteProvider {
         whereArgs: [id],
       );
     });
-    print('Delete operation succeed');
+    print('Provider: Delete operation succeed');
   }
 }

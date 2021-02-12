@@ -6,7 +6,7 @@ class ShotTableFirestoreProvider extends FirestoreProvider {
 
   Future<void> create(SNShotTable shotTable) async {
     await _shotTableRef.add(shotTable.toMap());
-    print('Create operation succeed');
+    print('Provider: Create operation succeed');
   }
 
   Future<SNShotTable> retrieveById(String id) async {
@@ -14,12 +14,19 @@ class ShotTableFirestoreProvider extends FirestoreProvider {
     assert(snapshot.exists);
     final shotTable = SNShotTable.fromMap(snapshot.data());
     shotTable.id = snapshot.id;
+    print('Provider: Retrieved shotTable: ' + shotTable.toString());
     return shotTable;
   }
 
-  Future<List<SNShotTable>> retrieveAll() async {
-    final snapshot = await _shotTableRef.orderBy('id', descending: true).get();
+  Future<List<SNShotTable>> retrieveForSong(String id) async {
+    final snapshot = await _shotTableRef
+        .where('songId', isEqualTo: id)
+        .orderBy('name', descending: false)
+        .get();
     assert(snapshot.docs.isNotEmpty);
+    print('Provider: ' +
+        snapshot.docs.length.toString() +
+        ' shotTable(s) retrieved');
     return List.generate(snapshot.docs.length, (i) {
       final shotTable = SNShotTable.fromMap(snapshot.docs[i].data());
       shotTable.id = snapshot.docs[i].id;
@@ -29,12 +36,12 @@ class ShotTableFirestoreProvider extends FirestoreProvider {
 
   Future<void> update(SNShotTable shotTable) async {
     await _shotTableRef.doc(shotTable.id).set(shotTable.toMap());
-    print('Update operation succeed');
+    print('Provider: Update operation succeed');
   }
 
   Future<void> delete(String id) async {
     await _shotTableRef.doc(id).delete();
-    print('Delete operation succeed');
+    print('Provider: Delete operation succeed');
   }
 
   Future<SNShotTable> getLatestShotTable(String songId) async {
@@ -46,6 +53,7 @@ class ShotTableFirestoreProvider extends FirestoreProvider {
     assert(snapshot.docs.isNotEmpty);
     final shotTable = SNShotTable.fromMap(snapshot.docs.first.data());
     shotTable.id = snapshot.docs.first.id;
+    print('Provider: Latest shotTable: ' + shotTable.toString());
     return shotTable;
   }
 }

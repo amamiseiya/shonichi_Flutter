@@ -22,21 +22,12 @@ class SongController extends GetxController {
         assert(attachmentRepository != null) {
     projectController.editingProject.listen((newProject) async {
       editingSong.value = await songRepository.retrieveById(newProject.songId);
-      print('editingSong is ${editingSong.value.id}');
+      print(
+          'editingSong changed to ${editingSong.value.id} -- listening to editingProject');
     });
   }
 
-  void retrieve() async {
-    try {
-      print('Retrieving songs');
-      songs(await songRepository.retrieveAll());
-      print('Songs retrieved');
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  void submitCreate(SNSong song) async {
+  Future<void> submitCreate(SNSong song) async {
     try {
       if (song != null) {
         await songRepository.create(song);
@@ -47,7 +38,16 @@ class SongController extends GetxController {
     }
   }
 
-  void submitUpdate(SNSong song) async {
+  Future<void> retrieve() async {
+    try {
+      print('Retrieving songs');
+      songs(await songRepository.retrieveAll());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> submitUpdate(SNSong song) async {
     try {
       if (song != null) {
         await songRepository.update(song);
@@ -58,7 +58,7 @@ class SongController extends GetxController {
     }
   }
 
-  void delete(SNSong song) async {
+  Future<void> delete(SNSong song) async {
     try {
       await songRepository.delete(song.id);
       retrieve();
@@ -67,7 +67,7 @@ class SongController extends GetxController {
     }
   }
 
-  void deleteMultiple(List<SNSong> songs) async {
+  Future<void> deleteMultiple(List<SNSong> songs) async {
     try {
       await songRepository
           .deleteMultiple(List.generate(songs.length, (i) => songs[i].id));

@@ -8,7 +8,7 @@ class ShotTableSQLiteProvider extends SQLiteProvider {
       shotTable.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print('Create operation succeed');
+    print('Provider: Create operation succeed');
   }
 
   Future<SNShotTable> retrieveById(String id) async {
@@ -33,7 +33,7 @@ class ShotTableSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [shotTable.id],
     );
-    print('Update operation succeed');
+    print('Provider: Update operation succeed');
   }
 
   Future<void> delete(String id) async {
@@ -43,7 +43,7 @@ class ShotTableSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [id],
     );
-    print('Delete operation succeed');
+    print('Provider: Delete operation succeed');
   }
 
   Future<SNShotTable> getLatestShotTable(String songId) async {

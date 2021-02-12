@@ -33,7 +33,7 @@ class MigratorPage extends StatelessWidget {
           FloatingActionButton(
             tooltip: 'Add', // used by assistive technologies
             child: Icon(Icons.add),
-            heroTag: 'addFAB',
+            heroTag: 'createFAB',
             onPressed: () {},
           ),
           FloatingActionButton(

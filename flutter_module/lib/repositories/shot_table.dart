@@ -11,7 +11,8 @@ class ShotTableRepository {
   Future<SNShotTable> retrieveById(String id) async =>
       await provider.retrieveById(id);
 
-  Future<List<SNShotTable>> retrieveAll() async => await provider.retrieveAll();
+  Future<List<SNShotTable>> retrieveForSong(String id) async =>
+      await provider.retrieveForSong(id);
 
   Future<void> update(SNShotTable shotTable) async =>
       await provider.update(shotTable);

@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../widgets/drawer.dart';
 import '../widgets/loading.dart';
@@ -18,8 +19,10 @@ import '../controllers/shot.dart';
 import '../utils/reg_exp.dart';
 import '../utils/data_convert.dart';
 
-class ShotEditorPage extends GetView<ShotController> {
+class ShotEditorPage extends StatelessWidget {
   ShotTableController shotTableController = Get.find();
+  ShotController shotController = Get.find();
+  SongController songController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -32,48 +35,107 @@ class ShotEditorPage extends GetView<ShotController> {
           //   onPressed: () => Scaffold.of(context).openDrawer(),
           // ),
           title: Text('分镜脚本编辑'),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.search),
-              tooltip: 'Search',
-              onPressed: null,
-            ),
-          ],
+          actions: <Widget>[],
         ),
         drawer: MyDrawer(),
         // body is the majority of the screen.
-        body: GetX(
-            initState: (_) => shotTableController.editingShotTable(SNShotTable(
-                id: 'sn_shot_table_example_2',
-                name: 'Default ShotTable for Star Diamond',
-                authorId: '1',
-                songId: 'sn_song_example_2')),
-            builder: (_) {
-              if (controller.shots.value != null) {
-                return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: ShotDataTable(),
+        body: SlidingUpPanel(
+            panel: Container(
+                // height: 300,
+                child: Column(
+              children: <Widget>[
+                Divider(),
+                Text('数据表格处理菜单'),
+                Obx(() {
+                  assert(songController.editingSong.value != null);
+                  return SliderTheme(
+                      data: SliderTheme.of(context).copyWith(
+                        thumbColor: Colors.pink,
                       ),
-                      Expanded(
-                        flex: 1,
-                        child: ShotInspector(),
-                      )
+                      child: Slider(
+                          value: (shotController.editingShot.value != null)
+                              ? shotController.editingShot.value.startTime
+                                      .inMilliseconds /
+                                  songController
+                                      .editingSong.value.duration.inMilliseconds
+                              : 0,
+                          min: 0.0,
+                          max: 1.0,
+                          onChanged: (value) {
+                            print(value);
+                          },
+                          onChangeEnd: (value) =>
+                              null // TODO: Implement editingShot focus on
+                          ));
+                }),
+              ],
+            )),
+            body: GetX(
+                initState: (_) async => await shotTableController.retrieve(),
+                builder: (_) {
+                  if (shotTableController.shotTablesForSong.value != null) {
+                    return Column(children: [
+                      Container(
+                        height: 40,
+                        width: MediaQuery.of(context).size.width,
+                        child: CustomScrollView(
+                            scrollDirection: Axis.horizontal,
+                            slivers: [
+                              SliverList(
+                                delegate: SliverChildListDelegate(
+                                    shotTableController.shotTablesForSong.value
+                                            .map((st) => ActionChip(
+                                                  label: Text(st.name),
+                                                  onPressed: () =>
+                                                      shotTableController
+                                                          .select(st.id),
+                                                ))
+                                            .toList() +
+                                        [
+                                          ActionChip(
+                                            label: Icon(Icons.add),
+                                            onPressed: () => Get.dialog(
+                                                    ShotTableUpsertDialog(null))
+                                                .then((shotTable) =>
+                                                    shotTableController
+                                                        .submitCreate(
+                                                            shotTable)),
+                                          )
+                                        ]),
+                              )
+                            ]),
+                      ),
+                      Obx(() {
+                        if (shotController.shots.value != null) {
+                          return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: ShotDataTable(),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: ShotInspector(),
+                                )
+                              ]);
+                        } else {
+                          return LoadingAnimationLinear();
+                        }
+                      })
                     ]);
-              } else {
-                return LoadingAnimationLinear();
-              }
-            }),
+                  } else {
+                    return LoadingAnimationLinear();
+                  }
+                })),
         floatingActionButton:
             Column(mainAxisAlignment: MainAxisAlignment.end, children: [
           FloatingActionButton(
             tooltip: 'Add', // used by assistive technologies
             child: Icon(Icons.add),
-            heroTag: 'addFAB',
+            heroTag: 'createFAB',
             onPressed: () {
-              controller.create();
+              shotController.create();
             },
           ),
           FloatingActionButton(
@@ -81,7 +143,7 @@ class ShotEditorPage extends GetView<ShotController> {
               child: Icon(Icons.delete),
               heroTag: 'deleteFAB',
               onPressed: () {
-                controller.deleteMultiple(controller.selectedShots);
+                shotController.deleteMultiple(shotController.selectedShots);
               }),
         ]));
   }
@@ -106,141 +168,149 @@ class ShotDataTable extends GetView<ShotController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (controller.shots.isNotEmpty) {
-        return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: CustomScrollView(
-                  scrollDirection: Axis.vertical,
-                  // shrinkWrap: true,
-                  slivers: [
-                    SliverList(
-                        delegate: SliverChildListDelegate([
-                      DataTable(
-                        sortAscending: _sortAscending,
-                        sortColumnIndex: _sortColumnIndex,
-                        columnSpacing: 10,
-                        columns: List.generate(
-                          SNShot.titles.length,
-                          (i) => DataColumn(
-                            label: Text(SNShot.titles[i]),
-                            onSort: (index, ascending) =>
-                                _sort(index, ascending),
+      if (controller.shots.value.isNotEmpty) {
+        return SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: CustomScrollView(
+                      scrollDirection: Axis.vertical,
+                      // shrinkWrap: true,
+                      slivers: [
+                        SliverList(
+                            delegate: SliverChildListDelegate([
+                          DataTable(
+                            sortAscending: _sortAscending,
+                            sortColumnIndex: _sortColumnIndex,
+                            // columnSpacing: 10,
+                            columns: List.generate(
+                              SNShot.titles.length,
+                              (i) => DataColumn(
+                                label: Text(SNShot.titles[i]),
+                                onSort: (index, ascending) =>
+                                    _sort(index, ascending),
+                              ),
+                            ),
+                            rows: controller.shots
+                                .map((shot) => DataRow(
+                                        selected: controller.selectedShots
+                                            .contains(shot),
+                                        onSelectChanged: (isSelected) {
+                                          if (isSelected) {
+                                            controller.selectedShots.add(shot);
+                                          } else {
+                                            controller.selectedShots
+                                                .remove(shot);
+                                          }
+                                        },
+                                        cells: [
+                                          DataCell(Text('${shot.sceneNumber}')),
+                                          DataCell(Text('${shot.shotNumber}')),
+                                          DataCell(
+                                            Text(simpleDurationRegExp
+                                                .stringMatch(
+                                                    shot.startTime.toString())),
+                                          ),
+                                          DataCell(
+                                            Text(simpleDurationRegExp
+                                                .stringMatch(
+                                                    shot.endTime.toString())),
+                                          ),
+                                          DataCell(Text(shot.lyric)),
+                                          // DataCell(
+                                          //   DropdownButton(
+                                          //     value: shot.sceneNumber,
+                                          //     icon: Icon(Icons.arrow_downward,
+                                          //         size: 14),
+                                          //     style: TextStyle(
+                                          //         fontSize: 12,
+                                          //         color: Colors.black),
+                                          //     underline: Container(
+                                          //       height: 2,
+                                          //       color: Colors.deepPurpleAccent,
+                                          //     ),
+                                          //     onChanged: (newValue) {
+                                          //       shot.sceneNumber = newValue;
+                                          //       controller.updateShot(shot);
+                                          //     },
+                                          //     items: shotScenes
+                                          //         .map((shotSceneMap) =>
+                                          //             DropdownMenuItem<int>(
+                                          //               value: shotSceneMap[
+                                          //                   'shotSceneValue'],
+                                          //               child: Text(shotSceneMap[
+                                          //                   'shotSceneLabel']),
+                                          //             ))
+                                          //         .toList(),
+                                          //   ),
+                                          // ),
+                                          DataCell(
+                                            DropdownButton(
+                                              value: shot.shotType,
+                                              icon: Icon(Icons.arrow_downward),
+                                              underline: Container(
+                                                height: 2,
+                                                color: Colors.deepPurpleAccent,
+                                              ),
+                                              onChanged: (newValue) {
+                                                shot.shotType = newValue;
+                                                controller.updateShot(shot);
+                                              },
+                                              items: shotTypes
+                                                  .map((shotTypeMap) =>
+                                                      DropdownMenuItem<String>(
+                                                        value: shotTypeMap[
+                                                            'shotTypeValue'],
+                                                        child: Text(shotTypeMap[
+                                                            'shotTypeLabel']),
+                                                      ))
+                                                  .toList(),
+                                            ),
+                                          ),
+                                          DataCell(Text(shot.shotMovement)),
+                                          DataCell(Text(shot.shotAngle)),
+                                          DataCell(
+                                              TextField(
+                                                controller:
+                                                    TextEditingController()
+                                                      ..text = shot.text,
+                                                // maxLines: null,
+                                                decoration: InputDecoration(),
+                                                onChanged: (value) {
+                                                  shot.text = value;
+                                                },
+                                                onEditingComplete: () {
+                                                  controller.updateShot(shot);
+                                                },
+                                              ),
+                                              // showEditIcon: true,
+                                              onTap: null),
+                                          DataCell(Text(shot.image)),
+                                          DataCell(Text(shot.comment)),
+                                          DataCell(Obx(() {
+                                            if (songController.editingSong !=
+                                                null) {
+                                              return CharacterSelector(
+                                                  editingShot: shot,
+                                                  updateShot: (shot) =>
+                                                      controller
+                                                          .updateShot(shot),
+                                                  editingSong: songController
+                                                      .editingSong.value);
+                                            } else {
+                                              return Container();
+                                            }
+                                          })),
+                                        ]))
+                                .toList(),
                           ),
-                        ),
-                        rows: controller.shots
-                            .map((shot) => DataRow(
-                                    selected:
-                                        controller.selectedShots.contains(shot),
-                                    onSelectChanged: (isSelected) {
-                                      if (isSelected) {
-                                        controller.selectedShots.add(shot);
-                                      } else {
-                                        controller.selectedShots.remove(shot);
-                                      }
-                                    },
-                                    cells: [
-                                      DataCell(Text('${shot.sceneNumber}')),
-                                      DataCell(Text('${shot.shotNumber}')),
-                                      DataCell(
-                                        Text(simpleDurationRegExp.stringMatch(
-                                            shot.startTime.toString())),
-                                      ),
-                                      DataCell(
-                                        Text(simpleDurationRegExp.stringMatch(
-                                            shot.endTime.toString())),
-                                      ),
-                                      DataCell(Text(shot.lyric)),
-                                      // DataCell(
-                                      //   DropdownButton(
-                                      //     value: shot.sceneNumber,
-                                      //     icon: Icon(Icons.arrow_downward,
-                                      //         size: 14),
-                                      //     style: TextStyle(
-                                      //         fontSize: 12,
-                                      //         color: Colors.black),
-                                      //     underline: Container(
-                                      //       height: 2,
-                                      //       color: Colors.deepPurpleAccent,
-                                      //     ),
-                                      //     onChanged: (newValue) {
-                                      //       shot.sceneNumber = newValue;
-                                      //       controller.updateShot(shot);
-                                      //     },
-                                      //     items: shotScenes
-                                      //         .map((shotSceneMap) =>
-                                      //             DropdownMenuItem<int>(
-                                      //               value: shotSceneMap[
-                                      //                   'shotSceneValue'],
-                                      //               child: Text(shotSceneMap[
-                                      //                   'shotSceneLabel']),
-                                      //             ))
-                                      //         .toList(),
-                                      //   ),
-                                      // ),
-                                      DataCell(
-                                        DropdownButton(
-                                          value: shot.shotType,
-                                          icon: Icon(Icons.arrow_downward),
-                                          underline: Container(
-                                            height: 2,
-                                            color: Colors.deepPurpleAccent,
-                                          ),
-                                          onChanged: (newValue) {
-                                            shot.shotType = newValue;
-                                            controller.updateShot(shot);
-                                          },
-                                          items: shotTypes
-                                              .map((shotTypeMap) =>
-                                                  DropdownMenuItem<String>(
-                                                    value: shotTypeMap[
-                                                        'shotTypeValue'],
-                                                    child: Text(shotTypeMap[
-                                                        'shotTypeLabel']),
-                                                  ))
-                                              .toList(),
-                                        ),
-                                      ),
-                                      DataCell(Text(shot.shotMovement)),
-                                      DataCell(Text(shot.shotAngle)),
-                                      DataCell(
-                                          TextField(
-                                            controller: TextEditingController()
-                                              ..text = shot.text,
-                                            // maxLines: null,
-                                            decoration: InputDecoration(),
-                                            onChanged: (value) {
-                                              shot.text = value;
-                                            },
-                                            onEditingComplete: () {
-                                              controller.updateShot(shot);
-                                            },
-                                          ),
-                                          // showEditIcon: true,
-                                          onTap: null),
-                                      DataCell(Text(shot.image)),
-                                      DataCell(Text(shot.comment)),
-                                      DataCell(Obx(() {
-                                        if (songController.editingSong !=
-                                            null) {
-                                          return CharacterSelector(
-                                              editingShot: shot,
-                                              updateShot: (shot) =>
-                                                  controller.updateShot(shot),
-                                              editingSong: songController
-                                                  .editingSong.value);
-                                        } else {
-                                          return Container();
-                                        }
-                                      })),
-                                    ]))
-                            .toList(),
-                      ),
-                    ])),
-                  ],
-                )));
+                        ])),
+                      ],
+                    ))));
       } else {
         return LoadingAnimationLinear();
       }
@@ -259,62 +329,6 @@ class ShotInspector extends StatelessWidget {
     return Container(
         padding: EdgeInsets.all(10.0),
         child: Column(children: <Widget>[
-          FlatButton(
-              onPressed: () => showBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return Container(
-                        height: 300,
-                        child: Column(
-                          children: <Widget>[
-                            Text('这个Slider仅仅是用来测试的，所以只能选择前几段。'),
-                            Obx(() {
-                              if (shotController.editingShot != null) {
-                                return SliderTheme(
-                                    data: SliderTheme.of(context).copyWith(
-                                      //   thumbShape: PaddleSliderValueIndicatorShape(),
-                                      thumbColor: Colors.pink,
-                                    ),
-                                    child: Slider(
-                                      value: shotController.editingShot.value
-                                                  .startTime.inMilliseconds !=
-                                              0
-                                          ? [
-                                              18100,
-                                              22900,
-                                              24200,
-                                              30200,
-                                              34800,
-                                              36300
-                                            ]
-                                              .indexWhere((element) =>
-                                                  element ==
-                                                  shotController
-                                                      .editingShot
-                                                      .value
-                                                      .startTime
-                                                      .inMilliseconds)
-                                              .toDouble()
-                                          : 0.0,
-                                      min: 0.0,
-                                      max: 5.0,
-                                      divisions: 5,
-                                      onChanged: (value) {
-                                        print(value);
-                                      },
-                                      onChangeEnd: (value) => shotController
-                                              .editingShot.value =
-                                          shotController.shots[
-                                              value.toInt()], // ! Be careful
-                                    ));
-                              } else {
-                                return Container();
-                              }
-                            }),
-                          ],
-                        ));
-                  }),
-              child: Text('Show ButtomSheet')),
           Obx(() {
             if (songController.editingSong != null) {
               return Column(
@@ -568,3 +582,57 @@ class ShotInspector extends StatelessWidget {
 //   bool shouldRepaint(LyricPainter oldDelegate) =>
 //       oldDelegate.offsetYBegin != offsetYBegin;
 // }
+
+class ShotTableUpsertDialog extends GetView<ShotTableController> {
+  // 在dialog最终pop时才给对象赋值，不确定这样的方式是否合适
+  SNShotTable st;
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  ShotTableUpsertDialog(SNShotTable shotTable) {
+    st = shotTable ?? SNShotTable.initialValue();
+    _nameController.text = st.name;
+    _descriptionController.text = st.description;
+  }
+
+  Widget build(BuildContext context) => SimpleDialog(
+        title: Text('ShotTable upsert dialog'),
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Column(children: [
+                Form(
+                    child: Column(children: [
+                  TextFormField(
+                    controller: _nameController,
+                    decoration:
+                        InputDecoration(hintText: 'Input shotTable name'),
+                    onEditingComplete: () {},
+                  ),
+                  TextFormField(
+                    controller: _descriptionController,
+                    decoration: InputDecoration(
+                        hintText: 'Input shotTable description'),
+                    onEditingComplete: () {},
+                  ),
+                ])),
+                SimpleDialogOption(
+                  onPressed: () {
+                    controller.delete(st); // ! shotTable could be null
+                    Get.back();
+                  },
+                  child: Text('Delete'.tr),
+                ),
+                SimpleDialogOption(
+                  onPressed: () {
+                    st.name = _nameController.text;
+                    st.description = _descriptionController.text;
+                    Get.back(result: st);
+                  },
+                  child: Text('Submit'.tr),
+                ),
+              ]))
+        ],
+      );
+}

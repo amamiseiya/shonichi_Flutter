@@ -52,7 +52,7 @@ Future<void> initServices() async {
       projectRepository, songRepository, attachmentRepository));
   Get.put(SongController(songRepository, attachmentRepository));
   Get.put(LyricController(lyricRepository, attachmentRepository));
-  Get.put(ShotTableController());
+  Get.put(ShotTableController(shotTableRepository));
   Get.put(ShotController(
       songRepository, lyricRepository, shotRepository, attachmentRepository));
   Get.put(FormationController(formationRepository, attachmentRepository));

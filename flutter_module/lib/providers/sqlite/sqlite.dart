@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'dart:convert' show utf8;
 import 'dart:io';
 
-import 'package:path/path.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -36,7 +37,7 @@ abstract class SQLiteProvider {
         // Set the path to the database. Note: Using the `join` function from the
         // `path` package is best practice to ensure the path is correctly
         // constructed for each platform.
-        join(appDocDir.path, 'database.db'),
+        p.join(appDocDir.path, 'database.db'),
         onCreate: (db, version) async {
           db.execute(
             'CREATE TABLE sn_project(id TEXT PRIMARY KEY, dancerName TEXT, createdTime TEXT, modifiedTime TEXT, songId TEXT, shotTableId TEXT, formationTableId TEXT)',

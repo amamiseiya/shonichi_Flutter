@@ -22,7 +22,7 @@ class LyricController extends GetxController {
         assert(attachmentRepository != null) {
     songController.editingSong.listen((newSong) async {
       await retrieveForSong();
-      print('listening to editingSong and ${lyrics.length} lyrics retrieved');
+      print('${lyrics.length} lyric(s) retrieved -- listening to editingSong');
     });
   }
 
@@ -31,7 +31,6 @@ class LyricController extends GetxController {
       print('Retrieving lyrics');
       lyrics(await lyricRepository
           .retrieveForSong(songController.editingSong.value.id));
-      print('${lyrics.length} lyrics retrieved');
     } catch (e) {
       print(e);
     }

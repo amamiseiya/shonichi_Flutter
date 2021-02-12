@@ -8,7 +8,7 @@ class ProjectSQLiteProvider extends SQLiteProvider {
       project.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print('Create operation succeed');
+    print('Provider: Create operation succeed');
   }
 
   Future<SNProject> retrieveById(String id) async {
@@ -33,7 +33,7 @@ class ProjectSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [project.id],
     );
-    print('Update operation succeed');
+    print('Provider: Update operation succeed');
   }
 
   Future<void> delete(String id) async {
@@ -43,7 +43,7 @@ class ProjectSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [id],
     );
-    print('Delete operation succeed');
+    print('Provider: Delete operation succeed');
   }
 
   Future<void> deleteMultiple(List<String> ids) async {
@@ -55,6 +55,6 @@ class ProjectSQLiteProvider extends SQLiteProvider {
         whereArgs: [id],
       );
     });
-    print('Delete operation succeed');
+    print('Provider: Delete operation succeed');
   }
 }

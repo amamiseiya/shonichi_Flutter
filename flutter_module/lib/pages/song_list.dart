@@ -6,6 +6,7 @@ import '../widgets/drawer.dart';
 import '../widgets/loading.dart';
 import '../widgets/error.dart';
 import '../controllers/song.dart';
+import '../models/kikaku.dart';
 import '../models/song.dart';
 import '../utils/data_convert.dart';
 
@@ -43,8 +44,9 @@ class SongListPage extends GetView<SongController> {
           FloatingActionButton(
               tooltip: 'Add', // used by assistive technologies
               child: Icon(Icons.add),
-              heroTag: 'addFAB',
-              onPressed: () => showSongEditorDialog(null)),
+              heroTag: 'createFAB',
+              onPressed: () => Get.dialog(SongUpsertDialog(null))
+                  .then((song) => controller.submitCreate(song))),
         ]));
   }
 }
@@ -86,7 +88,8 @@ class SongDataTable extends GetView<SongController> {
                   .map((song) => DataRow(cells: [
                         DataCell(Text(song.name), onTap: () {
                           print('Pressed from DataCell');
-                          showSongEditorDialog(song);
+                          Get.dialog(SongUpsertDialog(song))
+                              .then((song) => controller.submitUpdate(song));
                         }),
                         DataCell(Text(song.subordinateKikaku)),
                       ]))
@@ -101,113 +104,90 @@ class SongDataTable extends GetView<SongController> {
   }
 }
 
-Future<void> showSongEditorDialog(SNSong song) async {
+class SongUpsertDialog extends StatelessWidget {
+  SNSong s;
   SongController songController = Get.find();
-  SNSong s = (song != null) ? song : SNSong.initialValue();
 
-  TextEditingController _idController = TextEditingController()
-    ..text = s.id.toString();
-  TextEditingController _nameController = TextEditingController()
-    ..text = s.name;
-  TextEditingController _coverIdController = TextEditingController()
-    ..text = s.coverId;
-  TextEditingController _lyricOffsetController = TextEditingController()
-    ..text = s.lyricOffset.toString();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _coverIdController = TextEditingController();
+  TextEditingController _durationController = TextEditingController();
+  TextEditingController _lyricOffsetController = TextEditingController();
 
-  final _future = await Get.dialog(SimpleDialog(
-    title: Text('编辑歌曲简介'),
-    children: <Widget>[
-      Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Column(children: [
-            Form(
-                child: Column(children: [
-              TextFormField(
-                controller: _idController,
-                decoration: InputDecoration(hintText: '输入歌曲编号'),
-                onEditingComplete: () {
-                  s.id = _idController.text;
-                },
-              ),
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(hintText: '输入歌曲名称'),
-                onEditingComplete: () {
-                  s.name = _nameController.text;
-                },
-              ),
-              DropdownButton(
-                value: s.subordinateKikaku,
-                icon: Icon(Icons.arrow_downward),
-                underline: Container(
-                  height: 2,
-                  color: Colors.deepPurpleAccent,
-                ),
-                onChanged: (String value) {
-                  (Get.context as Element).markNeedsBuild(); //! doesn't work
-                  s.subordinateKikaku = value;
-                },
-                items: <String>['', 'μ\'s', 'Aqours', 'スタァライト九九組']
-                    .map<DropdownMenuItem<String>>(
-                        (String value) => DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            ))
-                    .toList(),
-              ),
-              TextFormField(
-                controller: _lyricOffsetController,
-                decoration: InputDecoration(hintText: '输入歌词偏移'),
-                onEditingComplete: () {
-                  s.lyricOffset = int.parse(_lyricOffsetController.text);
-                },
-              ),
-              TextFormField(
-                controller: _coverIdController,
-                decoration: InputDecoration(hintText: '输入封面文件名'),
-                onEditingComplete: () {
-                  s.coverId = _coverIdController.text;
-                },
-              ),
-              // TextFormField(
-              //   controller: _videoIntrosController,
-              //   decoration: InputDecoration(hintText: '输入视频简介'),
-              //   onEditingComplete: () {
-              //     videoIntros = stringToList(value);
-              //   },
-              // ),
-              // TextFormField(
-              //   controller: _videoFileNamesController,
-              //   decoration: InputDecoration(hintText: '输入视频文件名'),
-              //   onEditingComplete: () {
-              //     videoFileNames = stringToList(value);
-              //   },
-              // ),
-              // TextFormField(
-              //   controller: _videoOffsetsController,
-              //   decoration: InputDecoration(hintText: '输入视频偏移'),
-              //   onEditingComplete: (value) {
-              //     videoOffsets = stringToIntList(value);
-              //   },
-              // ),
-            ])),
-            SimpleDialogOption(
-              onPressed: () {
-                songController.delete(song);
-                Get.back();
-              },
-              child: Text('删除'),
-            ),
-            SimpleDialogOption(
-              onPressed: () => Get.back(result: s),
-              child: Text('完成'),
-            ),
-          ]))
-    ],
-  ));
-  if (_future != null && song != null) {
-    songController.submitUpdate(_future);
-  } else if (_future != null && song == null) {
-    songController.submitCreate(_future);
+  SongUpsertDialog(SNSong song) {
+    s = song ?? SNSong.initialValue();
+    _nameController.text = s.name;
+    _coverIdController.text = s.coverId;
+    _durationController.text = s.duration.inMilliseconds.toString();
+    _lyricOffsetController.text = s.lyricOffset.toString();
   }
+
+  Widget build(BuildContext context) => SimpleDialog(
+        title: Text('编辑歌曲简介'),
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Column(children: [
+                Form(
+                    child: Column(children: [
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: InputDecoration(hintText: '输入歌曲名称'),
+                    onEditingComplete: () {},
+                  ),
+                  DropdownButton(
+                    value: s.subordinateKikaku,
+                    icon: Icon(Icons.arrow_downward),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.deepPurpleAccent,
+                    ),
+                    onChanged: (String value) {
+                      (context as Element).markNeedsBuild(); // 妙啊，实在是妙
+                      s.subordinateKikaku = value;
+                    },
+                    items: SNKikaku.kikakus
+                        .map<DropdownMenuItem<String>>(
+                            (SNKikaku kikaku) => DropdownMenuItem<String>(
+                                  value: kikaku.name,
+                                  child: Text(kikaku.name),
+                                ))
+                        .toList(),
+                  ),
+                  TextFormField(
+                    controller: _coverIdController,
+                    decoration: InputDecoration(hintText: '输入封面ID'),
+                    onEditingComplete: () {},
+                  ),
+                  TextFormField(
+                    controller: _durationController,
+                    decoration: InputDecoration(hintText: '输入歌曲编号'),
+                    onEditingComplete: () {},
+                  ),
+                  TextFormField(
+                    controller: _lyricOffsetController,
+                    decoration: InputDecoration(hintText: '输入歌词偏移'),
+                    onEditingComplete: () {},
+                  ),
+                ])),
+                SimpleDialogOption(
+                  onPressed: () {
+                    songController.delete(s); // ! song could be null
+                    Get.back();
+                  },
+                  child: Text('Delete'.tr),
+                ),
+                SimpleDialogOption(
+                  onPressed: () {
+                    s.name = _nameController.text;
+                    s.coverId = _coverIdController.text;
+                    s.duration = Duration(
+                        milliseconds: int.parse(_durationController.text));
+                    s.lyricOffset = int.parse(_lyricOffsetController.text);
+                    Get.back(result: s);
+                  },
+                  child: Text('Submit'.tr),
+                ),
+              ]))
+        ],
+      );
 }

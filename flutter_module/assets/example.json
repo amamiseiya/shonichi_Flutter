@@ -24,15 +24,17 @@
       "id": "sn_song_example_1",
       "name": "Brightest Melody",
       "coverId": "sn_attachment_images_1.jpg",
+      "duration": "261000",
       "lyricOffset": 0,
-      "subordinateKikaku": "Aqours"
+      "subordinateKikaku": "ラブライブ！サンシャイン!!"
     },
     {
       "id": "sn_song_example_2",
       "name": "Star Diamond",
       "coverId": "sn_attachment_images_2.jpg",
+      "duration": "291000",
       "lyricOffset": -520,
-      "subordinateKikaku": "スタァライト九九組"
+      "subordinateKikaku": "少女☆歌劇 レヴュー・スタァライト"
     }
   ],
   "sn_lyric": [
@@ -964,13 +966,15 @@
   "sn_shot_table": [
     {
       "id": "sn_shot_table_example_1",
-      "name": "Default ShotTable for Brightest Melody",
+      "name": "sn_shot_table_example_1",
+      "description": "Default ShotTable for Brightest Melody",
       "authorId": "1",
       "songId": "sn_song_example_1"
     },
     {
       "id": "sn_shot_table_example_2",
-      "name": "Default ShotTable for Star Diamond",
+      "name": "sn_shot_table_example_2",
+      "description": "Default ShotTable for Star Diamond",
       "authorId": "1",
       "songId": "sn_song_example_2"
     }

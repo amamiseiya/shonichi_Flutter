@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert' show utf8;
+import 'dart:typed_data' show Uint8List;
 import 'dart:io' show Platform;
 
 import 'package:firebase_core/firebase_core.dart';
@@ -11,6 +13,7 @@ import '../../models/song.dart';
 import '../../models/lyric.dart';
 import '../../models/shot_table.dart';
 import '../../models/shot.dart';
+import '../../models/formation_table.dart';
 import '../../models/formation.dart';
 
 part 'attachment.dart';

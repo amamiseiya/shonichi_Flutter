@@ -75,10 +75,10 @@ class ProjectController extends GetxController {
     try {
       if (editingProject == Rx<SNProject>(null) ||
           editingProject.value.id != id) {
-        editingProject.value = await projectRepository.retrieveById(id);
+        editingProject(await projectRepository.retrieveById(id));
         print('editingProject is ${editingProject.value.id}');
       } else if (editingProject.value.id == id) {
-        editingProject.value = null;
+        editingProject(null);
         print('editingProject is null');
       }
     } catch (e) {

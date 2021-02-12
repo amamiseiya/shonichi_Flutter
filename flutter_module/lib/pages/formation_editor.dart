@@ -8,7 +8,9 @@ import '../widgets/drawer.dart';
 import '../widgets/loading.dart';
 import '../widgets/error.dart';
 import '../controllers/lyric.dart';
+import '../controllers/formation_table.dart';
 import '../controllers/formation.dart';
+import '../models/formation_table.dart';
 import '../models/formation.dart';
 import '../models/character.dart';
 import '../utils/reg_exp.dart';
@@ -50,7 +52,7 @@ class FormationEditorPage extends GetView<FormationController> {
           FloatingActionButton(
               tooltip: 'Add', // used by assistive technologies
               child: Icon(Icons.add),
-              heroTag: 'addFAB',
+              heroTag: 'createFAB',
               onPressed: () => controller.createFormation()),
           FloatingActionButton(
               tooltip: 'Edit', // used by assistive technologies
@@ -413,7 +415,57 @@ class KCurvePainter extends CustomPainter {
       oldDelegate.editingKCurve != editingKCurve;
 }
 
-Future<SNFormation> formationEditorDialog(
-    BuildContext context, SNFormation formation) {
-  return showDialog(context: context, builder: (context) => Container());
+class FormationTableUpsertDialog extends GetView<FormationTableController> {
+  // 在dialog最终pop时才给对象赋值，不确定这样的方式是否合适
+
+  SNFormationTable ft;
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  FormationTableUpsertDialog(SNFormationTable formationTable) {
+    ft = formationTable ?? SNFormationTable.initialValue();
+    _nameController.text = ft.name;
+    _descriptionController.text = ft.description;
+  }
+
+  Widget build(BuildContext context) => SimpleDialog(
+        title: Text('FormationTable upsert dialog'),
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Column(children: [
+                Form(
+                    child: Column(children: [
+                  TextFormField(
+                    controller: _nameController,
+                    decoration:
+                        InputDecoration(hintText: 'Input formationTable name'),
+                    onEditingComplete: () {},
+                  ),
+                  TextFormField(
+                    controller: _descriptionController,
+                    decoration: InputDecoration(
+                        hintText: 'Input formationTable description'),
+                    onEditingComplete: () {},
+                  ),
+                ])),
+                SimpleDialogOption(
+                  onPressed: () {
+                    controller.delete(ft); // ! formationTable could be null
+                    Get.back();
+                  },
+                  child: Text('Delete'.tr),
+                ),
+                SimpleDialogOption(
+                  onPressed: () {
+                    ft.name = _nameController.text;
+                    ft.description = _descriptionController.text;
+                    Get.back(result: ft);
+                  },
+                  child: Text('Submit'.tr),
+                ),
+              ]))
+        ],
+      );
 }

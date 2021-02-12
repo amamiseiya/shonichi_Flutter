@@ -8,18 +8,20 @@ class SongSQLiteProvider extends SQLiteProvider {
       song.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print('Create operation succeed');
+    print('Provider: Create operation succeed');
   }
 
   Future<SNSong> retrieveById(String id) async {
     final db = await database;
     final mapList = await db.query('sn_song', where: 'id = ?', whereArgs: [id]);
+    print('Provider: Retrieved song: ' + mapList.first.toString());
     return SNSong.fromMap(mapList.first);
   }
 
   Future<List<SNSong>> retrieveAll() async {
     final db = await database;
     final mapList = await db.query('sn_song', orderBy: 'id DESC');
+    print('Provider: ' + mapList.length.toString() + ' song(s) retrieved');
     return List.generate(mapList.length, (i) => SNSong.fromMap(mapList[i]));
   }
 
@@ -31,7 +33,7 @@ class SongSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [song.id],
     );
-    print('Update operation succeed');
+    print('Provider: Update operation succeed');
   }
 
   Future<void> delete(String id) async {
@@ -41,7 +43,7 @@ class SongSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [id],
     );
-    print('Delete operation succeed');
+    print('Provider: Delete operation succeed');
   }
 
   Future<void> deleteMultiple(List<String> ids) async {
@@ -53,5 +55,6 @@ class SongSQLiteProvider extends SQLiteProvider {
         whereArgs: [id],
       );
     });
+    print('Provider: Delete operation succeed');
   }
 }

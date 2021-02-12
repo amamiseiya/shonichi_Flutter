@@ -27,34 +27,37 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  # 要想办法替换掉
+  # 希望弃用的package：
   chewie:
   sliding_up_panel:
 
-  # 成功地替换掉了！
+  # 已经弃用的package：
   # 这个主要是因为没啥用，并不是我实现了……
   # pull_to_refresh:
+  # 已经不再使用BLoC
+  # flutter_bloc:
+  # 使用GetX框架的本地化功能
+  # intl:
+  # provider:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.0
+  cupertino_icons:
   dio:
   equatable:
-  # 为什么我一加Firebase就出问题？
   firebase_core:
+  firebase_auth:
   firebase_storage:
   cloud_firestore:
   # firebase_database:
-  # 已经不再使用BLoC
-  # flutter_bloc:
   flutter_markdown:
+  flutter_slidable:
   get:
+  google_fonts:
   image_picker:
-  intl:
   leancloud_storage:
   path:
   path_provider:
-  provider:
   rxdart:
   sqflite:
   video_player:
@@ -62,7 +65,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  intl_translation:
   test:
 
 # For information on the generic Dart part of this file, see the

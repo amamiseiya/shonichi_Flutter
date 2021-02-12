@@ -55,21 +55,6 @@ class CharacterSelectorState extends State<CharacterSelector>
         maxWidth: 200,
         maxHeight: 90,
         child: Row(children: [
-          // child: GestureDetector(
-          // onTapDown: (details) {
-          //   print('onPanDown');
-          //   setState(() {
-          //     chipVisible = false;
-          //     selectorVisible = true;
-          //   });
-          // },
-          // onTapCancel: () {
-          //   print('onPanDown');
-          //   setState(() {
-          //     chipVisible = true;
-          //     selectorVisible = false;
-          //   });
-          // },
           Stack(children: [
             //!
             Visibility(

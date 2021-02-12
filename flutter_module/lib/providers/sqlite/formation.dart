@@ -8,7 +8,7 @@ class FormationSQLiteProvider extends SQLiteProvider {
       formation.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    print('Create operation succeed');
+    print('Provider: Create operation succeed');
   }
 
   Future<List<SNFormation>> retrieveForTable(String tableId) async {
@@ -27,7 +27,7 @@ class FormationSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [formation.id],
     );
-    print('Update operation succeed');
+    print('Provider: Update operation succeed');
   }
 
   Future<void> delete(String id) async {
@@ -37,6 +37,6 @@ class FormationSQLiteProvider extends SQLiteProvider {
       where: 'id = ?',
       whereArgs: [id],
     );
-    print('Delete operation succeed');
+    print('Provider: Delete operation succeed');
   }
 }
