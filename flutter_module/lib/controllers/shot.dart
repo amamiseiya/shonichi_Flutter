@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:get/get.dart';
+import 'package:rxdart/rxdart.dart' as rx;
 
 import '../models/shot.dart';
 import '../models/lyric.dart';
@@ -33,11 +34,9 @@ class ShotController extends GetxController {
   Stream<Map<String, int>> statisticsStream = Stream.empty();
 
   // 控制的变量
-  RxList<SNShot> shots = RxList<SNShot>(null);
+  RxList<SNShot> shots = RxList<SNShot>();
   RxList<SNShot> selectedShots = RxList<SNShot>();
   Rx<SNShot> editingShot = Rx<SNShot>(null);
-
-  double sliderMaxValue = 1.0;
 
   ShotController(this.songRepository, this.lyricRepository, this.shotRepository,
       this.attachmentRepository)
@@ -52,25 +51,30 @@ class ShotController extends GetxController {
     });
 
     shotTableController.editingShotTable.listen((newShotTable) async {
-      await retrieveForTable();
+      if (newShotTable != null) {
+        await retrieveForTable();
+      }
       print(
           '${shots.length} shot(s) retrieved -- listening to editingShotTable');
     });
 
-    coverageStream = shots.stream.asyncMap(
-        (List<SNShot> shots) => lyricController.lyrics.map((SNLyric lyric) {
-              int count = 0;
-              for (SNShot shot in shots) {
-                if (shot.startTime == lyric.startTime) {
-                  count++;
-                }
-              }
-              return {
-                'lyricTime': lyric.startTime.inMilliseconds,
-                'lyricText': lyric.text,
-                'coverageCount': count
-              };
-            }).toList());
+    coverageStream =
+        rx.Rx.combineLatest2(shots.stream, lyricController.lyrics.stream,
+            (List<SNShot> shots, List<SNLyric> lyrics) {
+      return List.generate(lyrics.length, (i) {
+        int count = 0;
+        for (SNShot shot in shots) {
+          if (shot.startTime == lyrics[i].startTime) {
+            count++;
+          }
+        }
+        return {
+          'lyricTime': lyrics[i].startTime.inMilliseconds,
+          'lyricText': lyrics[i].text,
+          'coverageCount': count
+        };
+      });
+    });
 
     statisticsStream = shots.stream.asyncMap((List<SNShot> shots) {
       Map<String, int> characterCountMap = Map.fromIterable(
@@ -85,12 +89,9 @@ class ShotController extends GetxController {
       }
       return characterCountMap;
     });
-
-    lyricController.lyrics.listen((lyrics) =>
-        sliderMaxValue = lyrics.last.endTime.inMilliseconds.toDouble());
   }
 
-  void retrieveForTable() async {
+  Future<void> retrieveForTable() async {
     try {
       print('Retrieving shots');
       shots(await shotRepository
@@ -100,16 +101,16 @@ class ShotController extends GetxController {
     }
   }
 
-  void updateShot(SNShot shot) async {
+  Future<void> updateShot(SNShot shot) async {
     try {
       await shotRepository.update(shot);
-      retrieveForTable();
+      await retrieveForTable();
     } catch (e) {
       print(e);
     }
   }
 
-  void create() async {
+  Future<void> create() async {
     try {
       final shot = SNShot(
           sceneNumber: 1010,
@@ -126,26 +127,26 @@ class ShotController extends GetxController {
           tableId: shotTableController.editingShotTable.value.id,
           characters: []);
       await shotRepository.create(shot);
-      retrieveForTable();
+      await retrieveForTable();
     } catch (e) {
       print(e);
     }
   }
 
-  void delete(SNShot shot) async {
+  Future<void> delete(SNShot shot) async {
     try {
       await shotRepository.delete(shot.id);
-      retrieveForTable();
+      await retrieveForTable();
     } catch (e) {
       print(e);
     }
   }
 
-  void deleteMultiple(List<SNShot> shots) async {
+  Future<void> deleteMultiple(List<SNShot> shots) async {
     try {
       await shotRepository
           .deleteMultiple(List.generate(shots.length, (i) => shots[i].id));
-      retrieveForTable();
+      await retrieveForTable();
     } catch (e) {
       print(e);
     }

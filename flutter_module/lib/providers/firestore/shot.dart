@@ -14,7 +14,6 @@ class ShotFirestoreProvider extends FirestoreProvider {
         .where('tableId', isEqualTo: tableId)
         .orderBy('startTime', descending: true)
         .get();
-    assert(snapshot.docs.isNotEmpty);
     print(
         'Provider: ' + snapshot.docs.length.toString() + ' shot(s) retrieved');
     return List.generate(snapshot.docs.length, (i) {

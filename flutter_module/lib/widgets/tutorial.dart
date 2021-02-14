@@ -38,7 +38,7 @@ class TutorialPage extends GetView<ProjectController> {
           Icons.refresh,
         ),
         onPressed: () {
-          controller.retrieve();
+          // controller.retrieve();
         },
       )
     ]))));

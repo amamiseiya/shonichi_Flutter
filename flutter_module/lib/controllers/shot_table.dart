@@ -55,7 +55,7 @@ class ShotTableController extends GetxController {
         editingShotTable(await shotTableRepository.retrieveById(id));
         print('editingShotTable is ${editingShotTable.value.id}');
       } else if (editingShotTable.value.id == id) {
-        editingShotTable(null);
+        editingShotTable.nil();
         print('editingShotTable is null');
       }
     } catch (e) {

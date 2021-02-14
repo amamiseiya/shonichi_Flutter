@@ -14,7 +14,6 @@ class LyricFirestoreProvider extends FirestoreProvider {
         .where('songId', isEqualTo: songId)
         .orderBy('startTime')
         .get();
-    assert(snapshot.docs.isNotEmpty);
     print(
         'Provider: ' + snapshot.docs.length.toString() + ' lyric(s) retrieved');
     return List.generate(snapshot.docs.length, (i) {

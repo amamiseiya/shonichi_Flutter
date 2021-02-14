@@ -24,7 +24,7 @@
       "id": "sn_song_example_1",
       "name": "Brightest Melody",
       "coverId": "sn_attachment_images_1.jpg",
-      "duration": "261000",
+      "duration": 261000,
       "lyricOffset": 0,
       "subordinateKikaku": "ラブライブ！サンシャイン!!"
     },
@@ -32,7 +32,7 @@
       "id": "sn_song_example_2",
       "name": "Star Diamond",
       "coverId": "sn_attachment_images_2.jpg",
-      "duration": "291000",
+      "duration": 291000,
       "lyricOffset": -520,
       "subordinateKikaku": "少女☆歌劇 レヴュー・スタァライト"
     }

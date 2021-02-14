@@ -15,26 +15,18 @@ class ProjectController extends GetxController {
 
   RxList<SNProject> projects = RxList<SNProject>(null);
   Rx<SNProject> editingProject = Rx<SNProject>(null);
-  RxString editingCoverURL = RxString(null);
 
   ProjectController(
       this.projectRepository, this.songRepository, this.attachmentRepository)
       : assert(projectRepository != null),
         assert(songRepository != null),
-        assert(attachmentRepository != null);
+        assert(attachmentRepository != null) {
+    // projects.bindStream(projectRepository.projectsStream);
+  }
 
   Future<void> retrieve() async {
     try {
-      final ps = await projectRepository.retrieveLatestN(4);
-      if (ps.isNotEmpty) {
-        final SNSong song = await songRepository.retrieveById(ps[0].songId);
-        editingCoverURL.value =
-            await attachmentRepository.getImageURL(song.coverId);
-        projects(ps);
-      } else {
-        editingCoverURL = null;
-        projects(ps);
-      }
+      projects(await projectRepository.retrieveLatestN(4));
     } catch (e) {
       print(e);
     }
@@ -78,7 +70,7 @@ class ProjectController extends GetxController {
         editingProject(await projectRepository.retrieveById(id));
         print('editingProject is ${editingProject.value.id}');
       } else if (editingProject.value.id == id) {
-        editingProject(null);
+        editingProject.nil();
         print('editingProject is null');
       }
     } catch (e) {

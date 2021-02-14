@@ -50,20 +50,20 @@ class FormationEditorPage extends GetView<FormationController> {
         floatingActionButton:
             Column(mainAxisAlignment: MainAxisAlignment.end, children: [
           FloatingActionButton(
-              tooltip: 'Add', // used by assistive technologies
+              tooltip: 'Create'.tr, // used by assistive technologies
               child: Icon(Icons.add),
-              heroTag: 'createFAB',
-              onPressed: () => controller.createFormation()),
+              heroTag: 'CreateFAB',
+              onPressed: () => controller.create()),
           FloatingActionButton(
-              tooltip: 'Edit', // used by assistive technologies
+              tooltip: 'Update'.tr, // used by assistive technologies
               child: Icon(Icons.edit),
-              heroTag: 'editFAB',
+              heroTag: 'UpdateFAB',
               onPressed: () {}),
           FloatingActionButton(
-              tooltip: 'Delete', // used by assistive technologies
+              tooltip: 'Delete'.tr, // used by assistive technologies
               child: Icon(Icons.delete),
-              heroTag: 'deleteFAB',
-              onPressed: () => controller.deleteFormation()),
+              heroTag: 'DeleteFAB',
+              onPressed: () => controller.delete()),
         ]));
   }
 }

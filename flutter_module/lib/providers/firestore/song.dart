@@ -4,6 +4,15 @@ class SongFirestoreProvider extends FirestoreProvider {
   final CollectionReference _songRef =
       FirebaseFirestore.instance.collection('sn_song');
 
+  // Stream<List<SNSong>> get songsStream => _songRef
+  //     .orderBy('name', descending: false)
+  //     .snapshots()
+  //     .map((querySnapshot) => List.generate(querySnapshot.docs.length, (i) {
+  //           final song = SNSong.fromMap(querySnapshot.docs[i].data());
+  //           song.id = querySnapshot.docs[i].id;
+  //           return song;
+  //         }));
+
   Future<void> create(SNSong song) async {
     await _songRef.add(song.toMap());
     print('Provider: Create operation succeed');
@@ -11,7 +20,10 @@ class SongFirestoreProvider extends FirestoreProvider {
 
   Future<SNSong> retrieveById(String id) async {
     final snapshot = await _songRef.doc(id).get();
-    assert(snapshot.exists);
+    if (!snapshot.exists) {
+      throw FirebaseException(
+          plugin: 'Firestore', message: 'Document does not exist');
+    }
     final song = SNSong.fromMap(snapshot.data());
     song.id = snapshot.id;
     print('Provider: Retrieved song: ' + song.toString());
@@ -20,7 +32,6 @@ class SongFirestoreProvider extends FirestoreProvider {
 
   Future<List<SNSong>> retrieveAll() async {
     final snapshot = await _songRef.orderBy('name', descending: false).get();
-    assert(snapshot.docs.isNotEmpty);
     print(
         'Provider: ' + snapshot.docs.length.toString() + ' song(s) retrieved');
     return List.generate(snapshot.docs.length, (i) {

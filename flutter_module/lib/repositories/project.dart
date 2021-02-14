@@ -6,6 +6,8 @@ import '../providers/firestore/firestore.dart';
 class ProjectRepository {
   final provider = ProjectFirestoreProvider();
 
+  // Stream<List<SNProject>> get projectsStream => provider.projectsStream;
+
   Future<void> create(SNProject project) async =>
       await provider.create(project);
 

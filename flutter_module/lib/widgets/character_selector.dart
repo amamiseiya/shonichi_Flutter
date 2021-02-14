@@ -51,9 +51,8 @@ class CharacterSelectorState extends State<CharacterSelector>
   }
 
   Widget build(BuildContext context) {
-    return OverflowBox(
-        maxWidth: 200,
-        maxHeight: 90,
+    return SizedOverflowBox(
+        size: Size(200, 90),
         child: Row(children: [
           Stack(children: [
             //!
@@ -71,13 +70,13 @@ class CharacterSelectorState extends State<CharacterSelector>
                           selectorVisible = true;
                         });
                       },
-                      onTapCancel: () {
-                        print('onTapCancel');
-                        setState(() {
-                          chipVisible = true;
-                          selectorVisible = false;
-                        });
-                      },
+                      // onTapCancel: () {
+                      //   print('onTapCancel');
+                      //   setState(() {
+                      //     chipVisible = true;
+                      //     selectorVisible = false;
+                      //   });
+                      // },
                       child: Chip(
                         label: Icon(Icons.add),
                       ),

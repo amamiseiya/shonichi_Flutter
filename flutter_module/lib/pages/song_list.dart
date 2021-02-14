@@ -14,37 +14,35 @@ class SongListPage extends GetView<SongController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('所有歌曲查看')),
+        appBar: AppBar(title: Text('All Song List'.tr)),
         drawer: MyDrawer(),
         body: GetX(
             initState: (_) => controller.retrieve(),
             builder: (_) {
-              if (controller.songs.value != null) {
-                return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                          flex: 3,
-                          child: Column(
-                              // crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SongDataTable(),
-                              ])),
-                      // Expanded(
-                      //   flex: 1,
-                      //   child: SongInspector(key: _songInspectorKey),
-                      // ),
-                    ]);
-              } else {
+              if (controller.songs.value == null) {
                 return LoadingAnimationLinear();
               }
+              if (controller.songs.value.isEmpty) {
+                return _EmptyPage();
+              }
+              return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                        flex: 3,
+                        child: Column(
+                            // crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SongDataTable(),
+                            ])),
+                  ]);
             }),
         floatingActionButton:
             Column(mainAxisAlignment: MainAxisAlignment.end, children: [
           FloatingActionButton(
-              tooltip: 'Add', // used by assistive technologies
+              tooltip: 'Create'.tr, // used by assistive technologies
               child: Icon(Icons.add),
-              heroTag: 'createFAB',
+              heroTag: 'CreateFAB',
               onPressed: () => Get.dialog(SongUpsertDialog(null))
                   .then((song) => controller.submitCreate(song))),
         ]));
@@ -67,40 +65,40 @@ class SongDataTable extends GetView<SongController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      if (controller.songs.value.isNotEmpty) {
-        return Flexible(
-            child: ListView(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          children: <Widget>[
-            DataTable(
-              sortAscending: _sortAscending,
-              sortColumnIndex: _sortColumnIndex,
-              columns: [
-                DataColumn(
-                  label: Text('歌曲名称'),
-                  onSort: (index, ascending) => _sort(index, ascending),
-                ),
-                DataColumn(label: Text('所属企划')),
-              ],
-              rows: controller.songs
-                  .map((song) => DataRow(cells: [
-                        DataCell(Text(song.name), onTap: () {
-                          print('Pressed from DataCell');
-                          Get.dialog(SongUpsertDialog(song))
-                              .then((song) => controller.submitUpdate(song));
-                        }),
-                        DataCell(Text(song.subordinateKikaku)),
-                      ]))
-                  .toList(),
-            )
+    return Flexible(
+        child: ListView(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      children: <Widget>[
+        DataTable(
+          sortAscending: _sortAscending,
+          sortColumnIndex: _sortColumnIndex,
+          columns: [
+            DataColumn(
+              label: Text('Song name'.tr),
+              onSort: (index, ascending) => _sort(index, ascending),
+            ),
+            DataColumn(label: Text('Subordinates'.tr)),
           ],
-        ));
-      } else {
-        return LoadingAnimationLinear();
-      }
-    });
+          rows: controller.songs
+              .map((song) => DataRow(cells: [
+                    DataCell(Text(song.name), onTap: () {
+                      print('Pressed from DataCell');
+                      Get.dialog(SongUpsertDialog(song))
+                          .then((song) => controller.submitUpdate(song));
+                    }),
+                    DataCell(Text(song.subordinateKikaku)),
+                  ]))
+              .toList(),
+        )
+      ],
+    ));
+  }
+}
+
+class _EmptyPage extends StatelessWidget {
+  Widget build(BuildContext context) {
+    return Text('Empty Page');
   }
 }
 
@@ -122,7 +120,7 @@ class SongUpsertDialog extends StatelessWidget {
   }
 
   Widget build(BuildContext context) => SimpleDialog(
-        title: Text('编辑歌曲简介'),
+        title: Text('Create or Update Song'.tr),
         children: <Widget>[
           Padding(
               padding: EdgeInsets.all(10.0),
@@ -131,7 +129,7 @@ class SongUpsertDialog extends StatelessWidget {
                     child: Column(children: [
                   TextFormField(
                     controller: _nameController,
-                    decoration: InputDecoration(hintText: '输入歌曲名称'),
+                    decoration: InputDecoration(hintText: 'Song name'.tr),
                     onEditingComplete: () {},
                   ),
                   DropdownButton(
@@ -145,27 +143,33 @@ class SongUpsertDialog extends StatelessWidget {
                       (context as Element).markNeedsBuild(); // 妙啊，实在是妙
                       s.subordinateKikaku = value;
                     },
-                    items: SNKikaku.kikakus
-                        .map<DropdownMenuItem<String>>(
-                            (SNKikaku kikaku) => DropdownMenuItem<String>(
-                                  value: kikaku.name,
-                                  child: Text(kikaku.name),
-                                ))
-                        .toList(),
+                    items: [
+                          DropdownMenuItem<String>(
+                            value: '',
+                            child: Text('(not set)'.tr),
+                          )
+                        ] +
+                        SNKikaku.kikakus
+                            .map<DropdownMenuItem<String>>(
+                                (SNKikaku kikaku) => DropdownMenuItem<String>(
+                                      value: kikaku.name,
+                                      child: Text(kikaku.name),
+                                    ))
+                            .toList(),
                   ),
                   TextFormField(
                     controller: _coverIdController,
-                    decoration: InputDecoration(hintText: '输入封面ID'),
+                    decoration: InputDecoration(hintText: 'Cover ID'.tr),
                     onEditingComplete: () {},
                   ),
                   TextFormField(
                     controller: _durationController,
-                    decoration: InputDecoration(hintText: '输入歌曲编号'),
+                    decoration: InputDecoration(hintText: 'Song duration'.tr),
                     onEditingComplete: () {},
                   ),
                   TextFormField(
                     controller: _lyricOffsetController,
-                    decoration: InputDecoration(hintText: '输入歌词偏移'),
+                    decoration: InputDecoration(hintText: 'Lyric offset'.tr),
                     onEditingComplete: () {},
                   ),
                 ])),

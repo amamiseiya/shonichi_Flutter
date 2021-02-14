@@ -11,7 +11,10 @@ class ShotTableFirestoreProvider extends FirestoreProvider {
 
   Future<SNShotTable> retrieveById(String id) async {
     final snapshot = await _shotTableRef.doc(id).get();
-    assert(snapshot.exists);
+    if (!snapshot.exists) {
+      throw FirebaseException(
+          plugin: 'Firestore', message: 'Document does not exist');
+    }
     final shotTable = SNShotTable.fromMap(snapshot.data());
     shotTable.id = snapshot.id;
     print('Provider: Retrieved shotTable: ' + shotTable.toString());
@@ -23,7 +26,6 @@ class ShotTableFirestoreProvider extends FirestoreProvider {
         .where('songId', isEqualTo: id)
         .orderBy('name', descending: false)
         .get();
-    assert(snapshot.docs.isNotEmpty);
     print('Provider: ' +
         snapshot.docs.length.toString() +
         ' shotTable(s) retrieved');
@@ -47,10 +49,12 @@ class ShotTableFirestoreProvider extends FirestoreProvider {
   Future<SNShotTable> getLatestShotTable(String songId) async {
     final snapshot = await _shotTableRef
         .where('songId', isEqualTo: songId)
-        .orderBy('id', descending: true)
+        .orderBy('createdTime', descending: true)
         .limit(1)
         .get();
-    assert(snapshot.docs.isNotEmpty);
+    if (snapshot.docs.isEmpty) {
+      return null;
+    }
     final shotTable = SNShotTable.fromMap(snapshot.docs.first.data());
     shotTable.id = snapshot.docs.first.id;
     print('Provider: Latest shotTable: ' + shotTable.toString());

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
 import 'package:get/get.dart';
+import 'package:shonichi_flutter_module/widgets/error.dart';
 import 'package:video_player/video_player.dart';
 
 import '../models/project.dart';
@@ -12,39 +13,41 @@ import '../widgets/drawer.dart';
 import '../widgets/loading.dart';
 import '../utils/reg_exp.dart';
 
-class SongDetailPage extends GetView<LyricController> {
+class SongInformationPage extends GetView<LyricController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('歌曲信息查看')),
+        appBar: AppBar(title: Text('Song Information'.tr)),
         drawer: MyDrawer(),
-        body: Obx(() {
-          if (controller.lyrics.value != null) {
-            return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                      flex: 3,
-                      child: Column(
-                          // crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            LyricDataTable(),
-                          ])),
-                  Expanded(
-                    flex: 1,
-                    child: LyricInspector(),
-                  )
-                ]);
-          } else {
+        body: GetX(builder: (_) {
+          if (controller.lyrics.value == null) {
             return LoadingAnimationLinear();
           }
+          if (controller.lyrics.value.isEmpty) {
+            return _EmptyPage();
+          }
+          return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                    flex: 3,
+                    child: Column(
+                        // crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          LyricDataTable(),
+                        ])),
+                Expanded(
+                  flex: 1,
+                  child: LyricInspector(),
+                )
+              ]);
         }),
         floatingActionButton:
             Column(mainAxisAlignment: MainAxisAlignment.end, children: [
           FloatingActionButton(
-              tooltip: 'Add', // used by assistive technologies
+              tooltip: 'Create'.tr, // used by assistive technologies
               child: Icon(Icons.add),
-              heroTag: 'createFAB',
+              heroTag: 'CreateFAB',
               onPressed: () => Get.dialog(ImportDialog())
                   .then((text) => controller.importLyric(text))),
         ]));
@@ -67,25 +70,27 @@ class LyricDataTable extends GetView<LyricController> {
   }
 
   Widget build(BuildContext context) {
-    return Obx(
-      () {
-        if (controller.lyrics.isNotEmpty) {
-          return Flexible(
-              child: ListView(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            children: <Widget>[
-              DataTable(
+    return SizedBox(
+        height: MediaQuery.of(context).size.height - 24 - 56 - 56,
+        width: MediaQuery.of(context).size.width * 3 / 4,
+        child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: DataTable(
                 sortAscending: _sortAscending,
                 sortColumnIndex: _sortColumnIndex,
                 columns: [
                   DataColumn(
-                    label: Text('开始时间'),
-                    onSort: (index, ascending) => _sort(index, ascending),
+                    label: Text('Start time'.tr),
+                    onSort: (index, ascending) {
+                      _sort(index, ascending);
+                      (context as Element).markNeedsBuild();
+                    },
                   ),
-                  // DataColumn(label: Text('结束时间')),
-                  DataColumn(label: Text('歌词内容')),
-                  DataColumn(label: Text('Solo Part')),
+                  DataColumn(label: Text('End time'.tr)),
+                  DataColumn(label: Text('Lyric text'.tr)),
+                  DataColumn(label: Text('Solo Part'.tr)),
                 ],
                 rows: controller.lyrics
                     .map((lyric) => DataRow(
@@ -100,19 +105,15 @@ class LyricDataTable extends GetView<LyricController> {
                             cells: [
                               DataCell(Text(simpleDurationRegExp
                                   .stringMatch(lyric.startTime.toString()))),
+                              DataCell(Text(simpleDurationRegExp
+                                  .stringMatch(lyric.endTime.toString()))),
                               DataCell(Text(lyric.text),
                                   showEditIcon: true, onTap: null),
                               DataCell(Text('')),
                             ]))
                     .toList(),
               ),
-            ],
-          ));
-        } else {
-          return LoadingAnimationLinear();
-        }
-      },
-    );
+            )));
   }
 }
 
@@ -200,6 +201,12 @@ class LyricInspectorState extends State<LyricInspector> {
         ],
       ),
     );
+  }
+}
+
+class _EmptyPage extends StatelessWidget {
+  Widget build(BuildContext context) {
+    return Text('Empty Page');
   }
 }
 

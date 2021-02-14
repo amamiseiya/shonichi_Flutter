@@ -54,7 +54,7 @@ class FormationTableController extends GetxController {
         editingFormationTable(await formationTableRepository.retrieveById(id));
         print('editingFormationTable is ${editingFormationTable.value.id}');
       } else if (editingFormationTable.value.id == id) {
-        editingFormationTable(null);
+        editingFormationTable.nil();
         print('editingFormationTable is null');
       }
     } catch (e) {

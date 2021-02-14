@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../pages/home_page.dart';
 import '../pages/shot_editor.dart';
-import '../pages/song_detail.dart';
+import '../pages/song_information.dart';
 import '../pages/song_list.dart';
 import '../pages/migrator.dart';
 import '../pages/formation_editor.dart';
@@ -16,37 +16,37 @@ class MyDrawer extends StatelessWidget {
       children: <Widget>[
         UserAccountsDrawerHeader(accountName: Text('天海星夜'), accountEmail: null),
         ListTile(
-          title: Text('首页'),
+          title: Text('Home Page'.tr),
           onTap: () {
             Get.to(HomePage());
           },
         ),
         ListTile(
-          title: Text('分镜脚本编辑'),
+          title: Text('Shot Editor'.tr),
           onTap: () {
             Get.to(ShotEditorPage());
           },
         ),
         ListTile(
-          title: Text('歌曲信息查看'),
+          title: Text('Song Information'.tr),
           onTap: () {
-            Get.to(SongDetailPage());
+            Get.to(SongInformationPage());
           },
         ),
         ListTile(
-          title: Text('舞蹈队形编辑'),
+          title: Text('Formation Editor'.tr),
           onTap: () {
             Get.to(FormationEditorPage());
           },
         ),
         ListTile(
-          title: Text('所有歌曲查看'),
+          title: Text('Song List'.tr),
           onTap: () {
             Get.to(SongListPage());
           },
         ),
         ListTile(
-          title: Text('文档导出'),
+          title: Text('Migrator'.tr),
           onTap: () {
             Get.to(MigratorPage());
           },

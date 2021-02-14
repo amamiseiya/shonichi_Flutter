@@ -26,7 +26,7 @@ class LyricController extends GetxController {
     });
   }
 
-  void retrieveForSong() async {
+  Future<void> retrieveForSong() async {
     try {
       print('Retrieving lyrics');
       lyrics(await lyricRepository
@@ -36,16 +36,16 @@ class LyricController extends GetxController {
     }
   }
 
-  void updateLyric(SNLyric lyric) async {
+  Future<void> updateLyric(SNLyric lyric) async {
     try {
       await lyricRepository.update(lyric);
-      retrieveForSong();
+      await retrieveForSong();
     } catch (e) {
       print(e);
     }
   }
 
-  void importLyric(String lrcStr) async {
+  Future<void> importLyric(String lrcStr) async {
     try {
       if (lrcStr != null) {
         final lyrics = SNLyric.parseFromLrc(
@@ -55,17 +55,17 @@ class LyricController extends GetxController {
         for (SNLyric lyric in lyrics) {
           await lyricRepository.create(lyric);
         }
-        retrieveForSong();
+        await retrieveForSong();
       }
     } catch (e) {
       print(e);
     }
   }
 
-  void delete(SNLyric lyric) async {
+  Future<void> delete(SNLyric lyric) async {
     try {
       await lyricRepository.delete(lyric.id);
-      retrieveForSong();
+      await retrieveForSong();
     } catch (e) {
       print(e);
     }

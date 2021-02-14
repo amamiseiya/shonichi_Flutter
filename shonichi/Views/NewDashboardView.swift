@@ -46,8 +46,8 @@ class FlutterUIViewController: UIViewController {
     // Make a button to call the showFlutter function when pressed.
     let button = UIButton(type:UIButton.ButtonType.custom)
     button.addTarget(self, action: #selector(showFlutter), for: .touchUpInside)
-    button.setTitle("Show Flutter!", for: UIControl.State.normal)
-    button.frame = CGRect(x: 80.0, y: 210.0, width: 160.0, height: 40.0)
+    button.setImage(UIImage(named: "you"), for: UIControl.State.normal)
+    button.frame = CGRect(x: 50.0, y: 180.0, width: 320.0, height: 240.0)
     button.backgroundColor = UIColor.blue
     self.view.addSubview(button)
   }

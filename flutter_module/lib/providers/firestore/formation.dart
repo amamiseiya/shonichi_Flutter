@@ -14,7 +14,6 @@ class FormationFirestoreProvider extends FirestoreProvider {
         .where('tableId', isEqualTo: tableId)
         .orderBy('startTime', descending: true)
         .get();
-    assert(snapshot.docs.isNotEmpty);
     print('Provider: ' +
         snapshot.docs.length.toString() +
         ' formation(s) retrieved');

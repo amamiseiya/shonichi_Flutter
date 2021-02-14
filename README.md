@@ -1,40 +1,32 @@
-# odottemita_satsuei_flutter
+# shonichi
 
+しょにち。初日。
 一个辅助宅舞拍摄的App。
-本项目实际上没什么卯月，程序和文档都很垃圾，不建议Star&Fork。
+使用Flutter为混合开发框架，集成Firebase云服务。
+本项目尚未开发完成，代码和文档都很辣鸡，不建议Star&Fork。
 
-这是一个**“专用”**的App。其“专用”，体现在其主要用来辅助**LoveLive、AKB48等偶像企划**的**宅舞的录制**，且仅用于满足**本作者**的实际需求。
+这是一个 **“专用”** 的App。其“专用”，体现在其主要用来辅助 **LoveLive、AKB48等偶像企划** 的 **宅舞的录制** ，且仅用于满足 **本作者** 的实际需求。
 本作者无意也没有条件，将其发展为一个大范围公开的、通用的应用。
-
-2020年7月，本作者发现两个艰难的事实：
-
-1. Flutter还是不够我用的，我需要一个能够运行在iPhone、iPad、Apple Watch以及MacBook上、并且能在这些平台上进行交互的通用的应用，可能还需要集成Apple的ARKit等框架，用Flutter恐怕难以实现，必须原生开发。
-2. 等等……Flutter是为了跨Apple之外的平台，可是我根本就不会在Android或是网页端上用它，我TM为什么闲得没事要用Flutter写啊？？！！
-
-于是，本项目将停止维护。
-接下来，本作者将学习iOS原生开发，重新实现这个项目中的全部功能，并继续改进。
-即使是在停止维护之前，这个应用也全然没有完善到可以实际使用的程度；文档也是写得很乱。
-所以我传上来只是方便自己重写的啦。
 
 ## 功能简介
 
-目前为止，这个App只提供了在拍摄前准备阶段需要用到的一系列功能。
+目前为止，本App提供了在拍摄前准备阶段需要用到的一系列功能。
 包括项目选择、分镜脚本编辑、歌曲信息查看、舞蹈队型编辑、文档导出。
 
 ### 首页-项目选择
 
-![HomePage-w400](/documents/images/HomePage.png)
+![HomePage-w400](/flutter_module/documents/images/HomePage.png)
 
 HomePage
 在该页面下，您可以选择当前进行的项目，或是增加、修改、删除某一项目。
 
 点击添加按钮，或选定某一项目后点击修改按钮，App将弹出对话框，用于修改项目信息。
 
-![Homepage-Add-w200](/documents/images/Homepage-Add.png)
+![Homepage-Add-w200](/flutter_module/documents/images/Homepage-Add.png)
 
 ### 分镜脚本编辑
 
-![ShotEditorPage-w400](/documents/images/ShotEditorPage.png)
+![ShotEditorPage-w400](/flutter_module/documents/images/ShotEditorPage.png)
 
 ShotEditorPage
 在该页面下，您可以进行分镜脚本的编辑工作。
@@ -49,7 +41,7 @@ ShotEditorPage
 
 ### 歌曲信息查看
 
-![SongInfoPage-w400](/documents/images/SongInfoPage.png)
+![SongInfoPage-w400](/flutter_module/documents/images/SongInfoPage.png)
 
 SongInfoPage
 在该页面下，您可以查看当前项目使用的歌曲的详细信息。
@@ -65,7 +57,7 @@ Solo Part……很难解释，不过你应该懂的吧，就是这一句该谁So
 
 ### 舞蹈队形编辑
 
-![FormationEditorPage-w400](/documents/images/FormationEditorPage.png)
+![FormationEditorPage-w400](/flutter_module/documents/images/FormationEditorPage.png)
 
 FormationEditorPage
 在该页面下，您可以进行当前项目的舞蹈队形的编辑。
@@ -83,18 +75,18 @@ FormationEditorPage
 
 ### 所有歌曲查看
 
-![SongListPage-w400](/documents/images/SongListPage.png)
+![SongListPage-w400](/flutter_module/documents/images/SongListPage.png)
 
 SongListPage
 在该页面下，您可以查看App中保存的所有歌曲的信息。
 
 点击添加按钮，或点击列表中某一歌曲的标题，将弹出对话框，您可以在这里修改歌曲信息。
 
-![SongListPage-Add-w200](/documents/images/SongListPage-Add.png)
+![SongListPage-Add-w200](/flutter_module/documents/images/SongListPage-Add.png)
 
 ### 文档导出
 
-![MigratorPage-w400](/documents/images/MigratorPage.png)
+![MigratorPage-w400](/flutter_module/documents/images/MigratorPage.png)
 
 MigratorPage
 在该页面下，您可以将当前项目的分镜脚本等信息导出为Markdown文档。
@@ -102,9 +94,21 @@ MigratorPage
 点击生成按钮，将生成Markdown文档，在页面左边预览。
 点击写入按钮来将文件导出至应用目录下。
 
-![MigratorPage-MarkdownPreview-w400](/documents/images/MigratorPage-MarkdownPreview.png)
+![MigratorPage-MarkdownPreview-w400](/flutter_module/documents/images/MigratorPage-MarkdownPreview.png)
 
 ## Getting Started
+
+### iOS下的配置
+
+* 本地文件存储
+
+``` plist
+    <key>LSSupportsOpeningDocumentsInPlace</key>
+    <true/>
+    <key>UIFileSharingEnabled</key>
+    <true/>
+
+```
 
 ### 初次使用
 
@@ -112,7 +116,7 @@ MigratorPage
 您可以点击添加按钮，来新建一个项目。
 或是通过预置的按钮，将整个数据库重置为默认的测试数据。
 
-### 然后就根据功能介绍来使用吧！
+### 然后就根据功能介绍来使用吧
 
 如题。
 
@@ -127,34 +131,56 @@ MigratorPage
 
 ```
 
-## 数据存储
+### 数据存储
 
-Repository
-将对象提供给Bloc使用。
+本App集成了Google的Firebase套件，使用Firestore作为数据库。
 
-## 文件
+### 文件存储
+
+文件存储于Firebase Storage中。
+
+* /images
 
 歌曲封面
 分镜图示
 
+* /audios
+
 歌曲
+
+* /videos
+
 官方PV
 
-### 由BLoC修改至GetX
+### 架构
 
-.ios 准备
+本App最初使用BLoC为基础架构。虽然之后弃用了BLoC而使用GetX，基础架构仍然保持：
 
-``` 
-	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<true/>
-	<key>UIFileSharingEnabled</key>
-	<true/>
+UI - BLoC - Model - Repository - Provider
 
-    source 'https://gitee.com/mirrors/CocoaPods-Specs.git'
+* Repository
 
-	platform :ios, '13.0'
-```
+将Provider的数据处理为合适的Model，提供给Controller使用。
+
+* Provider
+
+提供数据。
+
+## 一个真实的故事
+
+* 2020年7月
+
+发现两个艰难的事实：
+
+1. Flutter还是不够我用的，我需要一个能够运行在iPhone、iPad、Apple Watch以及MacBook上、并且能在这些平台上进行交互的通用的应用，可能还需要集成Apple的ARKit等框架，用Flutter恐怕难以实现，必须原生开发。
+2. 等等……Flutter是为了跨Apple之外的平台，可是我根本就不会在Android或是网页端上用它，我TM为什么闲得没事要用Flutter写啊？？！！
+
+于是停止了Flutter项目的开发。转头学习iOS原生开发。希望重写现有功能，并继续改进。
+
+* 2021年1月
+
+发现iOS原生开发好难，还是用Flutter继续写吧……
 
 ## 参考
 
-https://leancloud.cn/docs/sdk_setup-flutter.html
+<https://leancloud.cn/docs/sdk_setup-flutter.html>

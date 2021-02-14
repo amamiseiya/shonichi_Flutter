@@ -8,8 +8,8 @@ class SNCharacter {
   Color memberColor;
   String grade;
   String group;
-
   String teamName;
+  String subordinateKikaku;
 
   SNCharacter(
       {this.name,
@@ -17,12 +17,13 @@ class SNCharacter {
       this.memberColor,
       this.grade,
       this.group,
-      this.teamName});
+      this.teamName,
+      this.subordinateKikaku});
 
   // 返回按年级排列的企划成员
-  static List<SNCharacter> membersSortedByGrade(String teamName) {
-    switch (teamName) {
-      case 'μ\'s':
+  static List<SNCharacter> membersSortedByGrade(String kikaku) {
+    switch (kikaku) {
+      case 'ラブライブ！':
         return [
           SNCharacter.rin(),
           SNCharacter.maki(),
@@ -34,7 +35,7 @@ class SNCharacter {
           SNCharacter.nozomi(),
           SNCharacter.nico()
         ];
-      case 'Aqours':
+      case 'ラブライブ！サンシャイン!!':
         return [
           SNCharacter.yoshiko(),
           SNCharacter.hanamaru(),
@@ -46,7 +47,7 @@ class SNCharacter {
           SNCharacter.dia(),
           SNCharacter.mari()
         ];
-      case 'スタァライト九九組':
+      case '少女☆歌劇 レヴュー・スタァライト':
         return [
           SNCharacter.karen(),
           SNCharacter.hikari(),
@@ -123,9 +124,9 @@ class SNCharacter {
     return null;
   }
 
-  factory SNCharacter.fromAbbrString(String nameAbbr, String teamName) {
-    switch (teamName) {
-      case 'μ\'s':
+  factory SNCharacter.fromAbbrString(String nameAbbr, String kikaku) {
+    switch (kikaku) {
+      case 'ラブライブ！':
         switch (nameAbbr) {
           case '果':
             return SNCharacter.honoka();
@@ -147,7 +148,7 @@ class SNCharacter {
             return SNCharacter.nico();
         }
         break;
-      case 'Aqours':
+      case 'ラブライブ！サンシャイン!!':
         switch (nameAbbr) {
           case '千':
             return SNCharacter.chika();
@@ -169,7 +170,7 @@ class SNCharacter {
             return SNCharacter.ruby();
         }
         break;
-      case 'スタァライト九九組':
+      case '少女☆歌劇 レヴュー・スタァライト':
         switch (nameAbbr) {
           case '恋':
             return SNCharacter.karen();
@@ -242,7 +243,8 @@ class SNCharacter {
             memberColor: Color(0xFFFFA500),
             grade: '2年生',
             group: 'Printemps',
-            teamName: 'μ\'s');
+            teamName: 'μ\'s',
+            subordinateKikaku: 'ラブライブ！');
   SNCharacter.eli()
       : this(
             name: '絢瀬 絵里',
@@ -250,7 +252,8 @@ class SNCharacter {
             memberColor: Color(0xFF00FFFF),
             grade: '3年生',
             group: 'BiBi',
-            teamName: 'μ\'s');
+            teamName: 'μ\'s',
+            subordinateKikaku: 'ラブライブ！');
   SNCharacter.kotori()
       : this(
             name: '南 ことり',
@@ -258,7 +261,8 @@ class SNCharacter {
             memberColor: Color(0xFF808080),
             grade: '2年生',
             group: 'Printemps',
-            teamName: 'μ\'s');
+            teamName: 'μ\'s',
+            subordinateKikaku: 'ラブライブ！');
   SNCharacter.umi()
       : this(
             name: '園田 海未',
@@ -266,7 +270,8 @@ class SNCharacter {
             memberColor: Color(0xFF0000FF),
             grade: '2年生',
             group: 'lily white',
-            teamName: 'μ\'s');
+            teamName: 'μ\'s',
+            subordinateKikaku: 'ラブライブ！');
   SNCharacter.rin()
       : this(
             name: '星空 凛',
@@ -274,7 +279,8 @@ class SNCharacter {
             memberColor: Color(0xFFFFFF00),
             grade: '1年生',
             group: 'lily white',
-            teamName: 'μ\'s');
+            teamName: 'μ\'s',
+            subordinateKikaku: 'ラブライブ！');
   SNCharacter.maki()
       : this(
             name: '西木野 真姫',
@@ -282,7 +288,8 @@ class SNCharacter {
             memberColor: Color(0xFFFF0000),
             grade: '1年生',
             group: 'BiBi',
-            teamName: 'μ\'s');
+            teamName: 'μ\'s',
+            subordinateKikaku: 'ラブライブ！');
   SNCharacter.nozomi()
       : this(
             name: '東條 希',
@@ -290,7 +297,8 @@ class SNCharacter {
             memberColor: Color(0xFF800080),
             grade: '3年生',
             group: 'lily white',
-            teamName: 'μ\'s');
+            teamName: 'μ\'s',
+            subordinateKikaku: 'ラブライブ！');
   SNCharacter.hanayo()
       : this(
             name: '小泉 花陽',
@@ -298,7 +306,8 @@ class SNCharacter {
             memberColor: Color(0xFF008000),
             grade: '1年生',
             group: 'Printemps',
-            teamName: 'μ\'s');
+            teamName: 'μ\'s',
+            subordinateKikaku: 'ラブライブ！');
   SNCharacter.nico()
       : this(
             name: '矢澤 にこ',
@@ -306,7 +315,8 @@ class SNCharacter {
             memberColor: Color(0xFFFFC0CB),
             grade: '3年生',
             group: 'BiBi',
-            teamName: 'μ\'s');
+            teamName: 'μ\'s',
+            subordinateKikaku: 'ラブライブ！');
   SNCharacter.chika()
       : this(
             name: '高海 千歌',
@@ -314,7 +324,8 @@ class SNCharacter {
             memberColor: Color(0xFFF08300),
             grade: '2年生',
             group: 'CYaRon!',
-            teamName: 'Aqours');
+            teamName: 'Aqours',
+            subordinateKikaku: 'ラブライブ！サンシャイン!!');
   SNCharacter.riko()
       : this(
             name: '桜内 梨子',
@@ -322,7 +333,8 @@ class SNCharacter {
             memberColor: Color(0xFFFF9999),
             grade: '2年生',
             group: 'Guilty Kiss',
-            teamName: 'Aqours');
+            teamName: 'Aqours',
+            subordinateKikaku: 'ラブライブ！サンシャイン!!');
   SNCharacter.kanan()
       : this(
             name: '松浦 果南',
@@ -330,7 +342,8 @@ class SNCharacter {
             memberColor: Color(0xFF229977),
             grade: '3年生',
             group: 'AZALEA',
-            teamName: 'Aqours');
+            teamName: 'Aqours',
+            subordinateKikaku: 'ラブライブ！サンシャイン!!');
   SNCharacter.dia()
       : this(
             name: '黒澤 ダイヤ',
@@ -338,7 +351,8 @@ class SNCharacter {
             memberColor: Color(0xFFFF4A4A),
             grade: '3年生',
             group: 'AZALEA',
-            teamName: 'Aqours');
+            teamName: 'Aqours',
+            subordinateKikaku: 'ラブライブ！サンシャイン!!');
   SNCharacter.you()
       : this(
             name: '渡辺 曜',
@@ -346,7 +360,8 @@ class SNCharacter {
             memberColor: Color(0xFF68D1FF),
             grade: '2年生',
             group: 'CYaRon!',
-            teamName: 'Aqours');
+            teamName: 'Aqours',
+            subordinateKikaku: 'ラブライブ！サンシャイン!!');
   SNCharacter.yoshiko()
       : this(
             name: '津島 善子',
@@ -354,7 +369,8 @@ class SNCharacter {
             memberColor: Color(0xFF7A7A7A),
             grade: '1年生',
             group: 'Guilty Kiss',
-            teamName: 'Aqours');
+            teamName: 'Aqours',
+            subordinateKikaku: 'ラブライブ！サンシャイン!!');
   SNCharacter.hanamaru()
       : this(
             name: '国木田 花丸',
@@ -362,7 +378,8 @@ class SNCharacter {
             memberColor: Color(0xFFDBB623),
             grade: '1年生',
             group: 'AZALEA',
-            teamName: 'Aqours');
+            teamName: 'Aqours',
+            subordinateKikaku: 'ラブライブ！サンシャイン!!');
   SNCharacter.mari()
       : this(
             name: '小原 鞠莉',
@@ -370,7 +387,8 @@ class SNCharacter {
             memberColor: Color(0xFFD47AFF),
             grade: '3年生',
             group: 'Guilty Kiss',
-            teamName: 'Aqours');
+            teamName: 'Aqours',
+            subordinateKikaku: 'ラブライブ！サンシャイン!!');
   SNCharacter.ruby()
       : this(
             name: '黒澤 ルビィ',
@@ -378,13 +396,15 @@ class SNCharacter {
             memberColor: Color(0xFFFF5599),
             grade: '1年生',
             group: 'CYaRon!',
-            teamName: 'Aqours');
+            teamName: 'Aqours',
+            subordinateKikaku: 'ラブライブ！サンシャイン!!');
   SNCharacter.karen()
       : this(
           name: '愛城 華恋',
           nameAbbr: '恋',
           memberColor: Color(0xFFFB5458),
           teamName: 'スタァライト九九組',
+          subordinateKikaku: '少女☆歌劇 レヴュー・スタァライト',
         );
   SNCharacter.hikari()
       : this(
@@ -392,6 +412,7 @@ class SNCharacter {
           nameAbbr: '光',
           memberColor: Color(0xFF6292E9),
           teamName: 'スタァライト九九組',
+          subordinateKikaku: '少女☆歌劇 レヴュー・スタァライト',
         );
   SNCharacter.maya()
       : this(
@@ -399,6 +420,7 @@ class SNCharacter {
           nameAbbr: '真',
           memberColor: Color(0xFFCBC6CC),
           teamName: 'スタァライト九九組',
+          subordinateKikaku: '少女☆歌劇 レヴュー・スタァライト',
         );
   SNCharacter.junna()
       : this(
@@ -406,6 +428,7 @@ class SNCharacter {
           nameAbbr: '纯',
           memberColor: Color(0xFF95CAEE),
           teamName: 'スタァライト九九組',
+          subordinateKikaku: '少女☆歌劇 レヴュー・スタァライト',
         );
   SNCharacter.mahiru()
       : this(
@@ -413,6 +436,7 @@ class SNCharacter {
           nameAbbr: '露',
           memberColor: Color(0xFF61BF99),
           teamName: 'スタァライト九九組',
+          subordinateKikaku: '少女☆歌劇 レヴュー・スタァライト',
         );
   SNCharacter.nana()
       : this(
@@ -420,6 +444,7 @@ class SNCharacter {
           nameAbbr: '蕉',
           memberColor: Color(0xFFFDD162),
           teamName: 'スタァライト九九組',
+          subordinateKikaku: '少女☆歌劇 レヴュー・スタァライト',
         );
 
   SNCharacter.kuro()
@@ -428,6 +453,7 @@ class SNCharacter {
           nameAbbr: '克',
           memberColor: Color(0xFFFE9952),
           teamName: 'スタァライト九九組',
+          subordinateKikaku: '少女☆歌劇 レヴュー・スタァライト',
         );
   SNCharacter.futaba()
       : this(
@@ -435,6 +461,7 @@ class SNCharacter {
           nameAbbr: '叶',
           memberColor: Color(0xFF8C67AA),
           teamName: 'スタァライト九九組',
+          subordinateKikaku: '少女☆歌劇 レヴュー・スタァライト',
         );
   SNCharacter.kaoruko()
       : this(
@@ -442,6 +469,7 @@ class SNCharacter {
           nameAbbr: '花',
           memberColor: Color(0xFFE08696),
           teamName: 'スタァライト九九組',
+          subordinateKikaku: '少女☆歌劇 レヴュー・スタァライト',
         );
 
   //? SNCharacter('Koizumi Hanayo', 0x008000, 'μ\'s'); //这样写会怎么样？

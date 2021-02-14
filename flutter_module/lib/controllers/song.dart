@@ -16,15 +16,29 @@ class SongController extends GetxController {
 
   RxList<SNSong> songs = RxList<SNSong>(null);
   Rx<SNSong> editingSong = Rx<SNSong>(null);
+  RxString firstCoverURL = RxString(null);
 
   SongController(this.songRepository, this.attachmentRepository)
       : assert(songRepository != null),
         assert(attachmentRepository != null) {
+    projectController.projects.listen((projects) async {
+      if (projects.isNotEmpty) {
+        final SNSong firstSong =
+            await songRepository.retrieveById(projects[0].songId);
+        firstCoverURL(
+            await attachmentRepository.getImageURL(firstSong.coverId));
+      } else {
+        firstCoverURL = null;
+      }
+    });
+
     projectController.editingProject.listen((newProject) async {
       editingSong.value = await songRepository.retrieveById(newProject.songId);
       print(
           'editingSong changed to ${editingSong.value.id} -- listening to editingProject');
     });
+
+    // songs.bindStream(songRepository.songsStream);
   }
 
   Future<void> submitCreate(SNSong song) async {

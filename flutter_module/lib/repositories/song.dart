@@ -5,6 +5,8 @@ import '../providers/firestore/firestore.dart';
 class SongRepository {
   final provider = SongFirestoreProvider();
 
+  // Stream<List<SNSong>> get songsStream => provider.songsStream;
+
   Future<void> create(SNSong song) async => await provider.create(song);
 
   Future<SNSong> retrieveById(String id) async =>

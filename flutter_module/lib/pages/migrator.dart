@@ -31,15 +31,15 @@ class MigratorPage extends StatelessWidget {
         floatingActionButton:
             Column(mainAxisAlignment: MainAxisAlignment.end, children: [
           FloatingActionButton(
-            tooltip: 'Add', // used by assistive technologies
+            tooltip: 'Create'.tr, // used by assistive technologies
             child: Icon(Icons.add),
-            heroTag: 'createFAB',
+            heroTag: 'CreateFAB',
             onPressed: () {},
           ),
           FloatingActionButton(
-              tooltip: 'Delete', // used by assistive technologies
+              tooltip: 'Delete'.tr, // used by assistive technologies
               child: Icon(Icons.delete),
-              heroTag: 'deleteFAB',
+              heroTag: 'DeleteFAB',
               onPressed: () {}),
         ]));
   }
@@ -86,7 +86,7 @@ class MarkdownExporter extends GetView<MigratorController> {
                                     controller.confirmImportMarkdown();
                                     Navigator.of(context).pop();
                                   },
-                                  child: Text('确认'))
+                                  child: Text('Submit'.tr))
                             ])
                           ],
                         ));

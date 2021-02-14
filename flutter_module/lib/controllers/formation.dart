@@ -93,7 +93,7 @@ class FormationController extends GetxController with StateMixin {
     }));
   }
 
-  void retrieveFormationsForTable() async {
+  Future<void> retrieveFormationsForTable() async {
     try {
       characters(SNCharacter.membersSortedByGrade(
           songController.editingSong.value.subordinateKikaku));
@@ -147,7 +147,7 @@ class FormationController extends GetxController with StateMixin {
     }
   }
 
-  void createFormation() async {
+  Future<void> create() async {
     try {
       bool isValid = true;
       if (characterFilter.value.name == null) isValid = false;
@@ -160,17 +160,17 @@ class FormationController extends GetxController with StateMixin {
         formationRepository.create(SNFormation.initialValue(
             timeFilter.value, characterFilter.value.name, '2'));
         // TODO: Implement SNFormationTable selection
-        retrieveFormationsForTable();
+        await retrieveFormationsForTable();
       }
     } catch (e) {
       print(e);
     }
   }
 
-  void deleteFormation() async {
+  Future<void> delete() async {
     try {
       formationRepository.delete(editingFormation.value.id);
-      retrieveFormationsForTable();
+      await retrieveFormationsForTable();
     } catch (e) {
       print(e);
     }
@@ -213,7 +213,7 @@ class FormationController extends GetxController with StateMixin {
       print('${frame[draggedPos].posX},${frame[draggedPos].posY}');
       await formationRepository.update(frame[draggedPos]);
     }
-    retrieveFormationsForTable();
+    await retrieveFormationsForTable();
   }
 
   void onPanDownKCurve(DragDownDetails details, List<Offset> editingKCurve,
@@ -253,7 +253,7 @@ class FormationController extends GetxController with StateMixin {
       print(
           '${editingFormation.value.curveY1X},${editingFormation.value.curveY1Y},${editingFormation.value.curveY2X},${editingFormation.value.curveY2Y}');
       await formationRepository.update(editingFormation.value);
-      retrieveFormationsForTable();
+      await retrieveFormationsForTable();
     }
   }
 
