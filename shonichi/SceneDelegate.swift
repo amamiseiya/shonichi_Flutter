@@ -27,10 +27,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //        let projectViewModel = ProjectViewModel(context: context)
 //        let shotViewModel = ShotViewModel(context: context, projectViewModel: projectViewModel)
 //        let songViewModel = SongViewModel(context: context, projectViewModel: projectViewModel)
-//        let formationViewModel = FormationViewModel(context: context, projectViewModel: projectViewModel)
+//        let movementViewModel = MovementViewModel(context: context, projectViewModel: projectViewModel)
 //        let characterViewModel = CharacterViewModel(context: context)
 //        let migratorViewModel = MigratorViewModel(context: context)
-//        let contentView = DashboardView(projectViewModel: projectViewModel, shotViewModel: shotViewModel, songViewModel: songViewModel, formationViewModel: formationViewModel, characterViewModel: characterViewModel, migratorViewModel: migratorViewModel).environment(\.managedObjectContext, context)
+//        let contentView = DashboardView(projectViewModel: projectViewModel, shotViewModel: shotViewModel, songViewModel: songViewModel, movementViewModel: movementViewModel, characterViewModel: characterViewModel, migratorViewModel: migratorViewModel).environment(\.managedObjectContext, context)
         
         let contentView = NewDashboardView().environment(\.managedObjectContext, context)
 //

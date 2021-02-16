@@ -1,5 +1,5 @@
 //
-//  SNShotTable+CoreDataProperties.swift
+//  SNStoryboard+CoreDataProperties.swift
 //  shonichi
 //
 //  Created by 黄彦璋 on 2020/8/14.
@@ -10,7 +10,7 @@
 import Foundation
 import CoreData
 
-extension SNShotTable: Identifiable {
+extension SNStoryboard: Identifiable {
 
 }
 
@@ -45,10 +45,10 @@ enum ShotAngle{
 }
 
 
-extension SNShotTable {
+extension SNStoryboard {
 
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<SNShotTable> {
-        return NSFetchRequest<SNShotTable>(entityName: "SNShotTable")
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<SNStoryboard> {
+        return NSFetchRequest<SNStoryboard>(entityName: "SNStoryboard")
     }
 
     @NSManaged public var author: String?
@@ -61,7 +61,7 @@ extension SNShotTable {
 }
 
 // MARK: Generated accessors for aggregatedBy
-extension SNShotTable {
+extension SNStoryboard {
 
     @objc(addAggregatedByObject:)
     @NSManaged public func addToAggregatedBy(_ value: SNProject)
@@ -78,7 +78,7 @@ extension SNShotTable {
 }
 
 // MARK: Generated accessors for composites
-extension SNShotTable {
+extension SNStoryboard {
 
     @objc(addCompositesObject:)
     @NSManaged public func addToComposites(_ value: SNShot)

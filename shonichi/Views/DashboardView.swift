@@ -14,9 +14,9 @@ import CoreData
 //    let projectViewModel = ProjectViewModel(context: context)
 //    let shotViewModel = ShotViewModel(context: context, projectViewModel: projectViewModel)
 //    let songViewModel = SongViewModel(context: context, projectViewModel: projectViewModel)
-//    let formationViewModel = FormationViewModel(context: context, projectViewModel: projectViewModel)
+//    let movementViewModel = MovementViewModel(context: context, projectViewModel: projectViewModel)
 //    static var previews: some View {
-//        DashboardView(projectViewModel: projectViewModel, shotViewModel: shotViewModel, songViewModel: songViewModel, formationViewModel: formationViewModel).environment(\.managedObjectContext, context)
+//        DashboardView(projectViewModel: projectViewModel, shotViewModel: shotViewModel, songViewModel: songViewModel, movementViewModel: movementViewModel).environment(\.managedObjectContext, context)
 //    }
 //}
 
@@ -26,18 +26,18 @@ struct DashboardView: View {
     @ObservedObject var projectViewModel: ProjectViewModel
     @ObservedObject var shotViewModel: ShotViewModel
     @ObservedObject var songViewModel: SongViewModel
-    @ObservedObject var formationViewModel: FormationViewModel
+    @ObservedObject var movementViewModel: MovementViewModel
     @ObservedObject var characterViewModel: CharacterViewModel
     @ObservedObject var migratorViewModel: MigratorViewModel
     
     @State private var editSheetIsShowing: Bool = false
     @FetchRequest var allProjectsResults: FetchedResults<SNProject>
     
-    init(projectViewModel: ProjectViewModel, shotViewModel: ShotViewModel, songViewModel: SongViewModel, formationViewModel: FormationViewModel, characterViewModel: CharacterViewModel, migratorViewModel: MigratorViewModel) {
+    init(projectViewModel: ProjectViewModel, shotViewModel: ShotViewModel, songViewModel: SongViewModel, movementViewModel: MovementViewModel, characterViewModel: CharacterViewModel, migratorViewModel: MigratorViewModel) {
         self.projectViewModel = projectViewModel
         self.shotViewModel = shotViewModel
         self.songViewModel = songViewModel
-        self.formationViewModel = formationViewModel
+        self.movementViewModel = movementViewModel
         self.characterViewModel = characterViewModel
         self.migratorViewModel = migratorViewModel
         self._allProjectsResults = FetchRequest(fetchRequest: projectViewModel.allProjectsRequest)
@@ -75,8 +75,8 @@ struct DashboardView: View {
                     NavigationLink(destination: SongEditorView(songViewModel: songViewModel)) {
                         Text("SNSong Editor")
                     }
-                    NavigationLink(destination: FormationEditorView(formationViewModel: formationViewModel)) {
-                        Text("SNFormation Editor")
+                    NavigationLink(destination: MovementEditorView(movementViewModel: movementViewModel)) {
+                        Text("SNMovement Editor")
                     }
                     NavigationLink(destination: ModelView(characterViewModel: characterViewModel)) {
                         Text("Model Viewer")

@@ -12,7 +12,7 @@ class ShotFirestoreProvider extends FirestoreProvider {
   Future<List<SNShot>> retrieveForTable(String tableId) async {
     final snapshot = await _shotRef
         .where('tableId', isEqualTo: tableId)
-        .orderBy('startTime', descending: true)
+        .orderBy('startTime', descending: false)
         .get();
     print(
         'Provider: ' + snapshot.docs.length.toString() + ' shot(s) retrieved');

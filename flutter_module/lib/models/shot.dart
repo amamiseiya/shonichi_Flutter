@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'character.dart';
 import '../utils/data_convert.dart';
 
@@ -48,6 +50,23 @@ class SNShot {
       this.comment,
       this.tableId,
       this.characters});
+
+  factory SNShot.initialValue(String storyboardId) {
+    return SNShot(
+        sceneNumber: 1010,
+        shotNumber: 1,
+        startTime: Duration(milliseconds: Random().nextInt(100000)),
+        endTime: Duration(milliseconds: Random().nextInt(100000)),
+        lyric: '',
+        shotType: 'VERYLONGSHOT',
+        shotMovement: '',
+        shotAngle: '',
+        text: '',
+        image: '',
+        comment: '',
+        tableId: storyboardId,
+        characters: []);
+  }
 
   factory SNShot.fromMap(Map<String, dynamic> map) {
     return SNShot(

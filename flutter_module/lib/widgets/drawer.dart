@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../pages/home_page.dart';
-import '../pages/shot_editor.dart';
+import '../pages/storyboard.dart';
 import '../pages/song_information.dart';
 import '../pages/song_list.dart';
-import '../pages/migrator.dart';
-import '../pages/formation_editor.dart';
+import '../pages/data_migration.dart';
+import '../pages/formation.dart';
 
 class MyDrawer extends StatelessWidget {
   @override
@@ -22,9 +22,9 @@ class MyDrawer extends StatelessWidget {
           },
         ),
         ListTile(
-          title: Text('Shot Editor'.tr),
+          title: Text('Storyboard'.tr),
           onTap: () {
-            Get.to(ShotEditorPage());
+            Get.to(StoryboardPage());
           },
         ),
         ListTile(
@@ -34,9 +34,9 @@ class MyDrawer extends StatelessWidget {
           },
         ),
         ListTile(
-          title: Text('Formation Editor'.tr),
+          title: Text('Formation'.tr),
           onTap: () {
-            Get.to(FormationEditorPage());
+            Get.to(FormationPage());
           },
         ),
         ListTile(
@@ -46,9 +46,9 @@ class MyDrawer extends StatelessWidget {
           },
         ),
         ListTile(
-          title: Text('Migrator'.tr),
+          title: Text('Data Migration'.tr),
           onTap: () {
-            Get.to(MigratorPage());
+            Get.to(DataMigrationPage());
           },
         ),
       ],

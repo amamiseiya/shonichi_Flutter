@@ -7,8 +7,8 @@ class SNProject {
   DateTime modifiedTime;
 
   String songId;
-  String shotTableId;
-  String formationTableId;
+  String storyboardId;
+  String formationId;
 
   SNProject(
       {this.id,
@@ -16,16 +16,16 @@ class SNProject {
       this.createdTime,
       this.modifiedTime,
       this.songId,
-      this.shotTableId,
-      this.formationTableId});
+      this.storyboardId,
+      this.formationId});
 
   factory SNProject.initialValue() => SNProject(
       dancerName: '',
       createdTime: DateTime.now(),
       modifiedTime: DateTime.now(),
       songId: '',
-      shotTableId: '',
-      formationTableId: '');
+      storyboardId: '',
+      formationId: '');
 
   factory SNProject.fromMap(Map<String, dynamic> map) {
     return SNProject(
@@ -33,8 +33,8 @@ class SNProject {
       createdTime: DateTime.parse(map['createdTime']),
       modifiedTime: DateTime.parse(map['modifiedTime']),
       songId: map['songId'],
-      shotTableId: map['shotTableId'],
-      formationTableId: map['formationTableId'],
+      storyboardId: map['storyboardId'],
+      formationId: map['formationId'],
     );
   }
 
@@ -44,8 +44,8 @@ class SNProject {
       createdTime: object.createdAt,
       modifiedTime: object.updatedAt,
       songId: object['songId'],
-      shotTableId: object['shotTableId'],
-      formationTableId: object['formationTableId'],
+      storyboardId: object['storyboardId'],
+      formationId: object['formationId'],
     );
   }
 
@@ -55,15 +55,15 @@ class SNProject {
       'createdTime': createdTime.toString(),
       'modifiedTime': modifiedTime.toString(),
       'songId': songId,
-      'shotTableId': shotTableId,
-      'formationTableId': formationTableId,
+      'storyboardId': storyboardId,
+      'formationId': formationId,
     };
   }
 
   void toLCObject(LCObject object) {
     object['dancerName'] = dancerName;
     object['songId'] = songId;
-    object['shotTableId'] = shotTableId;
-    object['formationTableId'] = formationTableId;
+    object['storyboardId'] = storyboardId;
+    object['formationId'] = formationId;
   }
 }

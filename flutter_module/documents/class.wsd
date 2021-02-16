@@ -1,13 +1,13 @@
 @startuml Class
 
 SNProject "1..*" -- "1" SNSong
-SNProject "1..*" -- "1" SNShotTable
-SNProject "1..*" -- "1" SNFormationTable
-SNSong "1" -- "1..*" SNShotTable
-SNSong "1" -- "1..*" SNFormationTable
+SNProject "1..*" -- "1" SNStoryboard
+SNProject "1..*" -- "1" SNFormation
+SNSong "1" -- "1..*" SNStoryboard
+SNSong "1" -- "1..*" SNFormation
 SNSong "1" *-- "1..*" SNLyric
-SNShotTable "1" *-- "1..*" SNShot
-SNFormationTable "1" *-- "1..*" SNFormation
+SNStoryboard "1" *-- "1..*" SNShot
+SNFormation "1" *-- "1..*" SNMovement
 
 
 class SNProject {
@@ -16,8 +16,8 @@ class SNProject {
     DateTime createdTime
     DateTime modifiedTime
     String songId
-    String shotTableId
-    String formationTableId
+    String storyboardId
+    String formationId
     fromMap()
     toMap()
 }
@@ -44,7 +44,7 @@ class SNLyric {
 }
 
 
-class SNShotTable {
+class SNStoryboard {
   String id
   String name
   String authorId
@@ -72,7 +72,7 @@ class SNShot {
     fromMap()
     toMap()
 }
-class SNFormationTable {
+class SNFormation {
   String id
   String name
   String authorId
@@ -82,7 +82,7 @@ class SNFormationTable {
   toMap()
 }
 
-class SNFormation {
+class SNMovement {
     String id
     Duration startTime
     double posX

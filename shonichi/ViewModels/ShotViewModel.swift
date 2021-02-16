@@ -13,21 +13,21 @@ class ShotViewModel: ObservableObject {
     var context: NSManagedObjectContext
     @ObservedObject var projectViewModel: ProjectViewModel
     
-    var currentShotTable: SNShotTable? {
-        projectViewModel.currentProject?.aggregatesShotTable
+    var currentStoryboard: SNStoryboard? {
+        projectViewModel.currentProject?.aggregatesStoryboard
     }
     
     // TODO: 实现正确的筛选
-    var allShotTablesForSongRequest: NSFetchRequest<SNShotTable> {
-        let allShotTablesForSongRequest = NSFetchRequest<SNShotTable>(entityName: "SNShotTable")
-        allShotTablesForSongRequest.predicate = NSPredicate(format: "TRUEPREDICATE", argumentArray: [projectViewModel.currentProject?.aggregatesSong])
-        allShotTablesForSongRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
-        return allShotTablesForSongRequest
+    var allStoryboardsForSongRequest: NSFetchRequest<SNStoryboard> {
+        let allStoryboardsForSongRequest = NSFetchRequest<SNStoryboard>(entityName: "SNStoryboard")
+        allStoryboardsForSongRequest.predicate = NSPredicate(format: "TRUEPREDICATE", argumentArray: [projectViewModel.currentProject?.aggregatesSong])
+        allStoryboardsForSongRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        return allStoryboardsForSongRequest
     }
     
     var allShotsForProjectRequest: NSFetchRequest<SNShot> {
         let allShotsForProjectRequest = NSFetchRequest<SNShot>(entityName: "SNShot")
-        allShotsForProjectRequest.predicate = NSPredicate(format: "compositedBy = %@", argumentArray: [currentShotTable])
+        allShotsForProjectRequest.predicate = NSPredicate(format: "compositedBy = %@", argumentArray: [currentStoryboard])
         allShotsForProjectRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
         return allShotsForProjectRequest
     }
@@ -37,50 +37,50 @@ class ShotViewModel: ObservableObject {
         self.projectViewModel = projectViewModel
     }
     
-    func addShotTable(name: String, author: String, aggregatedBy: NSSet?, madeFor: SNSong?) -> SNShotTable {
-        let shotTable = SNShotTable(context: self.context)
-        shotTable.id = UUID()
-        shotTable.name = name
-        shotTable.author = author
+    func addStoryboard(name: String, author: String, aggregatedBy: NSSet?, madeFor: SNSong?) -> SNStoryboard {
+        let storyboard = SNStoryboard(context: self.context)
+        storyboard.id = UUID()
+        storyboard.name = name
+        storyboard.author = author
         
 //        if aggregatedBy != nil {
-//            shotTable.addToAggregatedBy(aggregatedBy!)
+//            storyboard.addToAggregatedBy(aggregatedBy!)
 //        } else {
 //            print("Error")
 //        }
         
-        shotTable.aggregatedBy = aggregatedBy
-        shotTable.madeFor = madeFor
+        storyboard.aggregatedBy = aggregatedBy
+        storyboard.madeFor = madeFor
         
         try? self.context.save()
         print("New shottable added.")
-        return shotTable
+        return storyboard
     }
     
-    func updateShotTable(shotTable: SNShotTable) -> Void {
+    func updateStoryboard(storyboard: SNStoryboard) -> Void {
     }
     
-    func deleteShotTable(shotTable: SNShotTable) -> Void {
-        context.delete(shotTable)
+    func deleteStoryboard(storyboard: SNStoryboard) -> Void {
+        context.delete(storyboard)
         try? self.context.save()
     }
     
-    func selectCurrentShotTable(currentShotTable: SNShotTable?) -> Void {
-        if self.projectViewModel.currentProject?.aggregatesShotTable == currentShotTable {
-            self.projectViewModel.currentProject?.aggregatesShotTable = nil
-            print("currentShotTable unselected.")
+    func selectCurrentStoryboard(currentStoryboard: SNStoryboard?) -> Void {
+        if self.projectViewModel.currentProject?.aggregatesStoryboard == currentStoryboard {
+            self.projectViewModel.currentProject?.aggregatesStoryboard = nil
+            print("currentStoryboard unselected.")
         } else {
-            self.projectViewModel.currentProject?.aggregatesShotTable = currentShotTable
-            print("currentShotTable selected.")
+            self.projectViewModel.currentProject?.aggregatesStoryboard = currentStoryboard
+            print("currentStoryboard selected.")
         }
     }
     
     func addShot() -> SNShot? {
-        if currentShotTable != nil {
+        if currentStoryboard != nil {
             let shot = SNShot(context: self.context)
             shot.id = UUID()
             shot.startTime = Date()
-            shot.compositedBy = currentShotTable
+            shot.compositedBy = currentStoryboard
             try? self.context.save()
             return shot
         } else {

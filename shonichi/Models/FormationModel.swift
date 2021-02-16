@@ -1,5 +1,5 @@
 //
-//  FormationModel.swift
+//  MovementModel.swift
 //  shonichi
 //
 //  Created by 黄彦璋 on 2020/7/9.
@@ -8,10 +8,10 @@
 
 import SwiftUI
 
-//extension SNFormationTable: Identifiable {
+//extension SNFormation: Identifiable {
 //
 //}
 
-//extension SNFormation: Identifiable {
+//extension SNMovement: Identifiable {
 //
 //}

@@ -27,8 +27,8 @@ extension SNProject {
     @NSManaged public var dancerName: String?
     @NSManaged public var id: UUID?
     @NSManaged public var modifiedTime: Date?
-    @NSManaged public var aggregatesFormationTable: SNFormationTable?
-    @NSManaged public var aggregatesShotTable: SNShotTable?
+    @NSManaged public var aggregatesFormation: SNFormation?
+    @NSManaged public var aggregatesStoryboard: SNStoryboard?
     @NSManaged public var aggregatesSong: SNSong?
 
 }

@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 
 import '../widgets/drawer.dart';
 import '../widgets/loading.dart';
-import '../controllers/migrator.dart';
+import '../controllers/data_migration.dart';
 
-class MigratorPage extends StatelessWidget {
+class DataMigrationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

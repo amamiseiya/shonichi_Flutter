@@ -6,8 +6,8 @@
       "createdTime": "2019-11-24 00:00:00.000",
       "modifiedTime": "2019-11-24 00:00:00.000",
       "songId": "sn_song_example_1",
-      "shotTableId": "sn_shot_table_example_1",
-      "formationTableId": "sn_formation_table_example_1"
+      "storyboardId": "sn_storyboard_example_1",
+      "formationId": "sn_formation_example_1"
     },
     {
       "id": "sn_project_example_2",
@@ -15,8 +15,8 @@
       "createdTime": "2020-01-01 00:00:00.000",
       "modifiedTime": "2020-01-01 00:00:00.000",
       "songId": "sn_song_example_2",
-      "shotTableId": "sn_shot_table_example_2",
-      "formationTableId": "sn_formation_table_example_2"
+      "storyboardId": "sn_storyboard_example_2",
+      "formationId": "sn_formation_example_2"
     }
   ],
   "sn_song": [
@@ -963,18 +963,20 @@
       "soloPart": null
     }
   ],
-  "sn_shot_table": [
+  "sn_storyboard": [
     {
-      "id": "sn_shot_table_example_1",
-      "name": "sn_shot_table_example_1",
-      "description": "Default ShotTable for Brightest Melody",
+      "id": "sn_storyboard_example_1",
+      "name": "sn_storyboard_example_1",
+      "description": "Default Storyboard for Brightest Melody",
+      "createdTime": "2019-11-24 00:00:00.000",
       "authorId": "1",
       "songId": "sn_song_example_1"
     },
     {
-      "id": "sn_shot_table_example_2",
-      "name": "sn_shot_table_example_2",
-      "description": "Default ShotTable for Star Diamond",
+      "id": "sn_storyboard_example_2",
+      "name": "sn_storyboard_example_2",
+      "description": "Default Storyboard for Star Diamond",
+      "createdTime": "2019-11-24 00:00:00.000",
       "authorId": "1",
       "songId": "sn_song_example_2"
     }
@@ -992,7 +994,7 @@
       "text": "taiga!waiya!saiba!faiba!",
       "image": "",
       "comment": "No additional comment.",
-      "tableId": "sn_shot_table_example_2",
+      "tableId": "sn_storyboard_example_2",
       "characters": "愛城 華恋,神楽 ひかり,"
     },
     {
@@ -1007,7 +1009,7 @@
       "text": "jyajya!",
       "image": "",
       "comment": "No additional comment.",
-      "tableId": "sn_shot_table_example_2",
+      "tableId": "sn_storyboard_example_2",
       "characters": "露崎 まひる,西條 クロディーヌ,"
     }
   ]

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../widgets/drawer.dart';
 import '../widgets/loading.dart';
 import '../widgets/error.dart';
-import '../controllers/migrator.dart';
+import '../controllers/data_migration.dart';
 import '../controllers/project.dart';
 import '../controllers/song.dart';
 import '../models/project.dart';
@@ -198,15 +198,15 @@ class _ProjectUpsertDialog extends StatelessWidget {
 
   final TextEditingController _dancerNameController = TextEditingController();
   final TextEditingController _songIdController = TextEditingController();
-  final TextEditingController _shotIdController = TextEditingController();
+  final TextEditingController _storyboardIdController = TextEditingController();
   final TextEditingController _formationIdController = TextEditingController();
 
   _ProjectUpsertDialog(project) {
     p = project ?? SNProject.initialValue();
     _dancerNameController.text = p.dancerName;
     _songIdController.text = p.songId;
-    _shotIdController.text = p.shotTableId;
-    _formationIdController.text = p.formationTableId;
+    _storyboardIdController.text = p.storyboardId;
+    _formationIdController.text = p.formationId;
   }
 
   @override
@@ -236,13 +236,13 @@ class _ProjectUpsertDialog extends StatelessWidget {
                 onEditingComplete: () {},
               ),
               TextFormField(
-                controller: _shotIdController,
-                decoration: InputDecoration(hintText: 'ShotTable ID'.tr),
+                controller: _storyboardIdController,
+                decoration: InputDecoration(hintText: 'Storyboard ID'.tr),
                 onEditingComplete: () {},
               ),
               TextFormField(
                 controller: _formationIdController,
-                decoration: InputDecoration(hintText: 'FormationTable ID'.tr),
+                decoration: InputDecoration(hintText: 'Formation ID'.tr),
                 onEditingComplete: () {},
               ),
             ])),
@@ -250,8 +250,8 @@ class _ProjectUpsertDialog extends StatelessWidget {
               onPressed: () {
                 p.dancerName = _dancerNameController.text;
                 p.songId = _songIdController.text;
-                p.shotTableId = _shotIdController.text;
-                p.formationTableId = _formationIdController.text;
+                p.storyboardId = _storyboardIdController.text;
+                p.formationId = _formationIdController.text;
                 Get.back(result: p);
               },
               child: Text('Submit'.tr),

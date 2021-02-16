@@ -22,7 +22,7 @@ enum DecoderConfigurationError: Error {
 public class SNProject: NSManagedObject, Codable {
 
     enum CodingKeys: CodingKey {
-        case createdTime, dancerName, id, modifiedTime, aggregatesFormationTable, aggregatesShotTable, aggregatesSong
+        case createdTime, dancerName, id, modifiedTime, aggregatesFormation, aggregatesStoryboard, aggregatesSong
     }
     
     required convenience public init(from decoder: Decoder) throws {

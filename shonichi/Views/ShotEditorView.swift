@@ -38,49 +38,49 @@ struct ShotEditorView: View {
     @ObservedObject var projectViewModel: ProjectViewModel
     @ObservedObject var shotViewModel: ShotViewModel
     @ObservedObject var songViewModel: SongViewModel
-    @State private var shotTableEditSheetIsShowing: Bool = false
-    @FetchRequest var allShotTablesForSongResults: FetchedResults<SNShotTable>
+    @State private var storyboardEditSheetIsShowing: Bool = false
+    @FetchRequest var allStoryboardsForSongResults: FetchedResults<SNStoryboard>
     @FetchRequest var allShotsForProjectResults: FetchedResults<SNShot>
-    @State private var shotTableSelection: SNShotTable? = nil
+    @State private var storyboardSelection: SNStoryboard? = nil
     
     init(projectViewModel: ProjectViewModel, shotViewModel: ShotViewModel, songViewModel: SongViewModel) {
         self.projectViewModel = projectViewModel
         self.shotViewModel = shotViewModel
         self.songViewModel = songViewModel
-        self._allShotTablesForSongResults = FetchRequest(fetchRequest: shotViewModel.allShotTablesForSongRequest)
+        self._allStoryboardsForSongResults = FetchRequest(fetchRequest: shotViewModel.allStoryboardsForSongRequest)
         self._allShotsForProjectResults = FetchRequest(fetchRequest: shotViewModel.allShotsForProjectRequest)
     }
     
     var body: some View {
         NavigationView{
-            shotTableList
+            storyboardList
             Divider()
             shotList.navigationBarItems(trailing: HStack {
-                Button(action:{self.shotTableEditSheetIsShowing = true}) {Image(systemName: "plus").imageScale(.large)}.fixedSize()
+                Button(action:{self.storyboardEditSheetIsShowing = true}) {Image(systemName: "plus").imageScale(.large)}.fixedSize()
                 Button(action:{self.shotViewModel.addShot()}) {Image(systemName: "plus").imageScale(.large)}.fixedSize()
             })
-        }.sheet(isPresented: $shotTableEditSheetIsShowing) { ShotTableEditSheet(isShowing: self.$shotTableEditSheetIsShowing, projectViewModel: self.projectViewModel,shotViewModel: self.shotViewModel, songViewModel: self.songViewModel, shotTable: nil).environment(\.managedObjectContext, self.context)
+        }.sheet(isPresented: $storyboardEditSheetIsShowing) { StoryboardEditSheet(isShowing: self.$storyboardEditSheetIsShowing, projectViewModel: self.projectViewModel,shotViewModel: self.shotViewModel, songViewModel: self.songViewModel, storyboard: nil).environment(\.managedObjectContext, self.context)
         }
     }
     
-    var shotTableList: some View {
+    var storyboardList: some View {
         GeometryReader{ geometry in
-            List(selection: self.$shotTableSelection) {
-                ForEach(self.allShotTablesForSongResults) { (shotTable: SNShotTable) in
+            List(selection: self.$storyboardSelection) {
+                ForEach(self.allStoryboardsForSongResults) { (storyboard: SNStoryboard) in
                     Button(action:{
-                        self.shotViewModel.selectCurrentShotTable(currentShotTable: shotTable)}){
+                        self.shotViewModel.selectCurrentStoryboard(currentStoryboard: storyboard)}){
                             GeometryReader { _ in
-                                Text(shotTable.name ?? "Undefined")
+                                Text(storyboard.name ?? "Undefined")
                             }
                     }
 //                    .onTapGesture {
-//                        self.shotViewModel.selectCurrentShotTable(currentShotTable: shotTable)
+//                        self.shotViewModel.selectCurrentStoryboard(currentStoryboard: storyboard)
 //                    }
-                    .buttonStyle(shotTableButtonStyle(currentShotTable: self.shotViewModel.currentShotTable, shotTable: shotTable))
+                    .buttonStyle(storyboardButtonStyle(currentStoryboard: self.shotViewModel.currentStoryboard, storyboard: storyboard))
                 }
                 .onDelete { indexSet in indexSet.map {
-                    self.allShotTablesForSongResults[$0]
-                    }.forEach{ self.shotViewModel.deleteShotTable(shotTable: $0) }
+                    self.allStoryboardsForSongResults[$0]
+                    }.forEach{ self.shotViewModel.deleteStoryboard(storyboard: $0) }
                 }
             }
         }
@@ -100,20 +100,20 @@ struct ShotEditorView: View {
 }
 
 
-struct shotTableButtonStyle: ButtonStyle {
+struct storyboardButtonStyle: ButtonStyle {
     
-    @State var currentShotTable: SNShotTable?
-    @State var shotTable: SNShotTable
+    @State var currentStoryboard: SNStoryboard?
+    @State var storyboard: SNStoryboard
     
-    public func makeBody(configuration: shotTableButtonStyle.Configuration) -> some View {
+    public func makeBody(configuration: storyboardButtonStyle.Configuration) -> some View {
         configuration.label
-            .background(RoundedRectangle(cornerRadius: 5).fill(currentShotTable == shotTable ? Color.blue : Color.white))
+            .background(RoundedRectangle(cornerRadius: 5).fill(currentStoryboard == storyboard ? Color.blue : Color.white))
             .padding(15)
             
     }
 }
 
-struct ShotTableEditSheet: View {
+struct StoryboardEditSheet: View {
     @Environment(\.managedObjectContext) var context
     
     @Binding var isShowing: Bool
@@ -129,17 +129,17 @@ struct ShotTableEditSheet: View {
     @State private var madeFor: SNSong?
     
     
-    init(isShowing: Binding<Bool>, projectViewModel: ProjectViewModel,shotViewModel: ShotViewModel, songViewModel: SongViewModel, shotTable: SNShotTable?) {
+    init(isShowing: Binding<Bool>, projectViewModel: ProjectViewModel,shotViewModel: ShotViewModel, songViewModel: SongViewModel, storyboard: SNStoryboard?) {
         self._isShowing = isShowing
         self.projectViewModel = projectViewModel
         self.shotViewModel = shotViewModel
         self.songViewModel = songViewModel
         self._allSongsResults = FetchRequest(fetchRequest: songViewModel.allSongsRequest)
-        if shotTable != nil {
-            self.name = shotTable!.name!
-            self.author = shotTable!.author!
-            self.aggregatedBy = shotTable!.aggregatedBy
-            self.madeFor = shotTable!.madeFor
+        if storyboard != nil {
+            self.name = storyboard!.name!
+            self.author = storyboard!.author!
+            self.aggregatedBy = storyboard!.aggregatedBy
+            self.madeFor = storyboard!.madeFor
         }
     }
        
@@ -147,7 +147,7 @@ struct ShotTableEditSheet: View {
         NavigationView {
            Form {
             Section(header: Text("Properties")) {
-                TextField("ShotTable Name", text: $name)
+                TextField("Storyboard Name", text: $name)
                 TextField("Author Name", text: $author)
             }
             Section(header: Text("Related Entities"), footer: EditButton()) {
@@ -177,7 +177,7 @@ struct ShotTableEditSheet: View {
             }
            }.navigationBarItems(leading: Button(action: {self.isShowing = false}){Text("Cancel")}, trailing: Button(action: {
             if !self.name.isEmpty && !self.author.isEmpty {
-                self.shotViewModel.addShotTable(name: self.name, author: self.author, aggregatedBy: self.aggregatedBy, madeFor: self.madeFor)
+                self.shotViewModel.addStoryboard(name: self.name, author: self.author, aggregatedBy: self.aggregatedBy, madeFor: self.madeFor)
                 self.isShowing = false
             }
            }) { Text("Done")})

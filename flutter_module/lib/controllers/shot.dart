@@ -10,7 +10,7 @@ import '../models/character.dart';
 import 'project.dart';
 import 'song.dart';
 import 'lyric.dart';
-import 'shot_table.dart';
+import 'storyboard.dart';
 import '../repositories/song.dart';
 import '../repositories/lyric.dart';
 import '../repositories/shot.dart';
@@ -21,7 +21,7 @@ class ShotController extends GetxController {
   final ProjectController projectController = Get.find();
   final SongController songController = Get.find();
   final LyricController lyricController = Get.find();
-  final ShotTableController shotTableController = Get.find();
+  final StoryboardController storyboardController = Get.find();
 
   // Repository
   final SongRepository songRepository;
@@ -30,7 +30,7 @@ class ShotController extends GetxController {
   final AttachmentRepository attachmentRepository;
 
   // 生成的Stream
-  Stream<List<Map<String, dynamic>>> coverageStream = Stream.empty();
+  RxList<Map<String, dynamic>> coverageStream = RxList<Map<String, dynamic>>();
   Stream<Map<String, int>> statisticsStream = Stream.empty();
 
   // 控制的变量
@@ -44,21 +44,21 @@ class ShotController extends GetxController {
         assert(lyricRepository != null),
         assert(shotRepository != null),
         assert(attachmentRepository != null) {
-    selectedShots.listen((shots) {
-      if (shots.length == 1) {
-        editingShot(shots.first);
-      }
-    });
+    // selectedShots.listen((shots) {
+    //   if (shots.length == 1) {
+    //     editingShot(shots.first);
+    //   }
+    // });
 
-    shotTableController.editingShotTable.listen((newShotTable) async {
-      if (newShotTable != null) {
+    storyboardController.editingStoryboard.listen((newStoryboard) async {
+      if (newStoryboard != null) {
         await retrieveForTable();
       }
       print(
-          '${shots.length} shot(s) retrieved -- listening to editingShotTable');
+          '${shots.length} shot(s) retrieved -- listening to editingStoryboard');
     });
 
-    coverageStream =
+    coverageStream.bindStream(
         rx.Rx.combineLatest2(shots.stream, lyricController.lyrics.stream,
             (List<SNShot> shots, List<SNLyric> lyrics) {
       return List.generate(lyrics.length, (i) {
@@ -74,7 +74,7 @@ class ShotController extends GetxController {
           'coverageCount': count
         };
       });
-    });
+    }));
 
     statisticsStream = shots.stream.asyncMap((List<SNShot> shots) {
       Map<String, int> characterCountMap = Map.fromIterable(
@@ -95,7 +95,7 @@ class ShotController extends GetxController {
     try {
       print('Retrieving shots');
       shots(await shotRepository
-          .retrieveForTable(shotTableController.editingShotTable.value.id));
+          .retrieveForTable(storyboardController.editingStoryboard.value.id));
     } catch (e) {
       print(e);
     }
@@ -112,21 +112,8 @@ class ShotController extends GetxController {
 
   Future<void> create() async {
     try {
-      final shot = SNShot(
-          sceneNumber: 1010,
-          shotNumber: 1,
-          startTime: Duration(milliseconds: Random().nextInt(100000)),
-          endTime: Duration(milliseconds: Random().nextInt(100000)),
-          lyric: '',
-          shotType: 'VERYLONGSHOT',
-          shotMovement: '',
-          shotAngle: '',
-          text: '',
-          image: '',
-          comment: '',
-          tableId: shotTableController.editingShotTable.value.id,
-          characters: []);
-      await shotRepository.create(shot);
+      await shotRepository.create(
+          SNShot.initialValue(storyboardController.editingStoryboard.value.id));
       await retrieveForTable();
     } catch (e) {
       print(e);
@@ -149,6 +136,49 @@ class ShotController extends GetxController {
       await retrieveForTable();
     } catch (e) {
       print(e);
+    }
+  }
+
+  SNShot selectShot(double value) {
+    final ms = value * songController.editingSong.value.duration.inMilliseconds;
+    if (shots.value.length == 1) {
+      return editingShot(shots.first);
+    } else if (shots.first.startTime.inMilliseconds > ms) {
+      return editingShot(shots.first);
+    } else if (shots.last.startTime.inMilliseconds < ms) {
+      return editingShot(shots.last);
+    } else if (shots.length == 2) {
+      return ms - shots[0].startTime.inMilliseconds >
+              shots[1].startTime.inMilliseconds - ms
+          ? editingShot(shots[1])
+          : editingShot(shots[0]);
+    }
+    int left = 0;
+    int right = shots.length - 1;
+    int mid = 0;
+    while (left <= right) {
+      mid = (left + right) ~/ 2;
+      if (shots[mid].startTime.inMilliseconds < ms) {
+        left = mid + 1;
+      } else if (shots[mid].startTime.inMilliseconds > ms) {
+        right = mid - 1;
+      } else {
+        break;
+      }
+    }
+    if (left <= right) {
+      return editingShot(shots[mid]);
+    }
+    if (shots[mid].startTime.inMilliseconds < ms) {
+      return ms - shots[mid].startTime.inMilliseconds >
+              shots[mid + 1].startTime.inMilliseconds - ms
+          ? editingShot(shots[mid + 1])
+          : editingShot(shots[mid]);
+    } else {
+      return shots[mid].startTime.inMilliseconds - ms >
+              ms - shots[mid - 1].startTime.inMilliseconds
+          ? editingShot(shots[mid - 1])
+          : editingShot(shots[mid]);
     }
   }
 }

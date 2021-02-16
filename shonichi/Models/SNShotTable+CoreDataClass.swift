@@ -1,5 +1,5 @@
 //
-//  SNShotTable+CoreDataClass.swift
+//  SNStoryboard+CoreDataClass.swift
 //  shonichi
 //
 //  Created by 黄彦璋 on 2020/8/14.
@@ -11,7 +11,7 @@ import Foundation
 import CoreData
 
 
-public class SNShotTable: NSManagedObject {
+public class SNStoryboard: NSManagedObject {
 
 }
 

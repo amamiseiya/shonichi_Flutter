@@ -1,4 +1,4 @@
-class SNShotTable {
+class SNStoryboard {
   String id;
   String name;
   String description;
@@ -7,7 +7,7 @@ class SNShotTable {
 
   String songId;
 
-  SNShotTable(
+  SNStoryboard(
       {this.id,
       this.name,
       this.description,
@@ -15,8 +15,8 @@ class SNShotTable {
       this.authorId,
       this.songId});
 
-  factory SNShotTable.fromMap(Map<String, dynamic> map) {
-    return SNShotTable(
+  factory SNStoryboard.fromMap(Map<String, dynamic> map) {
+    return SNStoryboard(
       name: map['name'],
       description: map['description'],
       createdTime: DateTime.parse(map['createdTime']),
@@ -25,7 +25,7 @@ class SNShotTable {
     );
   }
 
-  factory SNShotTable.initialValue() => SNShotTable(
+  factory SNStoryboard.initialValue() => SNStoryboard(
       name: '',
       description: '',
       createdTime: DateTime.now(),

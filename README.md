@@ -57,9 +57,9 @@ Solo Part……很难解释，不过你应该懂的吧，就是这一句该谁So
 
 ### 舞蹈队形编辑
 
-![FormationEditorPage-w400](/flutter_module/documents/images/FormationEditorPage.png)
+![MovementEditorPage-w400](/flutter_module/documents/images/MovementEditorPage.png)
 
-FormationEditorPage
+MovementEditorPage
 在该页面下，您可以进行当前项目的舞蹈队形的编辑。
 
 页面顶部为歌曲进度滑条。滑动以调整时间。

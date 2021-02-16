@@ -12,12 +12,12 @@
         <attribute name="memberColor" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnachiveFromData"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="nameAbbr" optional="YES" attributeType="String"/>
-        <relationship name="participatesFormation" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNFormation" inverseName="character" inverseEntity="SNFormation"/>
+        <relationship name="participatesMovement" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNMovement" inverseName="character" inverseEntity="SNMovement"/>
         <relationship name="participatesLyric" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNLyric" inverseName="soloPart" inverseEntity="SNLyric"/>
         <relationship name="participatesShot" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNShot" inverseName="characters" inverseEntity="SNShot"/>
         <relationship name="subordinates" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNKikaku" inverseName="hasMembers" inverseEntity="SNKikaku"/>
     </entity>
-    <entity name="SNFormation" representedClassName="SNFormation" syncable="YES" codeGenerationType="class">
+    <entity name="SNMovement" representedClassName="SNMovement" syncable="YES" codeGenerationType="class">
         <attribute name="curveX1X" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="curveX1Y" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="curveX2X" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -30,15 +30,15 @@
         <attribute name="posX" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="posY" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="character" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNCharacter" inverseName="participatesFormation" inverseEntity="SNCharacter"/>
-        <relationship name="compositedBy" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNFormationTable" inverseName="composites" inverseEntity="SNFormationTable"/>
+        <relationship name="character" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNCharacter" inverseName="participatesMovement" inverseEntity="SNCharacter"/>
+        <relationship name="compositedBy" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNFormation" inverseName="composites" inverseEntity="SNFormation"/>
     </entity>
-    <entity name="SNFormationTable" representedClassName="SNFormationTable" syncable="YES" codeGenerationType="class">
+    <entity name="SNFormation" representedClassName="SNFormation" syncable="YES" codeGenerationType="class">
         <attribute name="author" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
-        <relationship name="aggregatedBy" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNProject" inverseName="aggregatesFormationTable" inverseEntity="SNProject"/>
-        <relationship name="composites" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNFormation" inverseName="compositedBy" inverseEntity="SNFormation"/>
+        <relationship name="aggregatedBy" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNProject" inverseName="aggregatesFormation" inverseEntity="SNProject"/>
+        <relationship name="composites" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNMovement" inverseName="compositedBy" inverseEntity="SNMovement"/>
         <relationship name="madeFor" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNSong" inverseName="canBePresented" inverseEntity="SNSong"/>
     </entity>
     <entity name="SNKikaku" representedClassName="SNKikaku" syncable="YES" codeGenerationType="class">
@@ -60,8 +60,8 @@
         <attribute name="dancerName" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="modifiedTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="aggregatesFormationTable" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNFormationTable" inverseName="aggregatedBy" inverseEntity="SNFormationTable"/>
-        <relationship name="aggregatesShotTable" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNShotTable" inverseName="aggregatedBy" inverseEntity="SNShotTable"/>
+        <relationship name="aggregatesFormation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNFormation" inverseName="aggregatedBy" inverseEntity="SNFormation"/>
+        <relationship name="aggregatesStoryboard" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNStoryboard" inverseName="aggregatedBy" inverseEntity="SNStoryboard"/>
         <relationship name="aggregatesSong" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNSong" inverseName="aggregatedBy" inverseEntity="SNSong"/>
     </entity>
     <entity name="SNShot" representedClassName="SNShot" syncable="YES" codeGenerationType="class">
@@ -78,17 +78,17 @@
         <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="text" optional="YES" attributeType="String"/>
         <relationship name="characters" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNCharacter" inverseName="participatesShot" inverseEntity="SNCharacter"/>
-        <relationship name="compositedBy" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNShotTable" inverseName="composites" inverseEntity="SNShotTable"/>
+        <relationship name="compositedBy" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNStoryboard" inverseName="composites" inverseEntity="SNStoryboard"/>
     </entity>
-    <entity name="SNShotTable" representedClassName=".SNShotTable" syncable="YES">
+    <entity name="SNStoryboard" representedClassName=".SNStoryboard" syncable="YES">
         <attribute name="author" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
-        <relationship name="aggregatedBy" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNProject" inverseName="aggregatesShotTable" inverseEntity="SNProject"/>
+        <relationship name="aggregatedBy" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNProject" inverseName="aggregatesStoryboard" inverseEntity="SNProject"/>
         <relationship name="composites" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNShot" inverseName="compositedBy" inverseEntity="SNShot"/>
         <relationship name="madeFor" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNSong" inverseName="canBeShoot" inverseEntity="SNSong"/>
         <fetchedProperty name="fetchedProperty" optional="YES">
-            <fetchRequest name="fetchedPropertyFetchRequest" entity="SNShotTable"/>
+            <fetchRequest name="fetchedPropertyFetchRequest" entity="SNStoryboard"/>
         </fetchedProperty>
     </entity>
     <entity name="SNSong" representedClassName="SNSong" syncable="YES" codeGenerationType="class">
@@ -96,8 +96,8 @@
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="aggregatedBy" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNProject" inverseName="aggregatesSong" inverseEntity="SNProject"/>
-        <relationship name="canBePresented" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNFormationTable" inverseName="madeFor" inverseEntity="SNFormationTable"/>
-        <relationship name="canBeShoot" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNShotTable" inverseName="madeFor" inverseEntity="SNShotTable"/>
+        <relationship name="canBePresented" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNFormation" inverseName="madeFor" inverseEntity="SNFormation"/>
+        <relationship name="canBeShoot" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNStoryboard" inverseName="madeFor" inverseEntity="SNStoryboard"/>
         <relationship name="compositesAttachment" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNAttachment" inverseName="compositedBy" inverseEntity="SNAttachment"/>
         <relationship name="compositesLyric" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SNLyric" inverseName="compositedBy" inverseEntity="SNLyric"/>
         <relationship name="subordinatesKikaku" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SNKikaku" inverseName="hasSongs" inverseEntity="SNKikaku"/>
@@ -105,13 +105,13 @@
     <elements>
         <element name="SNAttachment" positionX="-530.41015625" positionY="254.6640625" width="128" height="103"/>
         <element name="SNCharacter" positionX="36.43359375" positionY="374.5625" width="128" height="178"/>
-        <element name="SNFormation" positionX="38.875" positionY="23.43359375" width="128" height="253"/>
-        <element name="SNFormationTable" positionX="66.625" positionY="-196.20703125" width="128" height="133"/>
+        <element name="SNMovement" positionX="38.875" positionY="23.43359375" width="128" height="253"/>
+        <element name="SNFormation" positionX="66.625" positionY="-196.20703125" width="128" height="133"/>
         <element name="SNKikaku" positionX="-341.25390625" positionY="350.41015625" width="128" height="103"/>
         <element name="SNLyric" positionX="-510.63671875" positionY="22.4765625" width="121.41015625" height="133"/>
         <element name="SNProject" positionX="-525.33203125" positionY="-413.5234375" width="128" height="148"/>
         <element name="SNShot" positionX="-228.8359375" positionY="42.6875" width="128" height="253"/>
-        <element name="SNShotTable" positionX="-243.4375" positionY="-263.828125" width="128" height="161"/>
+        <element name="SNStoryboard" positionX="-243.4375" positionY="-263.828125" width="128" height="161"/>
         <element name="SNSong" positionX="-521.12890625" positionY="-195.125" width="128" height="178"/>
     </elements>
 </model>

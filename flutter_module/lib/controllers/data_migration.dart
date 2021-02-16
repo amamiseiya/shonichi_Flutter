@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import '../models/project.dart';
 import '../models/song.dart';
 import '../models/lyric.dart';
-import '../models/shot_table.dart';
+import '../models/storyboard.dart';
 import '../models/shot.dart';
 import '../models/character.dart';
 import 'project.dart';
@@ -16,7 +16,7 @@ import 'song.dart';
 import '../repositories/project.dart';
 import '../repositories/song.dart';
 import '../repositories/lyric.dart';
-import '../repositories/shot_table.dart';
+import '../repositories/storyboard.dart';
 import '../repositories/shot.dart';
 import '../repositories/attachment.dart';
 import '../providers/firestore/firestore.dart';
@@ -31,7 +31,7 @@ class MigratorController extends GetxController {
   final ProjectRepository projectRepository;
   final SongRepository songRepository;
   final LyricRepository lyricRepository;
-  final ShotTableRepository shotTableRepository;
+  final StoryboardRepository storyboardRepository;
   final ShotRepository shotRepository;
   final AttachmentRepository attachmentRepository;
 
@@ -44,13 +44,13 @@ class MigratorController extends GetxController {
       this.projectRepository,
       this.songRepository,
       this.lyricRepository,
-      this.shotTableRepository,
+      this.storyboardRepository,
       this.shotRepository,
       this.attachmentRepository)
       : assert(projectRepository != null),
         assert(songRepository != null),
         assert(lyricRepository != null),
-        assert(shotTableRepository != null),
+        assert(storyboardRepository != null),
         assert(shotRepository != null),
         assert(attachmentRepository != null);
 
@@ -89,7 +89,8 @@ class MigratorController extends GetxController {
     String shotsText =
         RegExp(r'(?<=---\s\|\n).+', dotAll: true).stringMatch(storyboardText);
     final String tableId =
-        (await shotTableRepository.getLatestShotTable(project.songId)).id + '1';
+        (await storyboardRepository.getLatestStoryboard(project.songId)).id +
+            '1';
     final String kikaku =
         (await songRepository.retrieveById(project.songId)).subordinateKikaku;
     return shotsText
@@ -122,7 +123,7 @@ class MigratorController extends GetxController {
       markdownText(generateIntro(projectController.editingProject.value,
               songController.editingSong.value) +
           generateShotDataTable(await shotRepository.retrieveForTable(
-              projectController.editingProject.value.shotTableId)));
+              projectController.editingProject.value.storyboardId)));
     } catch (e) {
       print(e);
     }
@@ -193,7 +194,7 @@ class MigratorController extends GetxController {
       'sn_project': [],
       'sn_song': [],
       'sn_lyric': [],
-      'sn_shot_table': [],
+      'sn_storyboard': [],
       'sn_shot': []
     };
 
@@ -204,10 +205,10 @@ class MigratorController extends GetxController {
     // await db.delete('sn_project');
     // await db.delete('sn_song');
     // await db.delete('sn_lyric');
-    // await db.delete('sn_shot_table');
+    // await db.delete('sn_storyboard');
     // await db.delete('sn_shot');
-    // await db.delete('sn_formation_table');
     // await db.delete('sn_formation');
+    // await db.delete('sn_movement');
 
     final map = Map<String, List>.from(
         json.decode(await attachmentRepository.importJsonFromAssets()));
@@ -223,8 +224,8 @@ class MigratorController extends GetxController {
         .collection('sn_lyric')
         .doc(l['id'])
         .set(l));
-    map['sn_shot_table'].forEach((st) async => await FirebaseFirestore.instance
-        .collection('sn_shot_table')
+    map['sn_storyboard'].forEach((st) async => await FirebaseFirestore.instance
+        .collection('sn_storyboard')
         .doc(st['id'])
         .set(st));
     map['sn_shot'].forEach((s) async => await FirebaseFirestore.instance
