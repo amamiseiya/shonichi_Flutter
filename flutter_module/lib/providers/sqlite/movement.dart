@@ -15,7 +15,8 @@ class MovementSQLiteProvider extends SQLiteProvider {
     final db = await database;
     final mapList = await db.query('sn_movement',
         where: 'tableId = ?', whereArgs: [tableId], orderBy: 'startTime DESC');
-    return List.generate(mapList.length, (i) => SNMovement.fromMap(mapList[i]));
+    return List.generate(mapList.length,
+        (i) => SNMovement.fromMap(mapList[i], mapList[i]['id']));
   }
 
   Future<void> update(SNMovement movement) async {

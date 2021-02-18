@@ -10,11 +10,9 @@ class CharacterSelector extends StatefulWidget {
   final SNSong editingSong;
 
   CharacterSelector(
-      {Key key,
-      @required this.editingShot,
-      @required this.updateShot,
-      @required this.editingSong})
-      : super(key: key);
+      {required this.editingShot,
+      required this.updateShot,
+      required this.editingSong});
 
   // ! 这样使用是不对的
   @override
@@ -27,8 +25,8 @@ class CharacterSelectorState extends State<CharacterSelector>
   final SNShot editingShot;
   final Function updateShot;
   final SNSong editingSong;
-  Animation<double> animation;
-  AnimationController _animationController;
+  late Animation<double> animation;
+  late AnimationController _animationController;
   bool chipVisible = true;
   bool selectorVisible = false;
 

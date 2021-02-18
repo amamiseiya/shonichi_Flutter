@@ -33,9 +33,9 @@ List<int> stringToIntList(String str) {
 }
 
 Duration simpleDurationToDuration(String str) {
-  final String minutes = RegExp(r'\d(?=:)').stringMatch(str);
-  final String seconds = RegExp(r'\d\d(?=\.)').stringMatch(str);
-  final String milliseconds = RegExp(r'(?<=\.)\d\d\d').stringMatch(str);
+  final String minutes = RegExp(r'\d(?=:)').stringMatch(str)!;
+  final String seconds = RegExp(r'\d\d(?=\.)').stringMatch(str)!;
+  final String milliseconds = RegExp(r'(?<=\.)\d\d\d').stringMatch(str)!;
   return Duration(
       minutes: int.parse(minutes),
       seconds: int.parse(seconds),

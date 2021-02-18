@@ -10,7 +10,7 @@ class FormationController extends GetxController {
   final FormationRepository formationRepository;
 
   RxList<SNFormation> formationsForSong = RxList<SNFormation>(null);
-  Rx<SNFormation> editingFormation = Rx<SNFormation>(null);
+  Rx<SNFormation?> editingFormation = Rx<SNFormation>(null);
 
   FormationController(this.formationRepository)
       : assert(formationRepository != null);
@@ -20,9 +20,9 @@ class FormationController extends GetxController {
       if (formation == null) {
         throw FormatException('Null value passed in');
       }
-      await formationRepository.create(formation);
       formation.authorId = '1';
       formation.songId = songController.editingSong.value.id;
+      await formationRepository.create(formation);
       retrieve();
     } catch (e) {
       print(e);
@@ -50,11 +50,10 @@ class FormationController extends GetxController {
 
   Future<void> select(String id) async {
     try {
-      if (editingFormation == Rx<SNFormation>(null) ||
-          editingFormation.value.id != id) {
+      if (editingFormation.value == null || editingFormation.value?.id != id) {
         editingFormation(await formationRepository.retrieveById(id));
-        print('editingFormation is ${editingFormation.value.id}');
-      } else if (editingFormation.value.id == id) {
+        print('editingFormation is ${editingFormation.value?.id}');
+      } else if (editingFormation.value?.id == id) {
         editingFormation.nil();
         print('editingFormation is null');
       }

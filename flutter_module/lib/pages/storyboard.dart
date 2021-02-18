@@ -50,7 +50,7 @@ class StoryboardPage extends StatelessWidget {
                     return _EmptyStoryboardPage();
                   }
                   return Column(children: [
-                    StoryboardSelector(),
+                    StoryboardChipSelector(),
                     Obx(() {
                       if (shotController.shots.value == null) {
                         return LoadingAnimationLinear();
@@ -100,27 +100,33 @@ class _EmptyStoryboardPage extends StatelessWidget {
   }
 }
 
-class StoryboardSelector extends GetView<StoryboardController> {
+class StoryboardChipSelector extends GetView<StoryboardController> {
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 40,
-      child: ListView(
+      child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          children: controller.storyboardsForSong.value
-                  .map((st) => ActionChip(
-                        label: Text(st.name),
-                        onPressed: () => controller.select(st.id),
-                      ))
-                  .toList() +
-              [
-                ActionChip(
-                  label: Icon(Icons.add),
-                  onPressed: () => Get.dialog(StoryboardUpsertDialog(null))
-                      .then(
-                          (storyboard) => controller.submitCreate(storyboard)),
-                )
-              ]),
+          itemCount: controller.storyboardsForSong.length + 1,
+          itemBuilder: (BuildContext context, int index) {
+            if (index == controller.storyboardsForSong.length) {
+              return ActionChip(
+                label: Icon(Icons.add),
+                tooltip: '',
+                onPressed: () => Get.dialog(StoryboardUpsertDialog(null))
+                    .then((storyboard) => controller.submitCreate(storyboard)),
+              );
+            }
+            return Obx(() => ChoiceChip(
+                  label: Text(controller.storyboardsForSong[index].name),
+                  tooltip: '',
+                  selected: controller.editingStoryboard.value?.id ==
+                      controller.storyboardsForSong[index]!.id,
+                  selectedColor: Colors.orange.shade100,
+                  onSelected: (_) => controller
+                      .select(controller.storyboardsForSong[index].id),
+                ));
+          }),
     );
   }
 }
@@ -132,18 +138,39 @@ class _EmptyShotPage extends StatelessWidget {
 }
 
 //分镜表类
-class ShotDataTable extends GetView<ShotController> {
+
+class ShotDataTable extends StatefulWidget {
+  @override
+  State<ShotDataTable> createState() => _ShotDataTableState();
+}
+
+class _ShotDataTableState extends State<ShotDataTable> {
+  final ShotController shotController = Get.find();
+  late final ScrollController _scrollController;
+
   bool _sortAscending = true;
-  int _sortColumnIndex;
+  late int _sortColumnIndex = 0;
 
   void _sort(int index, bool ascending) {
     if (ascending) {
-      controller.shots.sort((a, b) => a.startTime.compareTo(b.startTime));
+      shotController.shots.sort((a, b) => a.startTime.compareTo(b.startTime));
     } else {
-      controller.shots.sort((a, b) => b.startTime.compareTo(a.startTime));
+      shotController.shots.sort((a, b) => b.startTime.compareTo(a.startTime));
     }
     _sortColumnIndex = index;
     _sortAscending = ascending;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    shotController.editingShotIndex.listen((int? index) {
+      if (index != null) {
+        _scrollController.animateTo(index * 50,
+            duration: Duration(milliseconds: 300), curve: Curves.ease);
+      }
+    });
   }
 
   @override
@@ -160,12 +187,14 @@ class ShotDataTable extends GetView<ShotController> {
               Expanded(
                   child: SizedBox(
                       width: MediaQuery.of(context).size.width * 3,
-                      child: ListView(
+                      child: ListView.builder(
+                        controller: _scrollController,
                         scrollDirection: Axis.vertical,
                         shrinkWrap: false,
-                        children: controller.shots
-                            .map((shot) => _ShotItem(shot))
-                            .toList(),
+                        itemExtent: 50,
+                        itemCount: shotController.shots.length,
+                        itemBuilder: (BuildContext context, int index) =>
+                            _ShotItem(shotController.shots[index], index),
                       )))
             ])));
   }
@@ -174,98 +203,101 @@ class ShotDataTable extends GetView<ShotController> {
 class _ShotItem extends GetView<ShotController> {
   final SongController songController = Get.find();
   final SNShot shot;
+  final int index;
 
-  _ShotItem(this.shot);
+  _ShotItem(this.shot, this.index);
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Material(
-        color: (shot == controller.editingShot.value)
-            ? Colors.blue.shade50
-            : Colors.grey.shade50,
-        elevation: 5.0,
-        child: Row(children: [
-          Checkbox(
-              value: controller.selectedShots.contains(shot),
-              onChanged: (isSelected) {
-                if (isSelected) {
-                  controller.selectedShots.add(shot);
-                  // (context as Element).markNeedsBuild();
-                } else {
-                  controller.selectedShots.remove(shot);
-                  // (context as Element).markNeedsBuild();
-                }
-              }),
-          Text('${shot.sceneNumber}'),
-          Text('${shot.shotNumber}'),
-          Text(simpleDurationRegExp.stringMatch(shot.startTime.toString())),
-          Text(simpleDurationRegExp.stringMatch(shot.endTime.toString())),
-          Text(shot.lyric),
-          //   DropdownButton(
-          //     value: shot.sceneNumber,
-          //     icon: Icon(Icons.arrow_downward,
-          //         size: 14),
-          //     style: TextStyle(
-          //         fontSize: 12,
-          //         color: Colors.black),
-          //     underline: Container(
-          //       height: 2,
-          //       color: Colors.deepPurpleAccent,
-          //     ),
-          //     onChanged: (newValue) {
-          //       shot.sceneNumber = newValue;
-          //       controller.updateShot(shot);
-          //     },
-          //     items: shotScenes
-          //         .map((shotSceneMap) =>
-          //             DropdownMenuItem<int>(
-          //               value: shotSceneMap[
-          //                   'shotSceneValue'],
-          //               child: Text(shotSceneMap[
-          //                   'shotSceneLabel']),
-          //             ))
-          //         .toList(),
-          //   ),
-          DropdownButton(
-            value: shot.shotType,
-            icon: Icon(Icons.arrow_downward),
-            underline: Container(
-              height: 2,
-              color: Colors.deepPurpleAccent,
+    return Obx(() {
+      return Material(
+          color: (shot == controller.editingShotIndex.value)
+              ? Colors.blue.shade50
+              : Colors.grey.shade50,
+          elevation: 5.0,
+          child: Row(children: [
+            Checkbox(
+                value: controller.selectedShots.contains(shot),
+                onChanged: (isSelected) {
+                  if (isSelected!) {
+                    controller.selectedShots.add(shot);
+                    // (context as Element).markNeedsBuild();
+                  } else {
+                    controller.selectedShots.remove(shot);
+                    // (context as Element).markNeedsBuild();
+                  }
+                }),
+            Text('${shot.sceneNumber}'),
+            Text('${shot.shotNumber}'),
+            Text(simpleDurationRegExp.stringMatch(shot.startTime.toString())!),
+            Text(simpleDurationRegExp.stringMatch(shot.endTime.toString())!),
+            Text(shot.lyric),
+            //   DropdownButton(
+            //     value: shot.sceneNumber,
+            //     icon: Icon(Icons.arrow_downward,
+            //         size: 14),
+            //     style: TextStyle(
+            //         fontSize: 12,
+            //         color: Colors.black),
+            //     underline: Container(
+            //       height: 2,
+            //       color: Colors.deepPurpleAccent,
+            //     ),
+            //     onChanged: (newValue) {
+            //       shot.sceneNumber = newValue;
+            //       controller.updateShot(shot);
+            //     },
+            //     items: shotScenes
+            //         .map((shotSceneMap) =>
+            //             DropdownMenuItem<int>(
+            //               value: shotSceneMap[
+            //                   'shotSceneValue'],
+            //               child: Text(shotSceneMap[
+            //                   'shotSceneLabel']),
+            //             ))
+            //         .toList(),
+            //   ),
+            DropdownButton(
+              value: shot.shotType,
+              icon: Icon(Icons.arrow_downward),
+              underline: Container(
+                height: 2,
+                color: Colors.deepPurpleAccent,
+              ),
+              onChanged: (String? newValue) {
+                shot.shotType = newValue!;
+                controller.updateShot(shot);
+              },
+              items: shotTypes
+                  .map((shotTypeMap) => DropdownMenuItem<String>(
+                        value: shotTypeMap['shotTypeValue'],
+                        child: Text(shotTypeMap['shotTypeLabel']!),
+                      ))
+                  .toList(),
             ),
-            onChanged: (newValue) {
-              shot.shotType = newValue;
-              controller.updateShot(shot);
-            },
-            items: shotTypes
-                .map((shotTypeMap) => DropdownMenuItem<String>(
-                      value: shotTypeMap['shotTypeValue'],
-                      child: Text(shotTypeMap['shotTypeLabel']),
-                    ))
-                .toList(),
-          ),
-          Text(shot.shotMovement),
-          Text(shot.shotAngle),
-          Expanded(
-              child: TextField(
-                  controller: TextEditingController()..text = shot.text,
-                  // maxLines: null,
-                  decoration: InputDecoration(),
-                  onChanged: (value) {
-                    shot.text = value;
-                  },
-                  onEditingComplete: () {
-                    controller.updateShot(shot);
-                  },
-                  // showEditIcon: true,
-                  onTap: null)),
-          Text(shot.image),
-          Text(shot.comment),
-          CharacterSelector(
-              editingShot: shot,
-              updateShot: (shot) => controller.updateShot(shot),
-              editingSong: songController.editingSong.value)
-        ])));
+            Text(shot.shotMovement),
+            Text(shot.shotAngle),
+            Expanded(
+                child: TextField(
+                    controller: TextEditingController()..text = shot.text,
+                    // maxLines: null,
+                    decoration: InputDecoration(),
+                    onChanged: (value) {
+                      shot.text = value;
+                    },
+                    onEditingComplete: () {
+                      controller.updateShot(shot);
+                    },
+                    // showEditIcon: true,
+                    onTap: null)),
+            Text(shot.imageURI),
+            Text(shot.comment),
+            CharacterSelector(
+                editingShot: shot,
+                updateShot: (shot) => controller.updateShot(shot),
+                editingSong: songController.editingSong.value)
+          ]));
+    });
   }
 }
 
@@ -295,11 +327,11 @@ class ShotInspector extends StatelessWidget {
           }),
           StreamBuilder(
               stream: shotController.statisticsStream,
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
+              builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
                 if (snapshot.hasData) {
                   return Column(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      children: snapshot.data.entries
+                      children: snapshot.data!.entries
                           .map<Widget>(
                               (entry) => Text('${entry.key}: ${entry.value}'))
                           .toList());
@@ -330,8 +362,8 @@ class _LyricAnimatorState extends State<LyricAnimator>
   //我参考的这个代码，似乎每次都会创建一个新的Controller，这样做真的好吗？
 
   final lyricPainterSize = Size(250, 600);
-  AnimationController _lyricOffsetYController;
-  LyricPainter _lyricPainter;
+  AnimationController? _lyricOffsetYController;
+  late LyricPainter _lyricPainter;
   int currentShotTime = 0;
 
   @override
@@ -361,7 +393,7 @@ class _LyricAnimatorState extends State<LyricAnimator>
       // 如果动画控制器不是空，那么则证明上次的动画未完成，
       // 未完成的情况下直接 stop 当前动画，做下一次的动画
       if (_lyricOffsetYController != null) {
-        _lyricOffsetYController.stop();
+        _lyricOffsetYController!.stop();
       }
 
       // 初始化动画控制器，切换歌词时间为300ms，并且添加状态监听，
@@ -370,7 +402,7 @@ class _LyricAnimatorState extends State<LyricAnimator>
           vsync: this, duration: Duration(milliseconds: 300))
         ..addStatusListener((status) {
           if (status == AnimationStatus.completed) {
-            _lyricOffsetYController.dispose();
+            _lyricOffsetYController!.dispose();
             _lyricOffsetYController = null;
           }
         });
@@ -379,13 +411,13 @@ class _LyricAnimatorState extends State<LyricAnimator>
       Animation animation = Tween<double>(
               begin: _lyricPainter.offsetYBegin,
               end: _lyricPainter.getOffsetYEnd(currentShotTime) * -1)
-          .animate(_lyricOffsetYController);
+          .animate(_lyricOffsetYController!);
       // 添加监听，在动画做效果的时候给 offsetY 赋值
-      _lyricOffsetYController.addListener(() {
+      _lyricOffsetYController!.addListener(() {
         _lyricPainter.offsetYBegin = animation.value;
       });
       // 启动动画
-      _lyricOffsetYController.forward();
+      _lyricOffsetYController!.forward();
       // 给 customPaint 赋值当前行
       _lyricPainter.currentShotTime = currentShotTime;
     }
@@ -485,7 +517,7 @@ class _ShotFilterPanel extends StatelessWidget {
       children: <Widget>[
         Divider(),
         Text('数据表格处理菜单'),
-        FlatButton(
+        ElevatedButton(
             onPressed: () => lyricController.retrieveForSong(),
             child: Text('刷新歌词')),
         Obx(() {
@@ -495,9 +527,11 @@ class _ShotFilterPanel extends StatelessWidget {
                 thumbColor: Colors.pink,
               ),
               child: Slider(
-                  value: (shotController.editingShot.value != null)
+                  value: (shotController.editingShotIndex.value != null)
                       ? shotController
-                              .editingShot.value.startTime.inMilliseconds /
+                              .shots[shotController.editingShotIndex.value!]
+                              .startTime
+                              .inMilliseconds /
                           songController
                               .editingSong.value.duration.inMilliseconds
                       : 0,
@@ -508,7 +542,7 @@ class _ShotFilterPanel extends StatelessWidget {
                   },
                   onChangeEnd: (value) {
                     shotController.selectShot(value);
-                  } // TODO: Implement editingShot focus on
+                  } // editingShotIndex focus on
                   ));
         }),
       ],
@@ -518,15 +552,15 @@ class _ShotFilterPanel extends StatelessWidget {
 
 class StoryboardUpsertDialog extends GetView<StoryboardController> {
   // 在dialog最终pop时才给对象赋值，不确定这样的方式是否合适
-  SNStoryboard st;
+  late SNStoryboard s;
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  StoryboardUpsertDialog(SNStoryboard storyboard) {
-    st = storyboard ?? SNStoryboard.initialValue();
-    _nameController.text = st.name;
-    _descriptionController.text = st.description;
+  StoryboardUpsertDialog(SNStoryboard? storyboard) {
+    s = storyboard ?? SNStoryboard.initialValue();
+    _nameController.text = s.name;
+    _descriptionController.text = s.description;
   }
 
   Widget build(BuildContext context) => SimpleDialog(
@@ -552,16 +586,16 @@ class StoryboardUpsertDialog extends GetView<StoryboardController> {
                 ])),
                 SimpleDialogOption(
                   onPressed: () {
-                    controller.delete(st); // ! storyboard could be null
+                    controller.delete(s); // ! storyboard could be null
                     Get.back();
                   },
                   child: Text('Delete'.tr),
                 ),
                 SimpleDialogOption(
                   onPressed: () {
-                    st.name = _nameController.text;
-                    st.description = _descriptionController.text;
-                    Get.back(result: st);
+                    s.name = _nameController.text;
+                    s.description = _descriptionController.text;
+                    Get.back(result: s);
                   },
                   child: Text('Submit'.tr),
                 ),

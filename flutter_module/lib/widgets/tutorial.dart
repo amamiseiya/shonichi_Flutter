@@ -9,11 +9,11 @@ class TutorialDialog extends StatelessWidget {
   Widget build(BuildContext context) => Container(
           child: Center(
               child: Column(children: [
-        FlatButton(
+        ElevatedButton(
           onPressed: () => null,
           child: Text('Create New SNProject'),
         ),
-        FlatButton(
+        ElevatedButton(
           child: Icon(
             Icons.refresh,
           ),
@@ -29,11 +29,11 @@ class TutorialPage extends GetView<ProjectController> {
         body: Container(
             child: Center(
                 child: Column(children: [
-      FlatButton(
+      ElevatedButton(
         onPressed: () => null,
         child: Text('Create New SNProject'),
       ),
-      FlatButton(
+      ElevatedButton(
         child: Icon(
           Icons.refresh,
         ),

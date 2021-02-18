@@ -18,37 +18,37 @@ class MyDrawer extends StatelessWidget {
         ListTile(
           title: Text('Home Page'.tr),
           onTap: () {
-            Get.to(HomePage());
+            Get.to(() => HomePage());
           },
         ),
         ListTile(
           title: Text('Storyboard'.tr),
           onTap: () {
-            Get.to(StoryboardPage());
+            Get.to(() => StoryboardPage());
           },
         ),
         ListTile(
           title: Text('Song Information'.tr),
           onTap: () {
-            Get.to(SongInformationPage());
+            Get.to(() => SongInformationPage());
           },
         ),
         ListTile(
           title: Text('Formation'.tr),
           onTap: () {
-            Get.to(FormationPage());
+            Get.to(() => FormationPage());
           },
         ),
         ListTile(
           title: Text('Song List'.tr),
           onTap: () {
-            Get.to(SongListPage());
+            Get.to(() => SongListPage());
           },
         ),
         ListTile(
           title: Text('Data Migration'.tr),
           onTap: () {
-            Get.to(DataMigrationPage());
+            Get.to(() => DataMigrationPage());
           },
         ),
       ],

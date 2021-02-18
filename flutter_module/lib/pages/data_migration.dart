@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
 
@@ -45,7 +46,7 @@ class DataMigrationPage extends StatelessWidget {
   }
 }
 
-class MarkdownExporter extends GetView<MigratorController> {
+class MarkdownExporter extends GetView<DataMigrationController> {
   @override
   Widget build(BuildContext context) {
     return Row(children: [
@@ -57,15 +58,15 @@ class MarkdownExporter extends GetView<MigratorController> {
                 builder: (_) => CheckboxListTile(
                     title: Text('导入导出加密：'),
                     value: controller.needEncrypt,
-                    onChanged: (newValue) {
-                      controller.needEncrypt = newValue;
+                    onChanged: (bool? newValue) {
+                      controller.needEncrypt = newValue!;
                       controller.update();
                     })),
-            FlatButton(
+            ElevatedButton(
               child: Text('导入Markdown'),
               onPressed: () async {
                 if (controller.needEncrypt) {
-                  await desKeyDialog(context)
+                  await Get.dialog(DesKeyDialog())
                       .then((key) => controller.importMarkdown(key));
                 } else {
                   controller.importMarkdown(null);
@@ -81,7 +82,7 @@ class MarkdownExporter extends GetView<MigratorController> {
                                 child: Container(),
                               ),
                               Text('将导入的项目数据如上。确定是否继续？'),
-                              FlatButton(
+                              ElevatedButton(
                                   onPressed: () {
                                     controller.confirmImportMarkdown();
                                     Navigator.of(context).pop();
@@ -92,17 +93,17 @@ class MarkdownExporter extends GetView<MigratorController> {
                         ));
               },
             ),
-            FlatButton(
+            ElevatedButton(
               child: Text('生成Markdown'),
               onPressed: () {
                 controller.previewMarkdown();
               },
             ),
-            FlatButton(
+            ElevatedButton(
               child: Text('写入文件'),
               onPressed: () {
                 if (controller.needEncrypt) {
-                  desKeyDialog(context).then(
+                  Get.dialog(DesKeyDialog()).then(
                       (key) => controller.exportMarkdown(key),
                       onError: (_) {});
                 } else {
@@ -115,39 +116,37 @@ class MarkdownExporter extends GetView<MigratorController> {
   }
 }
 
-Future<String> desKeyDialog(BuildContext context) {
-  return showDialog(
-      context: context,
-      builder: (context) {
-        String key;
-        return SimpleDialog(
-          title: Text('设定密钥'),
-          children: <Widget>[
-            Column(children: <Widget>[
-              Text('请设定密钥：'),
-              TextField(
-                onChanged: (value) {
-                  key = value;
-                },
-                controller: TextEditingController()..text = key,
-                // inputFormatters: [
-                //   WhitelistingTextInputFormatter(
-                //       RegExp(r'\S{8}'))
-                // ],
-                decoration: InputDecoration(hintText: '请输入8位字符。'),
-                maxLength: 8,
-                maxLengthEnforced: true,
-              ),
-              FlatButton(
-                  onPressed: () => Navigator.of(context).pop(key),
-                  child: Text('确定'))
-            ])
-          ],
-        );
-      });
+class DesKeyDialog extends StatelessWidget {
+  String? desKey;
+
+  @override
+  Widget build(BuildContext context) => SimpleDialog(
+        title: Text('设定密钥'),
+        children: <Widget>[
+          Column(children: <Widget>[
+            Text('请设定密钥：'),
+            TextField(
+              onChanged: (value) {
+                desKey = value;
+              },
+              controller: TextEditingController()..text = desKey ?? '',
+              // inputFormatters: [
+              //   WhitelistingTextInputFormatter(
+              //       RegExp(r'\S{8}'))
+              // ],
+              decoration: InputDecoration(hintText: '请输入8位字符。'),
+              maxLength: 8,
+              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+            ),
+            ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(desKey),
+                child: Text('确定'))
+          ])
+        ],
+      );
 }
 
-class MarkdownPreview extends GetView<MigratorController> {
+class MarkdownPreview extends GetView<DataMigrationController> {
   @override
   Widget build(BuildContext context) {
     return Card(

@@ -24,8 +24,7 @@ class ProjectFirestoreProvider extends FirestoreProvider {
       throw FirebaseException(
           plugin: 'Firestore', message: 'Document does not exist');
     }
-    final project = SNProject.fromMap(snapshot.data());
-    project.id = snapshot.id;
+    final project = SNProject.fromMap(snapshot.data(), snapshot.id);
     print('Provider: Retrieved project: ' + project.toString());
     return project;
   }
@@ -38,11 +37,8 @@ class ProjectFirestoreProvider extends FirestoreProvider {
     print('Provider: ' +
         snapshot.docs.length.toString() +
         ' project(s) retrieved');
-    return List.generate(snapshot.docs.length, (i) {
-      final project = SNProject.fromMap(snapshot.docs[i].data());
-      project.id = snapshot.docs[i].id;
-      return project;
-    });
+    return List.generate(snapshot.docs.length,
+        (i) => SNProject.fromMap(snapshot.docs[i].data(), snapshot.docs[i].id));
   }
 
   Future<void> update(SNProject project) async {

@@ -15,14 +15,14 @@ class StoryboardSQLiteProvider extends SQLiteProvider {
     final db = await database;
     final mapList =
         await db.query('sn_storyboard', where: 'id = ?', whereArgs: [id]);
-    return SNStoryboard.fromMap(mapList.first);
+    return SNStoryboard.fromMap(mapList.first, id);
   }
 
   Future<List<SNStoryboard>> retrieveAll() async {
     final db = await database;
     final mapList = await db.query('sn_storyboard', orderBy: 'id DESC');
-    return List.generate(
-        mapList.length, (i) => SNStoryboard.fromMap(mapList[i]));
+    return List.generate(mapList.length,
+        (i) => SNStoryboard.fromMap(mapList[i], mapList[i]['id']));
   }
 
   Future<void> update(SNStoryboard storyboard) async {
@@ -50,6 +50,6 @@ class StoryboardSQLiteProvider extends SQLiteProvider {
     final db = await database;
     final List<Map<String, dynamic>> mapList = await db.query('sn_storyboard',
         where: 'songId = ?', whereArgs: [songId], orderBy: 'id DESC', limit: 1);
-    return SNStoryboard.fromMap(mapList.first);
+    return SNStoryboard.fromMap(mapList.first, mapList.first['id']);
   }
 }

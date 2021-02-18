@@ -19,6 +19,6 @@ class StoryboardRepository {
 
   Future<void> delete(String id) async => await provider.delete(id);
 
-  Future<SNStoryboard> getLatestStoryboard(String songId) async =>
+  Future<SNStoryboard?> getLatestStoryboard(String songId) async =>
       await provider.getLatestStoryboard(songId);
 }

@@ -12,15 +12,16 @@ class SNLyric {
   List<SNCharacter> soloPart;
 
   SNLyric(
-      {this.id,
-      this.startTime,
-      this.endTime,
-      this.text,
-      this.songId,
-      this.soloPart});
+      {required this.id,
+      required this.startTime,
+      required this.endTime,
+      required this.text,
+      required this.songId,
+      required this.soloPart});
 
-  factory SNLyric.fromMap(Map<String, dynamic> map) {
+  factory SNLyric.fromMap(Map<String, dynamic> map, String id) {
     return SNLyric(
+        id: id,
         startTime: Duration(milliseconds: map['startTime']),
         endTime: Duration(milliseconds: map['endTime']),
         text: map['text'],
@@ -49,33 +50,33 @@ class SNLyric {
         String text = record.substring(record.indexOf(']') + 1);
         String time = record.substring(1, record.indexOf(']'));
         return SNLyric(
-          songId: songId,
-          text: text,
-          startTime: Duration(
-            minutes: int.parse(
-              time.substring(0, time.indexOf(':')),
+            id: 'initial',
+            songId: songId,
+            text: text,
+            startTime: Duration(
+              minutes: int.parse(
+                time.substring(0, time.indexOf(':')),
+              ),
+              seconds: int.parse(
+                  time.substring(time.indexOf(':') + 1, time.indexOf('.'))),
+              milliseconds: int.parse(time.substring(
+                          time.indexOf('.') + 1, time.indexOf('.') + 2)) *
+                      100 +
+                  lyricOffset ~/ 100 * 100,
             ),
-            seconds: int.parse(
-                time.substring(time.indexOf(':') + 1, time.indexOf('.'))),
-            milliseconds: int.parse(time.substring(
-                        time.indexOf('.') + 1, time.indexOf('.') + 2)) *
-                    100 +
-                lyricOffset ~/ 100 * 100,
-          ),
-        );
+            endTime: Duration(),
+            soloPart: []);
       }).toList();
 
       for (int i = 0; i < result.length - 1; i++) {
         result[i].endTime = result[i + 1].startTime;
-        if (result[i].startTime == result[i + 1].startTime) {
-          result[i + 1].startTime += Duration(milliseconds: 100);
-        }
       }
       result[result.length - 1].endTime =
-          result[result.length - 1].startTime + Duration(minutes: 1);
+          result[result.length - 1].startTime + Duration(seconds: 10);
       return result;
     } catch (e) {
       print(e);
+      throw FormatException();
     }
   }
 }

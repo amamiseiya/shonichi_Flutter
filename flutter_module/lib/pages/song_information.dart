@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
 import 'package:get/get.dart';
-import 'package:shonichi_flutter_module/widgets/error.dart';
 import 'package:video_player/video_player.dart';
 
 import '../models/project.dart';
@@ -55,15 +54,23 @@ class SongInformationPage extends GetView<LyricController> {
 }
 
 //分镜表类
-class LyricDataTable extends GetView<LyricController> {
+
+class LyricDataTable extends StatefulWidget {
+  @override
+  State<LyricDataTable> createState() => _LyricDataTableState();
+}
+
+class _LyricDataTableState extends State<LyricDataTable> {
+  final LyricController lyricController = Get.find();
+
   bool _sortAscending = true;
-  int _sortColumnIndex;
+  int _sortColumnIndex = 0;
 
   void _sort(int index, bool ascending) {
     if (ascending) {
-      controller.lyrics.sort((a, b) => a.startTime.compareTo(b.startTime));
+      lyricController.lyrics.sort((a, b) => a.startTime.compareTo(b.startTime));
     } else {
-      controller.lyrics.sort((a, b) => b.startTime.compareTo(a.startTime));
+      lyricController.lyrics.sort((a, b) => b.startTime.compareTo(a.startTime));
     }
     _sortColumnIndex = index;
     _sortAscending = ascending;
@@ -92,21 +99,23 @@ class LyricDataTable extends GetView<LyricController> {
                   DataColumn(label: Text('Lyric text'.tr)),
                   DataColumn(label: Text('Solo Part'.tr)),
                 ],
-                rows: controller.lyrics
+                rows: lyricController.lyrics
                     .map((lyric) => DataRow(
-                            selected: controller.selectedLyrics.contains(lyric),
-                            onSelectChanged: (isSelected) {
-                              if (isSelected) {
-                                controller.selectedLyrics.add(lyric);
+                            selected:
+                                lyricController.selectedLyrics.contains(lyric),
+                            onSelectChanged: (bool? isSelected) {
+                              if (isSelected!) {
+                                lyricController.selectedLyrics.add(lyric);
                               } else {
-                                controller.selectedLyrics.remove(lyric);
+                                lyricController.selectedLyrics.remove(lyric);
                               }
+                              (context as Element).markNeedsBuild();
                             },
                             cells: [
                               DataCell(Text(simpleDurationRegExp
-                                  .stringMatch(lyric.startTime.toString()))),
+                                  .stringMatch(lyric.startTime.toString())!)),
                               DataCell(Text(simpleDurationRegExp
-                                  .stringMatch(lyric.endTime.toString()))),
+                                  .stringMatch(lyric.endTime.toString())!)),
                               DataCell(Text(lyric.text),
                                   showEditIcon: true, onTap: null),
                               DataCell(Text('')),
@@ -118,53 +127,46 @@ class LyricDataTable extends GetView<LyricController> {
 }
 
 class LyricInspector extends StatefulWidget {
-  LyricInspector({Key key}) : super(key: key);
   @override
   LyricInspectorState createState() => LyricInspectorState();
 }
 
 class LyricInspectorState extends State<LyricInspector> {
   SongController songController = Get.find();
+  LyricController lyricController = Get.find();
 
-  List<SNLyric> lyrics;
-  VideoPlayerController videoPlayerController;
-  ChewieController chewieController;
-  Chewie playerWidget;
+  late VideoPlayerController videoPlayerController;
+  late ChewieController chewieController;
 
   @override
   void initState() {
     super.initState();
-    initialize();
+    songController.retrieveSongVideo();
+    initializePlayer();
   }
 
   @override
   void dispose() {
-    // videoPlayerController.dispose();
-    // chewieController.dispose();
+    videoPlayerController.dispose();
+    chewieController.dispose();
     super.dispose();
   }
 
-  Future<void> initialize() async {
-    // Directory appDocDir = await getApplicationDocumentsDirectory();
-    // videoPlayerController = VideoPlayerController.file(File(ppath.join(
-    //     appDocDir.path, currentSong.songName, currentSong.videoFileNames[0])));
-    // chewieController = ChewieController(
-    //   videoPlayerController: videoPlayerController,
-    //   aspectRatio: 16 / 9,
-    //   autoPlay: true,
-    //   looping: false,
-    //   placeholder: Container(
-    //     color: Colors.grey,
-    //   ),
-    //   autoInitialize: false,
-    // );
-    // playerWidget = Chewie(
-    //   controller: chewieController,
-    // );
-    // videoPlayerController.initialize().then((_) {
-    //   // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-    //   setState(() {});
-    // });
+  Future<void> initializePlayer() async {
+    videoPlayerController =
+        VideoPlayerController.network(songController.videoURI.value!);
+    await videoPlayerController.initialize();
+    chewieController = ChewieController(
+      videoPlayerController: videoPlayerController,
+      aspectRatio: 16 / 9,
+      autoPlay: true,
+      looping: false,
+      placeholder: Container(
+        color: Colors.grey,
+      ),
+      autoInitialize: false,
+    );
+    setState(() {});
   }
 
   @override
@@ -184,20 +186,27 @@ class LyricInspectorState extends State<LyricInspector> {
               return Container();
             }
           }),
-          // FlatButton(
-          //   onPressed: () {
-          //     setState(() {
-          //       videoPlayerController.value.isPlaying
-          //           ? videoPlayerController.pause()
-          //           : videoPlayerController.play();
-          //     });
-          //   },
-          //   child: Icon(
-          //     videoPlayerController.value.isPlaying
-          //         ? Icons.pause
-          //         : Icons.play_arrow,
-          //   ),
-          // ),
+          (chewieController == null ||
+                  !chewieController.videoPlayerController.value.initialized)
+              ? Container()
+              : Column(children: [
+                  SizedBox(
+                      height: 300, child: Chewie(controller: chewieController)),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        videoPlayerController.value.isPlaying
+                            ? videoPlayerController.pause()
+                            : videoPlayerController.play();
+                      });
+                    },
+                    child: Icon(
+                      videoPlayerController.value.isPlaying
+                          ? Icons.pause
+                          : Icons.play_arrow,
+                    ),
+                  )
+                ]),
         ],
       ),
     );

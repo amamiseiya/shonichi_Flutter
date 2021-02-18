@@ -16,11 +16,8 @@ class LyricFirestoreProvider extends FirestoreProvider {
         .get();
     print(
         'Provider: ' + snapshot.docs.length.toString() + ' lyric(s) retrieved');
-    return List.generate(snapshot.docs.length, (i) {
-      final lyric = SNLyric.fromMap(snapshot.docs[i].data());
-      lyric.id = snapshot.docs[i].id;
-      return lyric;
-    });
+    return List.generate(snapshot.docs.length,
+        (i) => SNLyric.fromMap(snapshot.docs[i].data(), snapshot.docs[i].id));
   }
 
   Future<void> update(SNLyric lyric) async {

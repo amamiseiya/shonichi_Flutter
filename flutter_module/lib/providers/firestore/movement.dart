@@ -17,11 +17,10 @@ class MovementFirestoreProvider extends FirestoreProvider {
     print('Provider: ' +
         snapshot.docs.length.toString() +
         ' movement(s) retrieved');
-    return List.generate(snapshot.docs.length, (i) {
-      final movement = SNMovement.fromMap(snapshot.docs[i].data());
-      movement.id = snapshot.docs[i].id;
-      return movement;
-    });
+    return List.generate(
+        snapshot.docs.length,
+        (i) =>
+            SNMovement.fromMap(snapshot.docs[i].data(), snapshot.docs[i].id));
   }
 
   Future<void> update(SNMovement movement) async {

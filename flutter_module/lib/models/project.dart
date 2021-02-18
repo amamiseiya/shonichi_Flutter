@@ -1,4 +1,4 @@
-import 'package:leancloud_storage/leancloud.dart';
+// import 'package:leancloud_storage/leancloud.dart';
 
 class SNProject {
   String id;
@@ -6,20 +6,21 @@ class SNProject {
   DateTime createdTime;
   DateTime modifiedTime;
 
-  String songId;
-  String storyboardId;
-  String formationId;
+  String? songId;
+  String? storyboardId;
+  String? formationId;
 
   SNProject(
-      {this.id,
-      this.dancerName,
-      this.createdTime,
-      this.modifiedTime,
+      {required this.id,
+      required this.dancerName,
+      required this.createdTime,
+      required this.modifiedTime,
       this.songId,
       this.storyboardId,
       this.formationId});
 
   factory SNProject.initialValue() => SNProject(
+      id: 'initial',
       dancerName: '',
       createdTime: DateTime.now(),
       modifiedTime: DateTime.now(),
@@ -27,8 +28,9 @@ class SNProject {
       storyboardId: '',
       formationId: '');
 
-  factory SNProject.fromMap(Map<String, dynamic> map) {
+  factory SNProject.fromMap(Map<String, dynamic> map, String id) {
     return SNProject(
+      id: id,
       dancerName: map['dancerName'],
       createdTime: DateTime.parse(map['createdTime']),
       modifiedTime: DateTime.parse(map['modifiedTime']),
@@ -38,16 +40,17 @@ class SNProject {
     );
   }
 
-  factory SNProject.fromLCObject(LCObject object) {
-    return SNProject(
-      dancerName: object['dancerName'],
-      createdTime: object.createdAt,
-      modifiedTime: object.updatedAt,
-      songId: object['songId'],
-      storyboardId: object['storyboardId'],
-      formationId: object['formationId'],
-    );
-  }
+  // factory SNProject.fromLCObject(LCObject object) {
+  //   return SNProject(
+  //     id: object.objectId,
+  //     dancerName: object['dancerName'],
+  //     createdTime: object.createdAt,
+  //     modifiedTime: object.updatedAt,
+  //     songId: object['songId'],
+  //     storyboardId: object['storyboardId'],
+  //     formationId: object['formationId'],
+  //   );
+  // }
 
   Map<String, dynamic> toMap() {
     return {
@@ -60,10 +63,10 @@ class SNProject {
     };
   }
 
-  void toLCObject(LCObject object) {
-    object['dancerName'] = dancerName;
-    object['songId'] = songId;
-    object['storyboardId'] = storyboardId;
-    object['formationId'] = formationId;
-  }
+  // void toLCObject(LCObject object) {
+  //   object['dancerName'] = dancerName;
+  //   object['songId'] = songId;
+  //   object['storyboardId'] = storyboardId;
+  //   object['formationId'] = formationId;
+  // }
 }

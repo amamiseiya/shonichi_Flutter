@@ -24,7 +24,7 @@ import '../utils/des.dart';
 import '../utils/reg_exp.dart';
 import '../utils/data_convert.dart';
 
-class MigratorController extends GetxController {
+class DataMigrationController extends GetxController {
   final ProjectController projectController = Get.find();
   final SongController songController = Get.find();
 
@@ -38,9 +38,7 @@ class MigratorController extends GetxController {
   RxString markdownText = RxString(null);
   bool needEncrypt = false;
 
-  String myJson;
-
-  MigratorController(
+  DataMigrationController(
       this.projectRepository,
       this.songRepository,
       this.lyricRepository,
@@ -59,7 +57,7 @@ class MigratorController extends GetxController {
     super.onInit();
   }
 
-  void importMarkdown(String key) async {
+  void importMarkdown(String? key) async {
     try {
       String mdText = await attachmentRepository
           .importMarkdown(projectController.editingProject.value);
@@ -85,14 +83,14 @@ class MigratorController extends GetxController {
   }
 
   Future<List<SNShot>> parseShots(SNProject project, String mdText) async {
-    String storyboardText = storyboardChapterRegExp.stringMatch(mdText);
+    String storyboardText = storyboardChapterRegExp.stringMatch(mdText)!;
     String shotsText =
-        RegExp(r'(?<=---\s\|\n).+', dotAll: true).stringMatch(storyboardText);
+        RegExp(r'(?<=---\s\|\n).+', dotAll: true).stringMatch(storyboardText)!;
     final String tableId =
-        (await storyboardRepository.getLatestStoryboard(project.songId)).id +
+        (await storyboardRepository.getLatestStoryboard(project.songId!))!.id +
             '1';
     final String kikaku =
-        (await songRepository.retrieveById(project.songId)).subordinateKikaku;
+        (await songRepository.retrieveById(project.songId!)).subordinateKikaku;
     return shotsText
         .split('\n')
         .where((element) => RegExp(r'^\|.+\|$').hasMatch(element))
@@ -100,20 +98,21 @@ class MigratorController extends GetxController {
       List<RegExpMatch> shotProps =
           RegExp(r'(?<=\|\s)[^\|]*(?=\s\|)').allMatches(shotText).toList();
       return SNShot(
-        sceneNumber: int.parse(shotProps[0].group(0)),
-        shotNumber: int.parse(shotProps[1].group(0)),
-        startTime: simpleDurationToDuration(shotProps[2].group(0)),
-        endTime: simpleDurationToDuration(shotProps[3].group(0)),
-        lyric: shotProps[4].group(0),
-        shotType: shotProps[5].group(0),
-        shotMovement: shotProps[6].group(0),
-        shotAngle: shotProps[7].group(0),
-        text: shotProps[8].group(0),
-        image: shotProps[9].group(0),
-        comment: shotProps[10].group(0),
+        id: 'initial',
+        sceneNumber: int.parse(shotProps[0].group(0)!),
+        shotNumber: int.parse(shotProps[1].group(0)!),
+        startTime: simpleDurationToDuration(shotProps[2].group(0)!),
+        endTime: simpleDurationToDuration(shotProps[3].group(0)!),
+        lyric: shotProps[4].group(0)!,
+        shotType: shotProps[5].group(0)!,
+        shotMovement: shotProps[6].group(0)!,
+        shotAngle: shotProps[7].group(0)!,
+        text: shotProps[8].group(0)!,
+        imageURI: shotProps[9].group(0)!,
+        comment: shotProps[10].group(0)!,
         tableId: tableId,
         characters:
-            SNCharacter.abbrStringToList(shotProps[11].group(0), kikaku),
+            SNCharacter.abbrStringToList(shotProps[11].group(0)!, kikaku),
       );
     }).toList();
   }
@@ -123,7 +122,7 @@ class MigratorController extends GetxController {
       markdownText(generateIntro(projectController.editingProject.value,
               songController.editingSong.value) +
           generateShotDataTable(await shotRepository.retrieveForTable(
-              projectController.editingProject.value.storyboardId)));
+              projectController.editingProject.value.storyboardId!)));
     } catch (e) {
       print(e);
     }
@@ -150,9 +149,9 @@ class MigratorController extends GetxController {
           ' | ' +
           shot.shotNumber.toString() +
           ' | ' +
-          simpleDurationRegExp.stringMatch(shot.startTime.toString()) +
+          simpleDurationRegExp.stringMatch(shot.startTime.toString())! +
           ' | ' +
-          simpleDurationRegExp.stringMatch(shot.endTime.toString()) +
+          simpleDurationRegExp.stringMatch(shot.endTime.toString())! +
           ' | ' +
           shot.lyric +
           ' | ' +
@@ -164,7 +163,7 @@ class MigratorController extends GetxController {
           ' | ' +
           shot.text +
           ' | ' +
-          shot.image +
+          shot.imageURI +
           ' | ' +
           shot.comment +
           ' | ' +
@@ -174,7 +173,7 @@ class MigratorController extends GetxController {
     return mdText;
   }
 
-  Future<void> exportMarkdown(String key) async {
+  Future<void> exportMarkdown(String? key) async {
     try {
       if (key != null) {
         await attachmentRepository.exportMarkdown(
@@ -210,25 +209,25 @@ class MigratorController extends GetxController {
     // await db.delete('sn_formation');
     // await db.delete('sn_movement');
 
-    final map = Map<String, List>.from(
-        json.decode(await attachmentRepository.importJsonFromAssets()));
-    map['sn_project'].forEach((p) async => await FirebaseFirestore.instance
+    final map = Map<String, List>.from(json
+        .decode(await attachmentRepository.importFromAssets('example.json')));
+    map['sn_project']!.forEach((p) async => await FirebaseFirestore.instance
         .collection('sn_project')
         .doc(p['id'])
         .set(p));
-    map['sn_song'].forEach((s) async => await FirebaseFirestore.instance
+    map['sn_song']!.forEach((s) async => await FirebaseFirestore.instance
         .collection('sn_song')
         .doc(s['id'])
         .set(s));
-    map['sn_lyric'].forEach((l) async => await FirebaseFirestore.instance
+    map['sn_lyric']!.forEach((l) async => await FirebaseFirestore.instance
         .collection('sn_lyric')
         .doc(l['id'])
         .set(l));
-    map['sn_storyboard'].forEach((st) async => await FirebaseFirestore.instance
+    map['sn_storyboard']!.forEach((st) async => await FirebaseFirestore.instance
         .collection('sn_storyboard')
         .doc(st['id'])
         .set(st));
-    map['sn_shot'].forEach((s) async => await FirebaseFirestore.instance
+    map['sn_shot']!.forEach((s) async => await FirebaseFirestore.instance
         .collection('sn_shot')
         .doc(s['id'])
         .set(s));

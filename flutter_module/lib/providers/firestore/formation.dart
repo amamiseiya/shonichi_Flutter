@@ -15,8 +15,7 @@ class FormationFirestoreProvider extends FirestoreProvider {
       throw FirebaseException(
           plugin: 'Firestore', message: 'Document does not exist');
     }
-    final formation = SNFormation.fromMap(snapshot.data());
-    formation.id = snapshot.id;
+    final formation = SNFormation.fromMap(snapshot.data(), snapshot.id);
     print('Provider: Retrieved formation: ' + formation.toString());
     return formation;
   }
@@ -29,11 +28,10 @@ class FormationFirestoreProvider extends FirestoreProvider {
     print('Provider: ' +
         snapshot.docs.length.toString() +
         ' formation(s) retrieved');
-    return List.generate(snapshot.docs.length, (i) {
-      final formation = SNFormation.fromMap(snapshot.docs[i].data());
-      formation.id = snapshot.docs[i].id;
-      return formation;
-    });
+    return List.generate(
+        snapshot.docs.length,
+        (i) =>
+            SNFormation.fromMap(snapshot.docs[i].data(), snapshot.docs[i].id));
   }
 
   Future<void> update(SNFormation formation) async {
@@ -46,7 +44,7 @@ class FormationFirestoreProvider extends FirestoreProvider {
     print('Provider: Delete operation succeed');
   }
 
-  Future<SNFormation> getLatestFormation(String songId) async {
+  Future<SNFormation?> getLatestFormation(String songId) async {
     final snapshot = await _formationRef
         .where('songId', isEqualTo: songId)
         .orderBy('createdTime', descending: true)
@@ -55,8 +53,8 @@ class FormationFirestoreProvider extends FirestoreProvider {
     if (snapshot.docs.isEmpty) {
       return null;
     }
-    final formation = SNFormation.fromMap(snapshot.docs.first.data());
-    formation.id = snapshot.docs.first.id;
+    final formation =
+        SNFormation.fromMap(snapshot.docs.first.data(), snapshot.docs.first.id);
     print('Provider: Latest formation: ' + formation.toString());
     return formation;
   }

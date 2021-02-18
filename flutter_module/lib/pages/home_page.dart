@@ -43,7 +43,7 @@ class HomePage extends GetView<ProjectController> {
             }),
         floatingActionButton:
             Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-          GetBuilder<MigratorController>(
+          GetBuilder<DataMigrationController>(
               builder: (controller) => FloatingActionButton(
                   tooltip: 'Reset'.tr, // used by assistive technologies
                   backgroundColor: Colors.red,
@@ -98,7 +98,7 @@ class _Dashboard extends GetView<ProjectController> {
               textScaleFactor: 1.8,
             )),
         StreamBuilder(
-            stream: songController.firstCoverURL.stream,
+            stream: songController.firstCoverURI.stream,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Container();
@@ -118,7 +118,7 @@ class _Dashboard extends GetView<ProjectController> {
                         ),
                         Ink.image(
                           image:
-                              NetworkImage(songController.firstCoverURL.value),
+                              NetworkImage(songController.firstCoverURI.value!),
                           fit: BoxFit.fitWidth,
                           // width: 300,
                           height: 300,
@@ -194,19 +194,19 @@ class _EmptyPage extends StatelessWidget {
 }
 
 class _ProjectUpsertDialog extends StatelessWidget {
-  SNProject p;
+  late SNProject p;
 
   final TextEditingController _dancerNameController = TextEditingController();
   final TextEditingController _songIdController = TextEditingController();
   final TextEditingController _storyboardIdController = TextEditingController();
   final TextEditingController _formationIdController = TextEditingController();
 
-  _ProjectUpsertDialog(project) {
+  _ProjectUpsertDialog(SNProject? project) {
     p = project ?? SNProject.initialValue();
     _dancerNameController.text = p.dancerName;
-    _songIdController.text = p.songId;
-    _storyboardIdController.text = p.storyboardId;
-    _formationIdController.text = p.formationId;
+    _songIdController.text = p.songId ?? '';
+    _storyboardIdController.text = p.storyboardId ?? '';
+    _formationIdController.text = p.formationId ?? '';
   }
 
   @override
@@ -216,13 +216,13 @@ class _ProjectUpsertDialog extends StatelessWidget {
           Column(children: [
             Form(
                 child: Column(children: [
-              FlatButton(
+              ElevatedButton(
                 onPressed: () => showDatePicker(
                   context: Get.context,
                   initialDate: p.createdTime,
                   firstDate: DateTime.now().subtract(Duration(days: 3650)),
                   lastDate: DateTime.now().add(Duration(days: 3650)),
-                ).then((value) => p.createdTime = value),
+                ).then((value) => p.createdTime = value!),
                 child: Text('Created time'.tr),
               ),
               TextFormField(

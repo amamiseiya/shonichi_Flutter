@@ -36,7 +36,7 @@ class ShotController extends GetxController {
   // 控制的变量
   RxList<SNShot> shots = RxList<SNShot>();
   RxList<SNShot> selectedShots = RxList<SNShot>();
-  Rx<SNShot> editingShot = Rx<SNShot>(null);
+  Rx<int?> editingShotIndex = Rx<int>(null);
 
   ShotController(this.songRepository, this.lyricRepository, this.shotRepository,
       this.attachmentRepository)
@@ -44,12 +44,6 @@ class ShotController extends GetxController {
         assert(lyricRepository != null),
         assert(shotRepository != null),
         assert(attachmentRepository != null) {
-    // selectedShots.listen((shots) {
-    //   if (shots.length == 1) {
-    //     editingShot(shots.first);
-    //   }
-    // });
-
     storyboardController.editingStoryboard.listen((newStoryboard) async {
       if (newStoryboard != null) {
         await retrieveForTable();
@@ -84,7 +78,9 @@ class ShotController extends GetxController {
           value: (_) => 0);
       for (SNShot shot in shots) {
         for (SNCharacter character in shot.characters) {
-          characterCountMap[character.name]++;
+          // ! 野蛮
+          characterCountMap[character.name] =
+              characterCountMap[character.name]! + 1;
         }
       }
       return characterCountMap;
@@ -95,7 +91,7 @@ class ShotController extends GetxController {
     try {
       print('Retrieving shots');
       shots(await shotRepository
-          .retrieveForTable(storyboardController.editingStoryboard.value.id));
+          .retrieveForTable(storyboardController.editingStoryboard.value!.id));
     } catch (e) {
       print(e);
     }
@@ -112,8 +108,8 @@ class ShotController extends GetxController {
 
   Future<void> create() async {
     try {
-      await shotRepository.create(
-          SNShot.initialValue(storyboardController.editingStoryboard.value.id));
+      await shotRepository.create(SNShot.initialValue(
+          storyboardController.editingStoryboard.value!.id));
       await retrieveForTable();
     } catch (e) {
       print(e);
@@ -139,19 +135,19 @@ class ShotController extends GetxController {
     }
   }
 
-  SNShot selectShot(double value) {
+  int? selectShot(double value) {
     final ms = value * songController.editingSong.value.duration.inMilliseconds;
-    if (shots.value.length == 1) {
-      return editingShot(shots.first);
+    if (shots.length == 1) {
+      return editingShotIndex(0);
     } else if (shots.first.startTime.inMilliseconds > ms) {
-      return editingShot(shots.first);
+      return editingShotIndex(0);
     } else if (shots.last.startTime.inMilliseconds < ms) {
-      return editingShot(shots.last);
+      return editingShotIndex(shots.length - 1);
     } else if (shots.length == 2) {
       return ms - shots[0].startTime.inMilliseconds >
               shots[1].startTime.inMilliseconds - ms
-          ? editingShot(shots[1])
-          : editingShot(shots[0]);
+          ? editingShotIndex(1)
+          : editingShotIndex(0);
     }
     int left = 0;
     int right = shots.length - 1;
@@ -167,18 +163,18 @@ class ShotController extends GetxController {
       }
     }
     if (left <= right) {
-      return editingShot(shots[mid]);
+      return editingShotIndex(mid);
     }
     if (shots[mid].startTime.inMilliseconds < ms) {
       return ms - shots[mid].startTime.inMilliseconds >
               shots[mid + 1].startTime.inMilliseconds - ms
-          ? editingShot(shots[mid + 1])
-          : editingShot(shots[mid]);
+          ? editingShotIndex(mid + 1)
+          : editingShotIndex(mid);
     } else {
       return shots[mid].startTime.inMilliseconds - ms >
               ms - shots[mid - 1].startTime.inMilliseconds
-          ? editingShot(shots[mid - 1])
-          : editingShot(shots[mid]);
+          ? editingShotIndex(mid - 1)
+          : editingShotIndex(mid);
     }
   }
 }

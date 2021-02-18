@@ -15,14 +15,15 @@ class ProjectSQLiteProvider extends SQLiteProvider {
     final db = await database;
     final mapList =
         await db.query('sn_project', where: 'id = ?', whereArgs: [id]);
-    return SNProject.fromMap(mapList.first);
+    return SNProject.fromMap(mapList.first, id);
   }
 
   Future<List<SNProject>> retrieveLatestN(int count) async {
     final db = await database;
     final mapList =
         await db.query('sn_project', orderBy: 'id DESC', limit: count);
-    return List.generate(mapList.length, (i) => SNProject.fromMap(mapList[i]));
+    return List.generate(
+        mapList.length, (i) => SNProject.fromMap(mapList[i], mapList[i]['id']));
   }
 
   Future<void> update(SNProject project) async {

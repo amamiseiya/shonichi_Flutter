@@ -10,7 +10,7 @@ class StoryboardController extends GetxController {
   final StoryboardRepository storyboardRepository;
 
   RxList<SNStoryboard> storyboardsForSong = RxList<SNStoryboard>(null);
-  Rx<SNStoryboard> editingStoryboard = Rx<SNStoryboard>(null);
+  Rx<SNStoryboard?> editingStoryboard = Rx<SNStoryboard>(null);
 
   StoryboardController(this.storyboardRepository)
       : assert(storyboardRepository != null);
@@ -50,11 +50,11 @@ class StoryboardController extends GetxController {
 
   Future<void> select(String id) async {
     try {
-      if (editingStoryboard == Rx<SNStoryboard>(null) ||
-          editingStoryboard.value.id != id) {
+      if (editingStoryboard.value == null ||
+          editingStoryboard.value!.id != id) {
         editingStoryboard(await storyboardRepository.retrieveById(id));
-        print('editingStoryboard is ${editingStoryboard.value.id}');
-      } else if (editingStoryboard.value.id == id) {
+        print('editingStoryboard is ${editingStoryboard.value!.id}');
+      } else if (editingStoryboard.value!.id == id) {
         editingStoryboard.nil();
         print('editingStoryboard is null');
       }

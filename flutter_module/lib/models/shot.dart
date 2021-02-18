@@ -14,7 +14,7 @@ class SNShot {
   String shotMovement;
   String shotAngle;
   String text;
-  String image;
+  String imageURI;
   String comment;
 
   String tableId;
@@ -36,23 +36,24 @@ class SNShot {
   ];
 
   SNShot(
-      {this.id,
-      this.sceneNumber,
-      this.shotNumber,
-      this.startTime,
-      this.endTime,
-      this.lyric,
-      this.shotType,
-      this.shotMovement,
-      this.shotAngle,
-      this.text,
-      this.image,
-      this.comment,
-      this.tableId,
-      this.characters});
+      {required this.id,
+      required this.sceneNumber,
+      required this.shotNumber,
+      required this.startTime,
+      required this.endTime,
+      required this.lyric,
+      required this.shotType,
+      required this.shotMovement,
+      required this.shotAngle,
+      required this.text,
+      required this.imageURI,
+      required this.comment,
+      required this.tableId,
+      required this.characters});
 
   factory SNShot.initialValue(String storyboardId) {
     return SNShot(
+        id: 'initial',
         sceneNumber: 1010,
         shotNumber: 1,
         startTime: Duration(milliseconds: Random().nextInt(100000)),
@@ -62,14 +63,15 @@ class SNShot {
         shotMovement: '',
         shotAngle: '',
         text: '',
-        image: '',
+        imageURI: '',
         comment: '',
         tableId: storyboardId,
         characters: []);
   }
 
-  factory SNShot.fromMap(Map<String, dynamic> map) {
+  factory SNShot.fromMap(Map<String, dynamic> map, String id) {
     return SNShot(
+      id: id,
       sceneNumber: map['sceneNumber'],
       shotNumber: map['shotNumber'],
       startTime: Duration(milliseconds: map['startTime']),
@@ -79,7 +81,7 @@ class SNShot {
       shotMovement: map['shotMovement'],
       shotAngle: map['shotAngle'],
       text: map['text'],
-      image: map['image'],
+      imageURI: map['imageURI'],
       comment: map['comment'],
       tableId: map['tableId'],
       characters: SNCharacter.stringToList(map['characters']),
@@ -96,7 +98,7 @@ class SNShot {
         'shotMovement': shotMovement,
         'shotAngle': shotAngle,
         'text': text,
-        'image': image,
+        'imageURI': imageURI,
         'comment': comment,
         'tableId': tableId,
         'characters': SNCharacter.listToString(characters),

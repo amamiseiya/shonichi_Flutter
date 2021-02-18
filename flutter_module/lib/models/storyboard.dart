@@ -5,18 +5,19 @@ class SNStoryboard {
   DateTime createdTime;
   String authorId;
 
-  String songId;
+  String? songId;
 
   SNStoryboard(
-      {this.id,
-      this.name,
-      this.description,
-      this.createdTime,
-      this.authorId,
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.createdTime,
+      required this.authorId,
       this.songId});
 
-  factory SNStoryboard.fromMap(Map<String, dynamic> map) {
+  factory SNStoryboard.fromMap(Map<String, dynamic> map, String id) {
     return SNStoryboard(
+      id: id,
       name: map['name'],
       description: map['description'],
       createdTime: DateTime.parse(map['createdTime']),
@@ -26,6 +27,7 @@ class SNStoryboard {
   }
 
   factory SNStoryboard.initialValue() => SNStoryboard(
+      id: 'initial',
       name: '',
       description: '',
       createdTime: DateTime.now(),

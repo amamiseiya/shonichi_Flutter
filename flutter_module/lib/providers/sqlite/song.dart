@@ -15,14 +15,15 @@ class SongSQLiteProvider extends SQLiteProvider {
     final db = await database;
     final mapList = await db.query('sn_song', where: 'id = ?', whereArgs: [id]);
     print('Provider: Retrieved song: ' + mapList.first.toString());
-    return SNSong.fromMap(mapList.first);
+    return SNSong.fromMap(mapList.first, id);
   }
 
   Future<List<SNSong>> retrieveAll() async {
     final db = await database;
     final mapList = await db.query('sn_song', orderBy: 'id DESC');
     print('Provider: ' + mapList.length.toString() + ' song(s) retrieved');
-    return List.generate(mapList.length, (i) => SNSong.fromMap(mapList[i]));
+    return List.generate(
+        mapList.length, (i) => SNSong.fromMap(mapList[i], mapList[i]['id']));
   }
 
   Future<void> update(SNSong song) async {

@@ -5,15 +5,15 @@ import '../utils/reg_exp.dart';
 class SNCharacter {
   String name;
   String nameAbbr;
-  Color memberColor;
-  String grade;
-  String group;
-  String teamName;
-  String subordinateKikaku;
+  Color? memberColor;
+  String? grade;
+  String? group;
+  String? teamName;
+  String? subordinateKikaku;
 
   SNCharacter(
-      {this.name,
-      this.nameAbbr,
+      {required this.name,
+      required this.nameAbbr,
       this.memberColor,
       this.grade,
       this.group,
@@ -121,7 +121,7 @@ class SNCharacter {
       case '花柳 香子':
         return SNCharacter.kaoruko();
     }
-    return null;
+    throw FormatException('No such name');
   }
 
   factory SNCharacter.fromAbbrString(String nameAbbr, String kikaku) {
@@ -193,7 +193,7 @@ class SNCharacter {
         }
         break;
     }
-    return null;
+    throw FormatException('No such abbreviate name');
   }
 
   // 输入角色列表返回String

@@ -49,15 +49,22 @@ class SongListPage extends GetView<SongController> {
   }
 }
 
-class SongDataTable extends GetView<SongController> {
+class SongDataTable extends StatefulWidget {
+  @override
+  State<SongDataTable> createState() => _SongDataTableState();
+}
+
+class _SongDataTableState extends State<SongDataTable> {
+  final SongController songController = Get.find();
+
   bool _sortAscending = true;
-  int _sortColumnIndex;
+  late int _sortColumnIndex = 0;
 
   void _sort(int index, bool ascending) {
     if (ascending) {
-      controller.songs.sort((a, b) => a.name.compareTo(b.name));
+      songController.songs.sort((a, b) => a.name.compareTo(b.name));
     } else {
-      controller.songs.sort((a, b) => b.name.compareTo(a.name));
+      songController.songs.sort((a, b) => b.name.compareTo(a.name));
     }
     _sortColumnIndex = index;
     _sortAscending = ascending;
@@ -76,16 +83,19 @@ class SongDataTable extends GetView<SongController> {
           columns: [
             DataColumn(
               label: Text('Song name'.tr),
-              onSort: (index, ascending) => _sort(index, ascending),
+              onSort: (index, ascending) {
+                _sort(index, ascending);
+                (context as Element).markNeedsBuild();
+              },
             ),
             DataColumn(label: Text('Subordinates'.tr)),
           ],
-          rows: controller.songs
+          rows: songController.songs
               .map((song) => DataRow(cells: [
                     DataCell(Text(song.name), onTap: () {
                       print('Pressed from DataCell');
                       Get.dialog(SongUpsertDialog(song))
-                          .then((song) => controller.submitUpdate(song));
+                          .then((song) => songController.submitUpdate(song));
                     }),
                     DataCell(Text(song.subordinateKikaku)),
                   ]))
@@ -103,7 +113,7 @@ class _EmptyPage extends StatelessWidget {
 }
 
 class SongUpsertDialog extends StatelessWidget {
-  SNSong s;
+  late SNSong s;
   SongController songController = Get.find();
 
   TextEditingController _nameController = TextEditingController();
@@ -111,10 +121,10 @@ class SongUpsertDialog extends StatelessWidget {
   TextEditingController _durationController = TextEditingController();
   TextEditingController _lyricOffsetController = TextEditingController();
 
-  SongUpsertDialog(SNSong song) {
+  SongUpsertDialog(SNSong? song) {
     s = song ?? SNSong.initialValue();
     _nameController.text = s.name;
-    _coverIdController.text = s.coverId;
+    _coverIdController.text = s.coverURI;
     _durationController.text = s.duration.inMilliseconds.toString();
     _lyricOffsetController.text = s.lyricOffset.toString();
   }
@@ -139,9 +149,9 @@ class SongUpsertDialog extends StatelessWidget {
                       height: 2,
                       color: Colors.deepPurpleAccent,
                     ),
-                    onChanged: (String value) {
+                    onChanged: (String? value) {
                       (context as Element).markNeedsBuild(); // 妙啊，实在是妙
-                      s.subordinateKikaku = value;
+                      s.subordinateKikaku = value!;
                     },
                     items: [
                           DropdownMenuItem<String>(
@@ -183,7 +193,7 @@ class SongUpsertDialog extends StatelessWidget {
                 SimpleDialogOption(
                   onPressed: () {
                     s.name = _nameController.text;
-                    s.coverId = _coverIdController.text;
+                    s.coverURI = _coverIdController.text;
                     s.duration = Duration(
                         milliseconds: int.parse(_durationController.text));
                     s.lyricOffset = int.parse(_lyricOffsetController.text);

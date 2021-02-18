@@ -83,23 +83,29 @@ class FormationSelector extends GetView<FormationController> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40,
-      child: ListView(
+        height: 40,
+        child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          children: controller.formationsForSong.value
-                  .map((formation) => ActionChip(
-                        label: Text(formation.name),
-                        onPressed: () => controller.select(formation.id),
-                      ))
-                  .toList() +
-              [
-                ActionChip(
-                  label: Icon(Icons.add),
-                  onPressed: () => Get.dialog(FormationUpsertDialog(null))
-                      .then((formation) => controller.submitCreate(formation)),
-                )
-              ]),
-    );
+          itemCount: controller.formationsForSong.length + 1,
+          itemBuilder: (BuildContext context, int index) {
+            if (index == controller.formationsForSong.length) {
+              return ActionChip(
+                label: Icon(Icons.add),
+                onPressed: () => Get.dialog(FormationUpsertDialog(null))
+                    .then((formation) => controller.submitCreate(formation)),
+              );
+            }
+            return Obx(() => ChoiceChip(
+                  label: Text(controller.formationsForSong[index].name),
+                  tooltip: '',
+                  selected: controller.editingFormation.value?.id ==
+                      controller.formationsForSong[index]!.id,
+                  selectedColor: Colors.orange.shade100,
+                  onSelected: (_) =>
+                      controller.select(controller.formationsForSong[index].id),
+                ));
+          },
+        ));
   }
 }
 
@@ -203,11 +209,11 @@ class MovementEditor extends GetView<MovementController> {
                                                   child: Text(
                                                       characterNameFirstNameRegExp
                                                           .stringMatch(movement
-                                                              .characterName))),
+                                                              .characterName)!)),
                                               title: Text(simpleDurationRegExp
                                                   .stringMatch(movement
                                                       .startTime
-                                                      .toString())),
+                                                      .toString())!),
                                               subtitle: Text(
                                                   movement.posX.toString() +
                                                       ' , ' +
@@ -282,14 +288,15 @@ class CharacterFilterButton extends StatelessWidget {
         if (controller.characters.isEmpty) {}
         return Wrap(
           children: controller.characters.value
-              .map<Widget>((character) => Obx(() => FlatButton(
-                    color: (controller.characterFilter.value.name ==
-                            character.name)
-                        ? Colors.blueAccent.shade100
-                        : Colors.grey.shade300,
+              .map<Widget>((character) => Obx(() => ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: (controller.characterFilter.value?.name ==
+                                character.name)
+                            ? Colors.blueAccent.shade100
+                            : Colors.grey.shade300),
                     onPressed: () => controller.changeCharacter(character),
                     child: Text(characterNameFirstNameRegExp
-                        .stringMatch(character.name)),
+                        .stringMatch(character.name)!),
                   )))
               .toList(),
         );
@@ -301,10 +308,11 @@ class KCurveFilterButton extends GetView<MovementController> {
   Widget build(BuildContext context) => Obx(() => Column(
       children: KCurveType.values
           .sublist(0, 2)
-          .map<Widget>((type) => FlatButton(
-              color: (controller.kCurveTypeFilter.value == type)
-                  ? Colors.blueAccent.shade100
-                  : Colors.grey.shade300,
+          .map<Widget>((type) => TextButton(
+              style: ElevatedButton.styleFrom(
+                  onPrimary: (controller.kCurveTypeFilter.value == type)
+                      ? Colors.blueAccent.shade100
+                      : Colors.grey.shade300),
               onPressed: () => controller.changeKCurveType(type),
               child: Text(type.toString())))
           .toList()));
@@ -313,7 +321,7 @@ class KCurveFilterButton extends GetView<MovementController> {
 class ProgramAnimator extends StatefulWidget {
   final List<SNMovement> movementsForTime;
   final Size size;
-  ProgramAnimator({this.movementsForTime, this.size});
+  ProgramAnimator({required this.movementsForTime, required this.size});
   @override
   _ProgramAnimatorState createState() => _ProgramAnimatorState();
 }
@@ -321,7 +329,7 @@ class ProgramAnimator extends StatefulWidget {
 class _ProgramAnimatorState extends State<ProgramAnimator>
     with SingleTickerProviderStateMixin {
   final MovementController movementController = Get.find();
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {
@@ -365,7 +373,7 @@ class ProgramPainter extends CustomPainter {
           20,
           Paint()
             ..color = SNCharacter.fromString(characterMovement.characterName)
-                .memberColor
+                .memberColor!
             ..strokeWidth = 5
             ..style = PaintingStyle.stroke);
     }
@@ -407,16 +415,16 @@ class KCurvePainter extends CustomPainter {
         List.generate(
             50,
             (int index) =>
-                Offset(0.0, size.height) * pow(1 - index * 0.02, 3) +
+                Offset(0.0, size.height) * pow(1 - index * 0.02, 3).toDouble() +
                 editingKCurve[0] *
                     3 *
                     (index * 0.02) *
-                    pow(1 - index * 0.02, 2) +
+                    pow(1 - index * 0.02, 2).toDouble() +
                 editingKCurve[1] *
                     3 *
-                    pow(index * 0.02, 2) *
+                    pow(index * 0.02, 2).toDouble() *
                     (1 - index * 0.02) +
-                Offset(size.width, 0.0) * pow(index * 0.02, 3)),
+                Offset(size.width, 0.0) * pow(index * 0.02, 3).toDouble()),
         Paint()
           ..isAntiAlias = !true
           ..strokeWidth = 5
@@ -443,12 +451,12 @@ class KCurvePainter extends CustomPainter {
 class FormationUpsertDialog extends GetView<FormationController> {
   // 在dialog最终pop时才给对象赋值，不确定这样的方式是否合适
 
-  SNFormation f;
+  late SNFormation f;
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  FormationUpsertDialog(SNFormation formation) {
+  FormationUpsertDialog(SNFormation? formation) {
     f = formation ?? SNFormation.initialValue();
     _nameController.text = f.name;
     _descriptionController.text = f.description;

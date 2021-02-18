@@ -29,13 +29,13 @@ class MovementController extends GetxController with StateMixin {
   RxList<SNMovement> movementsForTable = RxList<SNMovement>(null);
   RxList<SNCharacter> characters = RxList<SNCharacter>(null);
 
-  Rx<SNCharacter> characterFilter = Rx<SNCharacter>(SNCharacter());
+  Rx<SNCharacter?> characterFilter = Rx<SNCharacter>(null);
   Rx<Duration> timeFilter = Rx<Duration>(Duration(seconds: 0));
-  Rx<KCurveType> kCurveTypeFilter = Rx<KCurveType>(null);
+  Rx<KCurveType?> kCurveTypeFilter = Rx<KCurveType>(null);
 
   RxList<SNMovement> movementsForCharacter = RxList<SNMovement>(null);
   RxList<SNMovement> movementsForTime = RxList<SNMovement>(null);
-  Rx<SNMovement> editingMovement = Rx<SNMovement>(null);
+  Rx<SNMovement?> editingMovement = Rx<SNMovement>(null);
   RxList<Offset> editingKCurve = RxList<Offset>(null);
 
   @override
@@ -65,7 +65,7 @@ class MovementController extends GetxController with StateMixin {
     movementsForCharacter.bindStream(rx.Rx.combineLatest2(
         movementsForTable.stream,
         characterFilter.stream,
-        (List<SNMovement> stream, SNCharacter filter) => (filter.name == null)
+        (List<SNMovement> stream, SNCharacter? filter) => (filter == null)
             ? stream
             : stream
                 .where((movement) => movement.characterName == filter.name)
@@ -78,21 +78,26 @@ class MovementController extends GetxController with StateMixin {
             : stream
                 .where((movement) => movement.startTime == filter)
                 .toList()));
+    // ! 不确定.first会不会带来问题
     editingMovement.bindStream(rx.Rx.combineLatest3(
-        movementsForTable.stream,
-        characterFilter.stream,
-        timeFilter.stream,
-        (List<SNMovement> stream, SNCharacter characterFilter,
-                Duration timeFilter) =>
-            stream
-                .where((movement) =>
-                    movement.characterName == characterFilter.name)
-                .firstWhere((movement) => movement.startTime == timeFilter,
-                    orElse: () => null)));
+        movementsForTable.stream, characterFilter.stream, timeFilter.stream,
+        (List<SNMovement> stream, SNCharacter? characterFilter,
+            Duration timeFilter) {
+      final Iterable<SNMovement> m = stream
+          .where((movement) => movement.characterName == characterFilter?.name)
+          .where((movement) => movement.startTime == timeFilter);
+      if (m.isEmpty) {
+        return null;
+      } else if (m.length == 1) {
+        return m.first;
+      } else {
+        throw FormatException('Multiple movements exist');
+      }
+    }));
     editingKCurve.bindStream(
         rx.Rx.combineLatest2(editingMovement.stream, kCurveTypeFilter.stream,
-            (SNMovement movement, KCurveType kCurveType) {
-      if (movement != null) {
+            (SNMovement? movement, KCurveType? kCurveType) {
+      if (movement != null && kCurveType != null) {
         return List.generate(
           2,
           (i) => movement.getMovementPoint(kCurveType, i, kCurvePainterSize),
@@ -106,9 +111,9 @@ class MovementController extends GetxController with StateMixin {
   Future<void> retrieveForTable() async {
     try {
       characters(SNCharacter.membersSortedByGrade(
-          songController.editingSong.value.subordinateKikaku));
+          songController.editingSong.value!.subordinateKikaku));
       movementsForTable(await movementRepository
-          .retrieveForTable(formationController.editingFormation.value.id));
+          .retrieveForTable(formationController.editingFormation.value!.id));
       change(0, status: RxStatus.success());
     } catch (e) {
       print(e);
@@ -139,9 +144,11 @@ class MovementController extends GetxController with StateMixin {
 
   void changeCharacter(SNCharacter character) async {
     try {
-      characterFilter((characterFilter.value.name == character.name)
-          ? SNCharacter()
-          : character);
+      if (characterFilter.value?.name == character.name) {
+        characterFilter.nil();
+      } else {
+        characterFilter(character);
+      }
     } catch (e) {
       print(e);
     }
@@ -159,7 +166,7 @@ class MovementController extends GetxController with StateMixin {
   Future<void> create() async {
     try {
       bool isValid = true;
-      if (characterFilter.value.name == null) isValid = false;
+      if (characterFilter.value == null) isValid = false;
       movementsForCharacter.forEach((SNMovement movement) {
         if (movement.startTime == timeFilter.value) {
           isValid = false;
@@ -168,8 +175,8 @@ class MovementController extends GetxController with StateMixin {
       if (isValid) {
         movementRepository.create(SNMovement.initialValue(
             timeFilter.value,
-            characterFilter.value.name,
-            formationController.editingFormation.value.id));
+            characterFilter.value!.name,
+            formationController.editingFormation.value!.id));
         await retrieveForTable();
       }
     } catch (e) {
@@ -179,7 +186,7 @@ class MovementController extends GetxController with StateMixin {
 
   Future<void> delete() async {
     try {
-      movementRepository.delete(editingMovement.value.id);
+      movementRepository.delete(editingMovement.value!.id);
       await retrieveForTable();
     } catch (e) {
       print(e);
@@ -189,7 +196,7 @@ class MovementController extends GetxController with StateMixin {
   void onPanDownProgram(DragDownDetails details,
       List<SNMovement> movementsForTime, BuildContext context) async {
     print('OnPanDown');
-    final RenderBox renderBox = context.findRenderObject();
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final Offset localPos = renderBox.globalToLocal(details.globalPosition);
     for (int i = 0; i < movementsForTime.length; i++) {
       Rect rect = Rect.fromCircle(
@@ -208,7 +215,7 @@ class MovementController extends GetxController with StateMixin {
 
   void onPanUpdateProgram(DragUpdateDetails details,
       List<SNMovement> movementsForTime, BuildContext context) async {
-    final RenderBox renderBox = context.findRenderObject();
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final Offset localPos = renderBox.globalToLocal(details.globalPosition);
     print('Pos:${localPos.dx},${localPos.dy}');
     if (draggedPos != -1) {
@@ -231,7 +238,7 @@ class MovementController extends GetxController with StateMixin {
   void onPanDownKCurve(DragDownDetails details, List<Offset> editingKCurve,
       BuildContext context) async {
     print('OnPanDown');
-    final RenderBox renderBox = context.findRenderObject();
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final Offset localPos = renderBox.globalToLocal(details.globalPosition);
     final Rect rect0 = Rect.fromCircle(center: editingKCurve[0], radius: 20);
     final Rect rect1 = Rect.fromCircle(center: editingKCurve[1], radius: 20);
@@ -246,11 +253,11 @@ class MovementController extends GetxController with StateMixin {
 
   void onPanUpdateKCurve(DragUpdateDetails details, List<Offset> editingKCurve,
       BuildContext context) async {
-    final RenderBox renderBox = context.findRenderObject();
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final Offset localPos = renderBox.globalToLocal(details.globalPosition);
     if (draggedPoint != -1) {
-      editingMovement.value.setMovementPoint(
-          localPos, kCurveTypeFilter.value, draggedPoint, kCurvePainterSize);
+      editingMovement.value!.setMovementPoint(
+          localPos, kCurveTypeFilter.value!, draggedPoint, kCurvePainterSize);
       print('Point:${localPos.dx},${localPos.dy}');
     }
   }
@@ -259,12 +266,12 @@ class MovementController extends GetxController with StateMixin {
       BuildContext context) async {
     print('OnPanEnd');
     if (draggedPoint != -1) {
-      editingMovement.value.checkMovementPoint(kCurveTypeFilter.value);
+      editingMovement.value!.checkMovementPoint(kCurveTypeFilter.value!);
       print(
-          '${editingMovement.value.curveX1X},${editingMovement.value.curveX1Y},${editingMovement.value.curveX2X},${editingMovement.value.curveX2Y}');
+          '${editingMovement.value!.curveX1X},${editingMovement.value!.curveX1Y},${editingMovement.value!.curveX2X},${editingMovement.value!.curveX2Y}');
       print(
-          '${editingMovement.value.curveY1X},${editingMovement.value.curveY1Y},${editingMovement.value.curveY2X},${editingMovement.value.curveY2Y}');
-      await movementRepository.update(editingMovement.value);
+          '${editingMovement.value!.curveY1X},${editingMovement.value!.curveY1Y},${editingMovement.value!.curveY2X},${editingMovement.value!.curveY2Y}');
+      await movementRepository.update(editingMovement.value!);
       await retrieveForTable();
     }
   }

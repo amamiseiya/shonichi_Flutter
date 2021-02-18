@@ -3,10 +3,36 @@ part of 'firestore.dart';
 class AttachmentFirestoreProvider extends FirestoreProvider {
   final firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
+  final CollectionReference _attachmentRef =
+      FirebaseFirestore.instance.collection('sn_attachment');
 
-  Future<String> getImageURL(String id) async {
+  // * -------- Simple Functions --------
+
+  Future<String> getImageURI(String id) async {
     return await storage.ref().child('images').child(id).getDownloadURL();
   }
+
+  Future<String> getVideoURI(String id) async {
+    return await storage.ref().child('videos').child(id).getDownloadURL();
+  }
+
+  // * -------- Attachment For Song CRUD --------
+
+  Future<List<SNAttachment>> retrieveAttachmentsForSong(String songId) async {
+    final snapshot = await _attachmentRef
+        .where('songId', isEqualTo: songId)
+        .orderBy('name')
+        .get();
+    print('Provider: ' +
+        snapshot.docs.length.toString() +
+        ' attachment(s) retrieved');
+    return List.generate(
+        snapshot.docs.length,
+        (i) =>
+            SNAttachment.fromMap(snapshot.docs[i].data(), snapshot.docs[i].id));
+  }
+
+  // * -------- Text File I/O --------
 
   Future<void> writeAsString(
       String text, String folder, String fileName) async {

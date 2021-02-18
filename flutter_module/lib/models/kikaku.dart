@@ -2,7 +2,7 @@ class SNKikaku {
   String name;
   String teamName;
 
-  SNKikaku({this.name, this.teamName});
+  SNKikaku({required this.name, required this.teamName});
 
   static List<SNKikaku> get kikakus => [
         SNKikaku.ll(),

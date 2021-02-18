@@ -28,7 +28,7 @@ abstract class SQLiteProvider {
   // Future<void> update();
   // Future<void> delete();
 
-  static Future<Database> _database;
+  static late Future<Database> _database;
 
   Future<Database> get database async {
     Directory appDocDir = await getApplicationDocumentsDirectory();

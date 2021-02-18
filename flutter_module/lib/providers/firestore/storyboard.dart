@@ -15,8 +15,7 @@ class StoryboardFirestoreProvider extends FirestoreProvider {
       throw FirebaseException(
           plugin: 'Firestore', message: 'Document does not exist');
     }
-    final storyboard = SNStoryboard.fromMap(snapshot.data());
-    storyboard.id = snapshot.id;
+    final storyboard = SNStoryboard.fromMap(snapshot.data(), snapshot.id);
     print('Provider: Retrieved storyboard: ' + storyboard.toString());
     return storyboard;
   }
@@ -29,11 +28,10 @@ class StoryboardFirestoreProvider extends FirestoreProvider {
     print('Provider: ' +
         snapshot.docs.length.toString() +
         ' storyboard(s) retrieved');
-    return List.generate(snapshot.docs.length, (i) {
-      final storyboard = SNStoryboard.fromMap(snapshot.docs[i].data());
-      storyboard.id = snapshot.docs[i].id;
-      return storyboard;
-    });
+    return List.generate(
+        snapshot.docs.length,
+        (i) =>
+            SNStoryboard.fromMap(snapshot.docs[i].data(), snapshot.docs[i].id));
   }
 
   Future<void> update(SNStoryboard storyboard) async {
@@ -46,7 +44,7 @@ class StoryboardFirestoreProvider extends FirestoreProvider {
     print('Provider: Delete operation succeed');
   }
 
-  Future<SNStoryboard> getLatestStoryboard(String songId) async {
+  Future<SNStoryboard?> getLatestStoryboard(String songId) async {
     final snapshot = await _storyboardRef
         .where('songId', isEqualTo: songId)
         .orderBy('createdTime', descending: true)
@@ -55,8 +53,8 @@ class StoryboardFirestoreProvider extends FirestoreProvider {
     if (snapshot.docs.isEmpty) {
       return null;
     }
-    final storyboard = SNStoryboard.fromMap(snapshot.docs.first.data());
-    storyboard.id = snapshot.docs.first.id;
+    final storyboard = SNStoryboard.fromMap(
+        snapshot.docs.first.data(), snapshot.docs.first.id);
     print('Provider: Latest storyboard: ' + storyboard.toString());
     return storyboard;
   }

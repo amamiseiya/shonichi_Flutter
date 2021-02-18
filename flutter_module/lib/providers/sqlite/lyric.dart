@@ -15,7 +15,8 @@ class LyricSQLiteProvider extends SQLiteProvider {
     final db = await database;
     final mapList = await db.query('sn_lyric',
         where: 'songId = ?', whereArgs: [songId], orderBy: 'startTime');
-    return List.generate(mapList.length, (i) => SNLyric.fromMap(mapList[i]));
+    return List.generate(
+        mapList.length, (i) => SNLyric.fromMap(mapList[i], mapList[i]['id']));
   }
 
   Future<void> update(SNLyric lyric) async {

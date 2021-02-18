@@ -19,6 +19,6 @@ class FormationRepository {
 
   Future<void> delete(String id) async => await provider.delete(id);
 
-  Future<SNFormation> getLatestFormation(String songId) async =>
+  Future<SNFormation?> getLatestFormation(String songId) async =>
       await provider.getLatestFormation(songId);
 }

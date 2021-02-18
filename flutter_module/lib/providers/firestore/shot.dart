@@ -16,11 +16,8 @@ class ShotFirestoreProvider extends FirestoreProvider {
         .get();
     print(
         'Provider: ' + snapshot.docs.length.toString() + ' shot(s) retrieved');
-    return List.generate(snapshot.docs.length, (i) {
-      final shot = SNShot.fromMap(snapshot.docs[i].data());
-      shot.id = snapshot.docs[i].id;
-      return shot;
-    });
+    return List.generate(snapshot.docs.length,
+        (i) => SNShot.fromMap(snapshot.docs[i].data(), snapshot.docs[i].id));
   }
 
   Future<void> update(SNShot shot) async {

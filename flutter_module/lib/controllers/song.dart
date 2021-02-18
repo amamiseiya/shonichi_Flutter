@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import '../models/project.dart';
 import '../models/song.dart';
 import 'project.dart';
-import '../repositories/song.dart';
 import '../repositories/attachment.dart';
+import '../repositories/song.dart';
 
 class SongController extends GetxController {
   final ProjectController projectController = Get.find();
@@ -16,7 +16,9 @@ class SongController extends GetxController {
 
   RxList<SNSong> songs = RxList<SNSong>(null);
   Rx<SNSong> editingSong = Rx<SNSong>(null);
-  RxString firstCoverURL = RxString(null);
+  Rx<String?> firstCoverURI = Rx<String>(null);
+  Rx<String?> videoURI = Rx<String>(
+      'https://assets.mixkit.co/videos/preview/mixkit-landscape-from-the-top-of-a-cloudy-mountain-range-39703-large.mp4');
 
   SongController(this.songRepository, this.attachmentRepository)
       : assert(songRepository != null),
@@ -24,21 +26,30 @@ class SongController extends GetxController {
     projectController.projects.listen((projects) async {
       if (projects.isNotEmpty) {
         final SNSong firstSong =
-            await songRepository.retrieveById(projects[0].songId);
-        firstCoverURL(
-            await attachmentRepository.getImageURL(firstSong.coverId));
+            await songRepository.retrieveById(projects[0].songId!);
+        firstCoverURI(
+            await attachmentRepository.getImageURI(firstSong.coverURI));
       } else {
-        firstCoverURL = null;
+        firstCoverURI.nil();
       }
     });
 
     projectController.editingProject.listen((newProject) async {
-      editingSong.value = await songRepository.retrieveById(newProject.songId);
-      print(
-          'editingSong changed to ${editingSong.value.id} -- listening to editingProject');
+      if (newProject.songId == null) {
+        print('editingSong changed to null -- listening to editingProject');
+      } else {
+        editingSong.value =
+            await songRepository.retrieveById(newProject.songId!);
+        print(
+            'editingSong changed to ${editingSong.value.id} -- listening to editingProject');
+      }
     });
+  }
 
-    // songs.bindStream(songRepository.songsStream);
+  Future<void> retrieveSongVideo() async {
+    attachmentRepository
+        .retrieveAttachmentsForSong(editingSong.value!.id)
+        .then((a) => videoURI(a.first.uRI));
   }
 
   Future<void> submitCreate(SNSong song) async {
