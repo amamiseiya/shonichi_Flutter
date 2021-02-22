@@ -47,7 +47,7 @@ class StoryboardPage extends StatelessWidget {
                     return LoadingAnimationLinear();
                   }
                   if (storyboardController.storyboardsForSong.value.isEmpty) {
-                    return _EmptyStoryboardPage();
+                    // return _EmptyStoryboardPage();
                   }
                   return Column(children: [
                     StoryboardChipSelector(),

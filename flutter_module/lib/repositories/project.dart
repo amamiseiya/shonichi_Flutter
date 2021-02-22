@@ -14,8 +14,8 @@ class ProjectRepository {
   Future<SNProject> retrieveById(String id) async =>
       await provider.retrieveById(id);
 
-  Future<List<SNProject>> retrieveLatestN(int count) async =>
-      await provider.retrieveLatestN(count);
+  Future<List<SNProject>> retrieveLatestN(String creatorId, int count) async =>
+      await provider.retrieveLatestN(creatorId, count);
 
   Future<void> update(SNProject project) async =>
       await provider.update(project);

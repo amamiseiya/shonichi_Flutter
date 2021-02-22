@@ -11,8 +11,9 @@ class FormationRepository {
   Future<SNFormation> retrieveById(String id) async =>
       await provider.retrieveById(id);
 
-  Future<List<SNFormation>> retrieveForSong(String id) async =>
-      await provider.retrieveForSong(id);
+  Future<List<SNFormation>> retrieveForSong(
+          String creatorId, String songId) async =>
+      await provider.retrieveForSong(creatorId, songId);
 
   Future<void> update(SNFormation formation) async =>
       await provider.update(formation);

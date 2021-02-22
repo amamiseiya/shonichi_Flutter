@@ -3,7 +3,7 @@ class SNStoryboard {
   String name;
   String description;
   DateTime createdTime;
-  String authorId;
+  String creatorId;
 
   String? songId;
 
@@ -12,7 +12,7 @@ class SNStoryboard {
       required this.name,
       required this.description,
       required this.createdTime,
-      required this.authorId,
+      required this.creatorId,
       this.songId});
 
   factory SNStoryboard.fromMap(Map<String, dynamic> map, String id) {
@@ -21,7 +21,7 @@ class SNStoryboard {
       name: map['name'],
       description: map['description'],
       createdTime: DateTime.parse(map['createdTime']),
-      authorId: map['authorId'],
+      creatorId: map['creatorId'],
       songId: map['songId'],
     );
   }
@@ -31,14 +31,14 @@ class SNStoryboard {
       name: '',
       description: '',
       createdTime: DateTime.now(),
-      authorId: '',
+      creatorId: '',
       songId: '');
 
   Map<String, dynamic> toMap() => {
         'name': name,
         'description': description,
         'createdTime': createdTime.toString(),
-        'authorId': authorId,
+        'creatorId': creatorId,
         'songId': songId,
       };
 }

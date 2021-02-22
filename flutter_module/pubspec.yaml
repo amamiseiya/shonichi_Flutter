@@ -40,19 +40,21 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons:
+  cloud_firestore:
   dio:
   equatable:
-  firebase_core:
   firebase_auth:
-  firebase_storage:
-  cloud_firestore:
+  firebase_core:
   # firebase_database:
+  # firebase_dynamic_links:
+  firebase_storage: ^7.0.0
   flutter_markdown:
   flutter_slidable:
   get:
   google_fonts:
   image_picker:
   # leancloud_storage:
+  mockito:
   path:
   path_provider:
   rxdart:
@@ -62,6 +64,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  integration_test:
   test:
 
 # For information on the generic Dart part of this file, see the

@@ -22,8 +22,8 @@ class ProjectSQLiteProvider extends SQLiteProvider {
     final db = await database;
     final mapList =
         await db.query('sn_project', orderBy: 'id DESC', limit: count);
-    return List.generate(
-        mapList.length, (i) => SNProject.fromMap(mapList[i], mapList[i]['id']));
+    return List.generate(mapList.length,
+        (i) => SNProject.fromMap(mapList[i], mapList[i]['id'] as String));
   }
 
   Future<void> update(SNProject project) async {

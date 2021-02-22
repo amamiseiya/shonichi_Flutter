@@ -2,6 +2,7 @@
 
 class SNProject {
   String id;
+  String creatorId;
   String dancerName;
   DateTime createdTime;
   DateTime modifiedTime;
@@ -12,6 +13,7 @@ class SNProject {
 
   SNProject(
       {required this.id,
+      required this.creatorId,
       required this.dancerName,
       required this.createdTime,
       required this.modifiedTime,
@@ -21,6 +23,7 @@ class SNProject {
 
   factory SNProject.initialValue() => SNProject(
       id: 'initial',
+      creatorId: '',
       dancerName: '',
       createdTime: DateTime.now(),
       modifiedTime: DateTime.now(),
@@ -31,6 +34,7 @@ class SNProject {
   factory SNProject.fromMap(Map<String, dynamic> map, String id) {
     return SNProject(
       id: id,
+      creatorId: map['creatorId'],
       dancerName: map['dancerName'],
       createdTime: DateTime.parse(map['createdTime']),
       modifiedTime: DateTime.parse(map['modifiedTime']),
@@ -54,6 +58,7 @@ class SNProject {
 
   Map<String, dynamic> toMap() {
     return {
+      'creatorId': creatorId,
       'dancerName': dancerName,
       'createdTime': createdTime.toString(),
       'modifiedTime': modifiedTime.toString(),

@@ -22,7 +22,7 @@ class StoryboardSQLiteProvider extends SQLiteProvider {
     final db = await database;
     final mapList = await db.query('sn_storyboard', orderBy: 'id DESC');
     return List.generate(mapList.length,
-        (i) => SNStoryboard.fromMap(mapList[i], mapList[i]['id']));
+        (i) => SNStoryboard.fromMap(mapList[i], mapList[i]['id'] as String));
   }
 
   Future<void> update(SNStoryboard storyboard) async {

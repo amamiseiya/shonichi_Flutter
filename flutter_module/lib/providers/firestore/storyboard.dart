@@ -20,9 +20,11 @@ class StoryboardFirestoreProvider extends FirestoreProvider {
     return storyboard;
   }
 
-  Future<List<SNStoryboard>> retrieveForSong(String id) async {
+  Future<List<SNStoryboard>> retrieveForSong(
+      String creatorId, String songId) async {
     final snapshot = await _storyboardRef
-        .where('songId', isEqualTo: id)
+        .where('creatorId', isEqualTo: creatorId)
+        .where('songId', isEqualTo: songId)
         .orderBy('name', descending: false)
         .get();
     print('Provider: ' +

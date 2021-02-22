@@ -97,47 +97,44 @@ class _Dashboard extends GetView<ProjectController> {
               'Welcome back!'.tr,
               textScaleFactor: 1.8,
             )),
-        StreamBuilder(
-            stream: songController.firstCoverURI.stream,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Container();
-              }
-              return Card(
-                  margin: EdgeInsets.all(10.0),
-                  elevation: 4.0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  clipBehavior: Clip.antiAlias,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Current project:'.tr,
-                          textScaleFactor: 1.2,
-                        ),
-                        Ink.image(
-                          image:
-                              NetworkImage(songController.firstCoverURI.value!),
-                          fit: BoxFit.fitWidth,
-                          // width: 300,
-                          height: 300,
-                          child: InkWell(
-                            onTap: () {
-                              controller.select(controller.projects[0].id);
-                            },
-                          ),
-                        ),
-                        Text(
-                          controller.projects[0].songId.toString(),
-                          textScaleFactor: 1.5,
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        Text('At: '.tr +
-                            controller.projects[0].createdTime.toString()),
-                        Text('With: '.tr + controller.projects[0].dancerName),
-                      ]));
-            }),
+        Obx(() {
+          if (songController.firstCoverURI.value == null) {
+            return Container();
+          }
+          return Card(
+              margin: EdgeInsets.all(10.0),
+              elevation: 4.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
+              clipBehavior: Clip.antiAlias,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Current project:'.tr,
+                      textScaleFactor: 1.2,
+                    ),
+                    Ink.image(
+                      image: NetworkImage(songController.firstCoverURI.value!),
+                      fit: BoxFit.fitWidth,
+                      // width: 300,
+                      height: 300,
+                      child: InkWell(
+                        onTap: () {
+                          controller.select(controller.projects[0].id);
+                        },
+                      ),
+                    ),
+                    Text(
+                      controller.projects[0].songId.toString(),
+                      textScaleFactor: 1.5,
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    Text('At: '.tr +
+                        controller.projects[0].createdTime.toString()),
+                    Text('With: '.tr + controller.projects[0].dancerName),
+                  ]));
+        }),
         Card(
             margin: EdgeInsets.all(10.0),
             elevation: 4.0,

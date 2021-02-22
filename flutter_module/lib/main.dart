@@ -7,7 +7,8 @@ import 'package:get/get.dart';
 // import 'package:leancloud_storage/leancloud.dart';
 
 import 'widgets/loading.dart';
-import 'pages/home_page.dart';
+import 'pages/login.dart';
+import 'controllers/auth.dart';
 import 'controllers/project.dart';
 import 'controllers/song.dart';
 import 'controllers/lyric.dart';
@@ -16,6 +17,7 @@ import 'controllers/shot.dart';
 import 'controllers/formation.dart';
 import 'controllers/movement.dart';
 import 'controllers/data_migration.dart';
+import 'repositories/auth.dart';
 import 'repositories/project.dart';
 import 'repositories/song.dart';
 import 'repositories/lyric.dart';
@@ -33,7 +35,7 @@ Future<void> main() async {
   await initServices();
   runApp(GetMaterialApp(
     title: 'shonichi',
-    home: HomePage(),
+    home: LoginPage(),
     translations: Messages(),
     locale: window.locale,
     fallbackLocale: Locale('en', 'US'),
@@ -43,6 +45,7 @@ Future<void> main() async {
 Future<void> initServices() async {
   await Get.putAsync(() => APIService().init());
 
+  final AuthRepository authRepository = AuthRepository();
   final ProjectRepository projectRepository = ProjectRepository();
   final SongRepository songRepository = SongRepository();
   final LyricRepository lyricRepository = LyricRepository();
@@ -52,6 +55,7 @@ Future<void> initServices() async {
   final ShotRepository shotRepository = ShotRepository();
   final AttachmentRepository attachmentRepository = AttachmentRepository();
 
+  Get.put(AuthController(authRepository));
   Get.put(ProjectController(
       projectRepository, songRepository, attachmentRepository));
   Get.put(SongController(songRepository, attachmentRepository));

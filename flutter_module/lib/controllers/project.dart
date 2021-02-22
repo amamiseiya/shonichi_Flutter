@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 
+import 'auth.dart';
 import '../models/project.dart';
 import '../models/song.dart';
 import '../repositories/project.dart';
@@ -9,6 +10,8 @@ import '../repositories/song.dart';
 import '../repositories/attachment.dart';
 
 class ProjectController extends GetxController {
+  final AuthController authController = Get.find();
+
   final ProjectRepository projectRepository;
   final SongRepository songRepository;
   final AttachmentRepository attachmentRepository;
@@ -26,7 +29,8 @@ class ProjectController extends GetxController {
 
   Future<void> retrieve() async {
     try {
-      projects(await projectRepository.retrieveLatestN(4));
+      projects(await projectRepository.retrieveLatestN(
+          authController.user.value!.uid, 4));
     } catch (e) {
       print(e);
     }
@@ -35,6 +39,7 @@ class ProjectController extends GetxController {
   Future<void> submitCreate(SNProject project) async {
     try {
       if (project != null) {
+        project.creatorId = authController.user.value!.uid;
         await projectRepository.create(project);
         retrieve();
       }

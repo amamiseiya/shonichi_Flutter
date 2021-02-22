@@ -3,7 +3,7 @@ class SNFormation {
   String name;
   String description;
   DateTime createdTime;
-  String authorId;
+  String creatorId;
 
   // String projectId; //这个关系不应该给它
   String? songId;
@@ -13,7 +13,7 @@ class SNFormation {
       required this.name,
       required this.description,
       required this.createdTime,
-      required this.authorId,
+      required this.creatorId,
       this.songId});
 
   factory SNFormation.fromMap(Map<String, dynamic> map, String id) {
@@ -22,7 +22,7 @@ class SNFormation {
         name: map['name'],
         description: map['description'],
         createdTime: DateTime.parse(map['createdTime']),
-        authorId: map['authorId'],
+        creatorId: map['creatorId'],
         songId: map['songId']);
   }
 
@@ -31,7 +31,7 @@ class SNFormation {
       name: '',
       description: '',
       createdTime: DateTime.now(),
-      authorId: '',
+      creatorId: '',
       songId: '');
 
   Map<String, dynamic> toMap() {
@@ -39,7 +39,7 @@ class SNFormation {
       'name': name,
       'description': description,
       'createdTime': createdTime.toString(),
-      'authorId': authorId,
+      'creatorId': creatorId,
       'songId': songId
     };
   }

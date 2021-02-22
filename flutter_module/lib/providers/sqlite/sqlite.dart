@@ -20,7 +20,6 @@ part 'lyric.dart';
 part 'storyboard.dart';
 part 'shot.dart';
 part 'movement.dart';
-part 'attachment.dart';
 
 abstract class SQLiteProvider {
   // Future<void> create();
@@ -49,13 +48,13 @@ abstract class SQLiteProvider {
             'CREATE TABLE sn_lyric(id TEXT PRIMARY KEY, startTime INTEGER, endTime INTEGER, text TEXT, songId TEXT, soloPart TEXT)',
           );
           db.execute(
-            'CREATE TABLE sn_storyboard(id TEXT PRIMARY KEY, name TEXT, authorId TEXT, songId TEXT)',
+            'CREATE TABLE sn_storyboard(id TEXT PRIMARY KEY, name TEXT, creatorId TEXT, songId TEXT)',
           );
           db.execute(
             'CREATE TABLE sn_shot(id TEXT PRIMARY KEY, sceneNumber INTEGER, shotNumber INTEGER, startTime INTEGER, endTime INTEGER, lyric TEXT, shotType TEXT, shotMovement TEXT, shotAngle TEXT, text TEXT, image TEXT, comment TEXT, tableId TEXT, characters TEXT)',
           );
           db.execute(
-            'CREATE TABLE sn_formation(id TEXT PRIMARY KEY, name TEXT, authorId TEXT, songId TEXT)',
+            'CREATE TABLE sn_formation(id TEXT PRIMARY KEY, name TEXT, creatorId TEXT, songId TEXT)',
           );
           db.execute(
             'CREATE TABLE sn_movement(id TEXT PRIMARY KEY, startTime INTEGER, posX REAL, posY REAL, curveX1X INTEGER, curveX1Y INTEGER, curveX2X INTEGER, curveX2Y INTEGER, curveY1X INTEGER, curveY1Y INTEGER, curveY2X INTEGER, curveY2Y INTEGER, characterName TEXT, tableId TEXT)',

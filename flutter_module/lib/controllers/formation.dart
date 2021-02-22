@@ -1,10 +1,12 @@
 import 'package:get/get.dart';
 
 import '../models/formation.dart';
+import 'auth.dart';
 import 'song.dart';
 import '../repositories/formation.dart';
 
 class FormationController extends GetxController {
+  AuthController authController = Get.find();
   SongController songController = Get.find();
 
   final FormationRepository formationRepository;
@@ -20,8 +22,8 @@ class FormationController extends GetxController {
       if (formation == null) {
         throw FormatException('Null value passed in');
       }
-      formation.authorId = '1';
-      formation.songId = songController.editingSong.value.id;
+      formation.creatorId = authController.user.value!.uid;
+      formation.songId = songController.editingSong.value!.id;
       await formationRepository.create(formation);
       retrieve();
     } catch (e) {
@@ -32,8 +34,9 @@ class FormationController extends GetxController {
   Future<void> retrieve() async {
     try {
       print('Retrieving formations');
-      formationsForSong(await (formationRepository
-          .retrieveForSong(songController.editingSong.value.id)));
+      formationsForSong(await (formationRepository.retrieveForSong(
+          authController.user.value!.uid,
+          songController.editingSong.value!.id)));
     } catch (e) {
       print(e);
     }

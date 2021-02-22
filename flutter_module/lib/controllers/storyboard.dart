@@ -1,10 +1,12 @@
 import 'package:get/get.dart';
 
 import '../models/storyboard.dart';
+import 'auth.dart';
 import 'song.dart';
 import '../repositories/storyboard.dart';
 
 class StoryboardController extends GetxController {
+  AuthController authController = Get.find();
   SongController songController = Get.find();
 
   final StoryboardRepository storyboardRepository;
@@ -20,8 +22,8 @@ class StoryboardController extends GetxController {
       if (storyboard == null) {
         throw FormatException('Null value passed in');
       }
-      storyboard.authorId = '1';
-      storyboard.songId = songController.editingSong.value.id;
+      storyboard.creatorId = authController.user.value!.uid;
+      storyboard.songId = songController.editingSong.value!.id;
       await storyboardRepository.create(storyboard);
       retrieve();
     } catch (e) {
@@ -32,8 +34,9 @@ class StoryboardController extends GetxController {
   Future<void> retrieve() async {
     try {
       print('Retrieving storyboards');
-      storyboardsForSong(await (storyboardRepository
-          .retrieveForSong(songController.editingSong.value.id)));
+      storyboardsForSong(await (storyboardRepository.retrieveForSong(
+          authController.user.value!.uid,
+          songController.editingSong.value!.id)));
     } catch (e) {
       print(e);
     }

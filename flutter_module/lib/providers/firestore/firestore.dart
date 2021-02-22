@@ -1,11 +1,6 @@
 import 'dart:async';
-import 'dart:convert' show utf8;
-import 'dart:typed_data' show Uint8List;
-import 'dart:io' show Platform;
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import '../../models/attachment.dart';
 import '../../models/character.dart';

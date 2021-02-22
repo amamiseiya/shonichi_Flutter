@@ -1,6 +1,10 @@
-part of 'sqlite.dart';
+import 'dart:convert' show utf8;
+import 'dart:io';
 
-class AttachmentSQLiteProvider extends SQLiteProvider {
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+
+class AttachmentLocalFileProvider {
   Future<void> writeAsString(
       String text, String folder, String fileName) async {
     final Directory appDocDir = await getApplicationDocumentsDirectory();

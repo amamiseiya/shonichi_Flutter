@@ -20,9 +20,11 @@ class FormationFirestoreProvider extends FirestoreProvider {
     return formation;
   }
 
-  Future<List<SNFormation>> retrieveForSong(String id) async {
+  Future<List<SNFormation>> retrieveForSong(
+      String creatorId, String songId) async {
     final snapshot = await _formationRef
-        .where('songId', isEqualTo: id)
+        .where('creatorId', isEqualTo: creatorId)
+        .where('songId', isEqualTo: songId)
         .orderBy('name', descending: false)
         .get();
     print('Provider: ' +

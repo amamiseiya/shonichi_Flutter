@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../controllers/auth.dart';
+import '../pages/login.dart';
+import '../pages/user_information.dart';
 import '../pages/home_page.dart';
 import '../pages/storyboard.dart';
 import '../pages/song_information.dart';
@@ -9,12 +12,18 @@ import '../pages/data_migration.dart';
 import '../pages/formation.dart';
 
 class MyDrawer extends StatelessWidget {
+  final AuthController authController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
         child: ListView(
       children: <Widget>[
-        UserAccountsDrawerHeader(accountName: Text('天海星夜'), accountEmail: null),
+        UserAccountsDrawerHeader(
+            accountName: Text(authController.user.value?.displayName ?? ''),
+            accountEmail:
+                Obx(() => Text(authController.user.value?.email ?? '')),
+            onDetailsPressed: (() => Get.to(() => UserInformationPage()))),
         ListTile(
           title: Text('Home Page'.tr),
           onTap: () {
@@ -49,6 +58,12 @@ class MyDrawer extends StatelessWidget {
           title: Text('Data Migration'.tr),
           onTap: () {
             Get.to(() => DataMigrationPage());
+          },
+        ),
+        ListTile(
+          title: Text('Exit'.tr),
+          onTap: () {
+            authController.signOut().then((_) => Get.off(() => LoginPage()));
           },
         ),
       ],

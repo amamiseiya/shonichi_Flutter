@@ -29,8 +29,9 @@ class ProjectFirestoreProvider extends FirestoreProvider {
     return project;
   }
 
-  Future<List<SNProject>> retrieveLatestN(int count) async {
+  Future<List<SNProject>> retrieveLatestN(String creatorId, int count) async {
     final snapshot = await _projectRef
+        .where('creatorId', isEqualTo: creatorId)
         .orderBy('createdTime', descending: true)
         .limit(count)
         .get();

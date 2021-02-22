@@ -9,17 +9,20 @@ import '../models/attachment.dart';
 import '../models/project.dart';
 import '../models/song.dart';
 import '../providers/firestore/firestore.dart';
+import '../providers/firebase/attachment.dart';
 
 class AttachmentRepository {
-  final provider = AttachmentFirestoreProvider();
+  final databaseProvider = AttachmentFirestoreProvider();
+  final storageProvider = AttachmentFirebaseProvider();
 
   // * -------- Simple Functions --------
-  Future<String> getImageURI(String id) async => await provider.getImageURI(id);
+  Future<String> getImageURI(String id) async =>
+      await storageProvider.getImageURI(id);
 
   // * -------- Attachment For Song CRUD --------
 
   Future<List<SNAttachment>> retrieveAttachmentsForSong(String songId) async =>
-      await provider.retrieveAttachmentsForSong(songId);
+      await databaseProvider.retrieveAttachmentsForSong(songId);
 
   // * -------- Asset Loading --------
 
@@ -32,16 +35,16 @@ class AttachmentRepository {
 
   Future<String> importMarkdown(SNProject project) async {
     String fileName = project.id + '.md';
-    return await provider.readAsString('markdowns', fileName);
+    return await storageProvider.readAsString('markdowns', fileName);
   }
 
   Future<void> exportMarkdown(SNProject project, String text) async {
     String fileName = project.id + '.md';
-    await provider.writeAsString(text, 'markdowns', fileName);
+    await storageProvider.writeAsString(text, 'markdowns', fileName);
   }
 
   Future<void> exportJson(String text) async {
     final String fileName = 'export.json';
-    await provider.writeAsString(text, 'jsons', fileName);
+    await storageProvider.writeAsString(text, 'jsons', fileName);
   }
 }

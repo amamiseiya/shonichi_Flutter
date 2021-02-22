@@ -92,7 +92,7 @@ class SNLyric {
 class SNStoryboard {
   String id
   String name
-  String authorId
+  String creatorId
   String songId
   fromMap()
   toMap()
@@ -121,7 +121,7 @@ class SNShot {
 class SNFormation {
   String id
   String name
-  String authorId
+  String creatorId
   String songId
 
   fromMap()
