@@ -27,8 +27,8 @@ class AttachmentRepository {
   // * -------- Asset Loading --------
 
   // TODO:
-  Future<String> importFromAssets(String path) async {
-    return await rootBundle.loadString('assets/' + path);
+  Future<String> importFromAssets(String ref) async {
+    return await rootBundle.loadString(p.join('assets', ref));
   }
 
   // * -------- Data Migration --------
@@ -43,8 +43,7 @@ class AttachmentRepository {
     await storageProvider.writeAsString(text, 'markdowns', fileName);
   }
 
-  Future<void> exportJson(String text) async {
-    final String fileName = 'export.json';
+  Future<void> exportJson(String text, String fileName) async {
     await storageProvider.writeAsString(text, 'jsons', fileName);
   }
 }

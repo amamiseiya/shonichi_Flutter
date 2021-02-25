@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shonichi_flutter_module/pages/login.dart';
 
 import '../controllers/auth.dart';
+import '../pages/login.dart';
 import '../widgets/drawer.dart';
 import '../widgets/loading.dart';
 

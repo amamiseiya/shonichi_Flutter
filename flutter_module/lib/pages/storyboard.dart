@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -46,7 +47,7 @@ class StoryboardPage extends StatelessWidget {
                   if (storyboardController.storyboardsForSong.value == null) {
                     return LoadingAnimationLinear();
                   }
-                  if (storyboardController.storyboardsForSong.value.isEmpty) {
+                  if (storyboardController.storyboardsForSong.value!.isEmpty) {
                     // return _EmptyStoryboardPage();
                   }
                   return Column(children: [
@@ -55,7 +56,7 @@ class StoryboardPage extends StatelessWidget {
                       if (shotController.shots.value == null) {
                         return LoadingAnimationLinear();
                       }
-                      if (shotController.shots.isEmpty) {
+                      if (shotController.shots.value!.isEmpty) {
                         _EmptyShotPage();
                       }
                       return Row(
@@ -105,28 +106,46 @@ class StoryboardChipSelector extends GetView<StoryboardController> {
   Widget build(BuildContext context) {
     return Container(
       height: 40,
-      child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: controller.storyboardsForSong.length + 1,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == controller.storyboardsForSong.length) {
-              return ActionChip(
-                label: Icon(Icons.add),
-                tooltip: '',
-                onPressed: () => Get.dialog(StoryboardUpsertDialog(null))
-                    .then((storyboard) => controller.submitCreate(storyboard)),
-              );
-            }
-            return Obx(() => ChoiceChip(
-                  label: Text(controller.storyboardsForSong[index].name),
-                  tooltip: '',
-                  selected: controller.editingStoryboard.value?.id ==
-                      controller.storyboardsForSong[index]!.id,
-                  selectedColor: Colors.orange.shade100,
-                  onSelected: (_) => controller
-                      .select(controller.storyboardsForSong[index].id),
-                ));
-          }),
+      child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+        Expanded(
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: controller.storyboardsForSong.value!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Obx(() => InputChip(
+                        label: Text(
+                            controller.storyboardsForSong.value![index].name),
+                        tooltip: '',
+                        selected: controller.editingStoryboard.value?.id ==
+                            controller.storyboardsForSong.value![index].id,
+                        selectedColor: Colors.orange.shade100,
+                        onSelected: (_) => controller.select(
+                            controller.storyboardsForSong.value![index].id),
+                      ));
+                })),
+        Flexible(
+            child: Row(children: [
+          ActionChip(
+            label: Icon(Icons.add),
+            tooltip: '',
+            onPressed: () => Get.dialog(_StoryboardUpsertDialog(null))
+                .then((storyboard) => controller.submitCreate(storyboard)),
+          ),
+          ActionChip(
+            label: Icon(Icons.edit),
+            tooltip: '',
+            onPressed: () => Get.dialog(
+                    _StoryboardUpsertDialog(controller.editingStoryboard.value))
+                .then((storyboard) => controller.submitUpdate(storyboard)),
+          ),
+          ActionChip(
+            label: Icon(Icons.delete),
+            tooltip: '',
+            onPressed: () =>
+                controller.delete(controller.editingStoryboard.value),
+          ),
+        ]))
+      ]),
     );
   }
 }
@@ -153,9 +172,11 @@ class _ShotDataTableState extends State<ShotDataTable> {
 
   void _sort(int index, bool ascending) {
     if (ascending) {
-      shotController.shots.sort((a, b) => a.startTime.compareTo(b.startTime));
+      shotController.shots.value!
+          .sort((a, b) => a.startTime.compareTo(b.startTime));
     } else {
-      shotController.shots.sort((a, b) => b.startTime.compareTo(a.startTime));
+      shotController.shots.value!
+          .sort((a, b) => b.startTime.compareTo(a.startTime));
     }
     _sortColumnIndex = index;
     _sortAscending = ascending;
@@ -192,9 +213,10 @@ class _ShotDataTableState extends State<ShotDataTable> {
                         scrollDirection: Axis.vertical,
                         shrinkWrap: false,
                         itemExtent: 50,
-                        itemCount: shotController.shots.length,
+                        itemCount: shotController.shots.value!.length,
                         itemBuilder: (BuildContext context, int index) =>
-                            _ShotItem(shotController.shots[index], index),
+                            _ShotItem(
+                                shotController.shots.value![index], index),
                       )))
             ])));
   }
@@ -260,10 +282,8 @@ class _ShotItem extends GetView<ShotController> {
             DropdownButton(
               value: shot.shotType,
               icon: Icon(Icons.arrow_downward),
-              underline: Container(
-                height: 2,
-                color: Colors.deepPurpleAccent,
-              ),
+              underline:
+                  Container(height: 2, color: Theme.of(context).accentColor),
               onChanged: (String? newValue) {
                 shot.shotType = newValue!;
                 controller.updateShot(shot);
@@ -271,7 +291,11 @@ class _ShotItem extends GetView<ShotController> {
               items: shotTypes
                   .map((shotTypeMap) => DropdownMenuItem<String>(
                         value: shotTypeMap['shotTypeValue'],
-                        child: Text(shotTypeMap['shotTypeLabel']!),
+                        child: Text(
+                          shotTypeMap['shotTypeLabel']!,
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
+                        ),
                       ))
                   .toList(),
             ),
@@ -294,8 +318,7 @@ class _ShotItem extends GetView<ShotController> {
             Text(shot.comment),
             CharacterSelector(
                 editingShot: shot,
-                updateShot: (shot) => controller.updateShot(shot),
-                editingSong: songController.editingSong.value)
+                updateShot: (shot) => controller.updateShot(shot))
           ]));
     });
   }
@@ -321,7 +344,7 @@ class ShotInspector extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Text('当前企划：'),
-                  Text(songController.editingSong.value.subordinateKikaku),
+                  Text(songController.editingSong.value!.subordinateKikaku),
                   Text('当前成员镜头数量：'),
                 ]);
           }),
@@ -518,7 +541,7 @@ class _ShotFilterPanel extends StatelessWidget {
         Divider(),
         Text('数据表格处理菜单'),
         ElevatedButton(
-            onPressed: () => lyricController.retrieveForSong(),
+            onPressed: () => lyricController.retrieveForEditingSong(),
             child: Text('刷新歌词')),
         Obx(() {
           assert(songController.editingSong.value != null);
@@ -529,11 +552,12 @@ class _ShotFilterPanel extends StatelessWidget {
               child: Slider(
                   value: (shotController.editingShotIndex.value != null)
                       ? shotController
-                              .shots[shotController.editingShotIndex.value!]
+                              .shots
+                              .value![shotController.editingShotIndex.value!]
                               .startTime
                               .inMilliseconds /
                           songController
-                              .editingSong.value.duration.inMilliseconds
+                              .editingSong.value!.duration.inMilliseconds
                       : 0,
                   min: 0.0,
                   max: 1.0,
@@ -550,14 +574,14 @@ class _ShotFilterPanel extends StatelessWidget {
   }
 }
 
-class StoryboardUpsertDialog extends GetView<StoryboardController> {
+class _StoryboardUpsertDialog extends GetView<StoryboardController> {
   // 在dialog最终pop时才给对象赋值，不确定这样的方式是否合适
   late SNStoryboard s;
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  StoryboardUpsertDialog(SNStoryboard? storyboard) {
+  _StoryboardUpsertDialog(SNStoryboard? storyboard) {
     s = storyboard ?? SNStoryboard.initialValue();
     _nameController.text = s.name;
     _descriptionController.text = s.description;
@@ -574,13 +598,13 @@ class StoryboardUpsertDialog extends GetView<StoryboardController> {
                   TextFormField(
                     controller: _nameController,
                     decoration:
-                        InputDecoration(hintText: 'Input storyboard name'),
+                        InputDecoration(labelText: 'Input storyboard name'),
                     onEditingComplete: () {},
                   ),
                   TextFormField(
                     controller: _descriptionController,
                     decoration: InputDecoration(
-                        hintText: 'Input storyboard description'),
+                        labelText: 'Input storyboard description'),
                     onEditingComplete: () {},
                   ),
                 ])),

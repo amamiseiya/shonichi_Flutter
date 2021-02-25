@@ -16,8 +16,8 @@ class ProjectController extends GetxController {
   final SongRepository songRepository;
   final AttachmentRepository attachmentRepository;
 
-  RxList<SNProject> projects = RxList<SNProject>(null);
-  Rx<SNProject> editingProject = Rx<SNProject>(null);
+  Rx<List<SNProject>?> projects = Rx<List<SNProject>?>(null);
+  Rx<SNProject?> editingProject = Rx<SNProject>(null);
 
   ProjectController(
       this.projectRepository, this.songRepository, this.attachmentRepository)
@@ -36,7 +36,7 @@ class ProjectController extends GetxController {
     }
   }
 
-  Future<void> submitCreate(SNProject project) async {
+  Future<void> submitCreate(SNProject? project) async {
     try {
       if (project != null) {
         project.creatorId = authController.user.value!.uid;
@@ -48,21 +48,23 @@ class ProjectController extends GetxController {
     }
   }
 
-  Future<void> submitUpdate(SNProject project) async {
+  Future<void> submitUpdate(SNProject? project) async {
     try {
       if (project != null) {
         await projectRepository.update(project);
+        retrieve();
       }
-      retrieve();
     } catch (e) {
       print(e);
     }
   }
 
-  Future<void> delete(SNProject project) async {
+  Future<void> delete(SNProject? project) async {
     try {
-      await projectRepository.delete(project.id);
-      retrieve();
+      if (project != null) {
+        await projectRepository.delete(project.id);
+        retrieve();
+      }
     } catch (e) {
       print(e);
     }
@@ -70,11 +72,10 @@ class ProjectController extends GetxController {
 
   Future<void> select(String id) async {
     try {
-      if (editingProject == Rx<SNProject>(null) ||
-          editingProject.value.id != id) {
+      if (editingProject.value == null || editingProject.value!.id != id) {
         editingProject(await projectRepository.retrieveById(id));
-        print('editingProject is ${editingProject.value.id}');
-      } else if (editingProject.value.id == id) {
+        print('editingProject is ${editingProject.value!.id}');
+      } else if (editingProject.value!.id == id) {
         editingProject.nil();
         print('editingProject is null');
       }

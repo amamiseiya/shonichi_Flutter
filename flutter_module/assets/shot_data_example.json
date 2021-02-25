@@ -23,7 +23,7 @@
     {
       "id": "sn_song_example_1",
       "name": "Brightest Melody",
-      "coverId": "sn_attachment_images_1.jpg",
+      "coverURI": "sn_attachment_images_1.jpg",
       "duration": 261000,
       "lyricOffset": 0,
       "subordinateKikaku": "ラブライブ！サンシャイン!!"
@@ -31,7 +31,7 @@
     {
       "id": "sn_song_example_2",
       "name": "Star Diamond",
-      "coverId": "sn_attachment_images_2.jpg",
+      "coverURI": "sn_attachment_images_2.jpg",
       "duration": 291000,
       "lyricOffset": -520,
       "subordinateKikaku": "少女☆歌劇 レヴュー・スタァライト"
@@ -969,7 +969,7 @@
       "name": "sn_storyboard_example_1",
       "description": "Default Storyboard for Brightest Melody",
       "createdTime": "2019-11-24 00:00:00.000",
-      "authorId": "1",
+      "creatorId": "1",
       "songId": "sn_song_example_1"
     },
     {
@@ -977,7 +977,7 @@
       "name": "sn_storyboard_example_2",
       "description": "Default Storyboard for Star Diamond",
       "createdTime": "2019-11-24 00:00:00.000",
-      "authorId": "1",
+      "creatorId": "1",
       "songId": "sn_song_example_2"
     }
   ],
@@ -992,7 +992,7 @@
       "shotMovement": "逆时针环绕",
       "shotAngle": "略仰",
       "text": "taiga!waiya!saiba!faiba!",
-      "image": "",
+      "imageURI": "",
       "comment": "No additional comment.",
       "tableId": "sn_storyboard_example_2",
       "characters": "愛城 華恋,神楽 ひかり,"
@@ -1007,10 +1007,18 @@
       "shotMovement": "前推",
       "shotAngle": "略俯",
       "text": "jyajya!",
-      "image": "",
+      "imageURI": "",
       "comment": "No additional comment.",
       "tableId": "sn_storyboard_example_2",
       "characters": "露崎 まひる,西條 クロディーヌ,"
+    }
+  ],
+  "sn_attachment": [
+    {
+      "id": "sn_attachment_video_2",
+      "name": "sn_attachment_video_2",
+      "uRI": "https://firebasestorage.googleapis.com/v0/b/odottemita-satsuei-flutter.appspot.com/o/videos%2Fstar_diamond_proxy.mp4?alt=media&token=04d0f8db-6c71-4c29-8ca8-023d96ae7ee6",
+      "songId": "sn_song_example_2"
     }
   ]
 }

@@ -6,6 +6,7 @@ class Messages extends Translations {
         'zh_CN': {
           'At: ': '时间： ',
           'All Song List': '所有歌曲列表',
+          'Information about Kikakus': '角色信息',
           'Create or Update Project': '创建或编辑项目',
           'Create or Update Song': '创建或编辑歌曲',
           'Created time': '创建日期',
@@ -27,12 +28,14 @@ class Messages extends Translations {
           'Storyboard': '分镜',
           'Submit': '完成',
           'Subordinates': '所属企划',
+          'User Information': '用户信息',
           'Welcome back!': '欢迎回来！',
           'With: ': '对象： ',
         },
         'ja_CN': {
           'At: ': '日時： ',
           'All Song List': '全ての曲',
+          'Information about Kikakus': 'キャラクターの情報',
           'Create or Update Project': 'プロジェクトを作成/編集',
           'Create or Update Song': '曲を作成/編集',
           'Created time': '作成日時',
@@ -54,6 +57,7 @@ class Messages extends Translations {
           'Storyboard': 'ストーリーボード',
           'Submit': '完了',
           'Subordinates': '所属の企画',
+          'User Information': 'ユーザーの情報',
           'Welcome back!': 'お帰りなさい♪',
           'With: ': '相手： ',
         }

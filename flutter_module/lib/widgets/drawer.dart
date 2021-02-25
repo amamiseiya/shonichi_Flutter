@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shonichi_flutter_module/pages/kikaku_information.dart';
 
 import '../controllers/auth.dart';
 import '../pages/login.dart';
@@ -27,37 +28,43 @@ class MyDrawer extends StatelessWidget {
         ListTile(
           title: Text('Home Page'.tr),
           onTap: () {
-            Get.to(() => HomePage());
+            Get.off(() => HomePage());
           },
         ),
         ListTile(
           title: Text('Storyboard'.tr),
           onTap: () {
-            Get.to(() => StoryboardPage());
+            Get.off(() => StoryboardPage());
           },
         ),
         ListTile(
           title: Text('Song Information'.tr),
           onTap: () {
-            Get.to(() => SongInformationPage());
+            Get.off(() => SongInformationPage());
           },
         ),
         ListTile(
           title: Text('Formation'.tr),
           onTap: () {
-            Get.to(() => FormationPage());
+            Get.off(() => FormationPage());
           },
         ),
         ListTile(
           title: Text('Song List'.tr),
           onTap: () {
-            Get.to(() => SongListPage());
+            Get.off(() => SongListPage());
+          },
+        ),
+        ListTile(
+          title: Text('Information about Kikakus'.tr),
+          onTap: () {
+            Get.off(() => KikakuInformationPage());
           },
         ),
         ListTile(
           title: Text('Data Migration'.tr),
           onTap: () {
-            Get.to(() => DataMigrationPage());
+            Get.off(() => DataMigrationPage());
           },
         ),
         ListTile(

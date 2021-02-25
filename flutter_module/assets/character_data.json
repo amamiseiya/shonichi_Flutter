@@ -1,0 +1,291 @@
+{
+  "(undefined)": [],
+  "ラブライブ！": [
+    {
+      "name": "星空 凛",
+      "nameAbbr": "凛",
+      "romaji": "Hoshizora Rin",
+      "memberColor": "0xFFFFFF00",
+      "officialOrder": 4,
+      "grade": "1年生",
+      "group": "lily white",
+      "teamName": "μ's",
+      "subordinateKikaku": "ラブライブ！"
+    },
+    {
+      "name": "西木野 真姫",
+      "nameAbbr": "姬",
+      "romaji": "Nishikino Maki",
+      "memberColor": "0xFFFF0000",
+      "officialOrder": 5,
+      "grade": "1年生",
+      "group": "BiBi",
+      "teamName": "μ's",
+      "subordinateKikaku": "ラブライブ！"
+    },
+    {
+      "name": "小泉 花陽",
+      "nameAbbr": "花",
+      "romaji": "Koizumi Hanayo",
+      "memberColor": "0xFF008000",
+      "officialOrder": 7,
+      "grade": "1年生",
+      "group": "Printemps",
+      "teamName": "μ's",
+      "subordinateKikaku": "ラブライブ！"
+    },
+    {
+      "name": "高坂 穂乃果",
+      "nameAbbr": "果",
+      "romaji": "Kosaka Honoka",
+      "memberColor": "0xFFFFA500",
+      "officialOrder": 0,
+      "grade": "2年生",
+      "group": "Printemps",
+      "teamName": "μ's",
+      "subordinateKikaku": "ラブライブ！"
+    },
+    {
+      "name": "南 ことり",
+      "nameAbbr": "鸟",
+      "romaji": "Minami Kotori",
+      "memberColor": "0xFF808080",
+      "officialOrder": 2,
+      "grade": "2年生",
+      "group": "Printemps",
+      "teamName": "μ's",
+      "subordinateKikaku": "ラブライブ！"
+    },
+    {
+      "name": "園田 海未",
+      "nameAbbr": "海",
+      "romaji": "Sonoda Umi",
+      "memberColor": "0xFF0000FF",
+      "officialOrder": 3,
+      "grade": "2年生",
+      "group": "lily white",
+      "teamName": "μ's",
+      "subordinateKikaku": "ラブライブ！"
+    },
+    {
+      "name": "絢瀬 絵里",
+      "nameAbbr": "绘",
+      "romaji": "Ayase Eli",
+      "memberColor": "0xFF00FFFF",
+      "officialOrder": 1,
+      "grade": "3年生",
+      "group": "BiBi",
+      "teamName": "μ's",
+      "subordinateKikaku": "ラブライブ！"
+    },
+    {
+      "name": "東條 希",
+      "nameAbbr": "希",
+      "romaji": "Tojo Nozomi",
+      "memberColor": "0xFF800080",
+      "officialOrder": 6,
+      "grade": "3年生",
+      "group": "lily white",
+      "teamName": "μ's",
+      "subordinateKikaku": "ラブライブ！"
+    },
+    {
+      "name": "矢澤 にこ",
+      "nameAbbr": "妮",
+      "romaji": "Yazawa Nico",
+      "memberColor": "0xFFFFC0CB",
+      "officialOrder": 8,
+      "grade": "3年生",
+      "group": "BiBi",
+      "teamName": "μ's",
+      "subordinateKikaku": "ラブライブ！"
+    }
+  ],
+  "ラブライブ！サンシャイン!!": [
+    {
+      "name": "津島 善子",
+      "nameAbbr": "善",
+      "romaji": "Tsushima Yoshiko",
+      "memberColor": "0xFF7A7A7A",
+      "officialOrder": 5,
+      "grade": "1年生",
+      "group": "Guilty Kiss",
+      "teamName": "Aqours",
+      "subordinateKikaku": "ラブライブ！サンシャイン!!"
+    },
+    {
+      "name": "国木田 花丸",
+      "nameAbbr": "丸",
+      "romaji": "Kunikida Hanamaru",
+      "memberColor": "0xFFDBB623",
+      "officialOrder": 6,
+      "grade": "1年生",
+      "group": "AZALEA",
+      "teamName": "Aqours",
+      "subordinateKikaku": "ラブライブ！サンシャイン!!"
+    },
+    {
+      "name": "黒澤 ルビィ",
+      "nameAbbr": "露",
+      "romaji": "Kurosawa Ruby",
+      "memberColor": "0xFFFF5599",
+      "officialOrder": 8,
+      "grade": "1年生",
+      "group": "CYaRon!",
+      "teamName": "Aqours",
+      "subordinateKikaku": "ラブライブ！サンシャイン!!"
+    },
+    {
+      "name": "高海 千歌",
+      "nameAbbr": "千",
+      "romaji": "Takami Chika",
+      "memberColor": "0xFFF08300",
+      "officialOrder": 0,
+      "grade": "2年生",
+      "group": "CYaRon!",
+      "teamName": "Aqours",
+      "subordinateKikaku": "ラブライブ！サンシャイン!!"
+    },
+    {
+      "name": "桜内 梨子",
+      "nameAbbr": "梨",
+      "romaji": "Sakurauchi Riko",
+      "memberColor": "0xFFFF9999",
+      "officialOrder": 1,
+      "grade": "2年生",
+      "group": "Guilty Kiss",
+      "teamName": "Aqours",
+      "subordinateKikaku": "ラブライブ！サンシャイン!!"
+    },
+    {
+      "name": "渡辺 曜",
+      "nameAbbr": "曜",
+      "romaji": "Watanabe You",
+      "memberColor": "0xFF68D1FF",
+      "officialOrder": 4,
+      "grade": "2年生",
+      "group": "CYaRon!",
+      "teamName": "Aqours",
+      "subordinateKikaku": "ラブライブ！サンシャイン!!"
+    },
+    {
+      "name": "松浦 果南",
+      "nameAbbr": "南",
+      "romaji": "Matsuura Kanan",
+      "memberColor": "0xFF229977",
+      "officialOrder": 2,
+      "grade": "3年生",
+      "group": "AZALEA",
+      "teamName": "Aqours",
+      "subordinateKikaku": "ラブライブ！サンシャイン!!"
+    },
+    {
+      "name": "黒澤 ダイヤ",
+      "nameAbbr": "黛",
+      "romaji": "Kurosawa Dia",
+      "memberColor": "0xFFFF4A4A",
+      "officialOrder": 3,
+      "grade": "3年生",
+      "group": "AZALEA",
+      "teamName": "Aqours",
+      "subordinateKikaku": "ラブライブ！サンシャイン!!"
+    },
+    {
+      "name": "小原 鞠莉",
+      "nameAbbr": "鞠",
+      "romaji": "Ohara Mari",
+      "memberColor": "0xFFD47AFF",
+      "officialOrder": 7,
+      "grade": "3年生",
+      "group": "Guilty Kiss",
+      "teamName": "Aqours",
+      "subordinateKikaku": "ラブライブ！サンシャイン!!"
+    }
+  ],
+  "ラブライブ！虹ヶ咲学園スクールアイドル同好会": [],
+  "少女☆歌劇 レヴュー・スタァライト": [
+    {
+      "name": "愛城 華恋",
+      "nameAbbr": "恋",
+      "memberColor": "0xFFFB5458",
+      "grade": null,
+      "group": null,
+      "teamName": "スタァライト九九組",
+      "subordinateKikaku": "少女☆歌劇 レヴュー・スタァライト"
+    },
+    {
+      "name": "神楽 ひかり",
+      "nameAbbr": "光",
+      "memberColor": "0xFF6292E9",
+      "grade": null,
+      "group": null,
+      "teamName": "スタァライト九九組",
+      "subordinateKikaku": "少女☆歌劇 レヴュー・スタァライト"
+    },
+    {
+      "name": "天堂 真矢",
+      "nameAbbr": "真",
+      "memberColor": "0xFFCBC6CC",
+      "grade": null,
+      "group": null,
+      "teamName": "スタァライト九九組",
+      "subordinateKikaku": "少女☆歌劇 レヴュー・スタァライト"
+    },
+    {
+      "name": "星見 純那",
+      "nameAbbr": "纯",
+      "memberColor": "0xFF95CAEE",
+      "grade": null,
+      "group": null,
+      "teamName": "スタァライト九九組",
+      "subordinateKikaku": "少女☆歌劇 レヴュー・スタァライト"
+    },
+    {
+      "name": "露崎 まひる",
+      "nameAbbr": "露",
+      "memberColor": "0xFF61BF99",
+      "grade": null,
+      "group": null,
+      "teamName": "スタァライト九九組",
+      "subordinateKikaku": "少女☆歌劇 レヴュー・スタァライト"
+    },
+    {
+      "name": "大場 なな",
+      "nameAbbr": "蕉",
+      "memberColor": "0xFFFDD162",
+      "grade": null,
+      "group": null,
+      "teamName": "スタァライト九九組",
+      "subordinateKikaku": "少女☆歌劇 レヴュー・スタァライト"
+    },
+    {
+      "name": "西條 クロディーヌ",
+      "nameAbbr": "克",
+      "memberColor": "0xFFFE9952",
+      "grade": null,
+      "group": null,
+      "teamName": "スタァライト九九組",
+      "subordinateKikaku": "少女☆歌劇 レヴュー・スタァライト"
+    },
+    {
+      "name": "石動 双葉",
+      "nameAbbr": "叶",
+      "memberColor": "0xFF8C67AA",
+      "grade": null,
+      "group": null,
+      "teamName": "スタァライト九九組",
+      "subordinateKikaku": "少女☆歌劇 レヴュー・スタァライト"
+    },
+    {
+      "name": "花柳 香子",
+      "nameAbbr": "花",
+      "memberColor": "0xFFE08696",
+      "grade": null,
+      "group": null,
+      "teamName": "スタァライト九九組",
+      "subordinateKikaku": "少女☆歌劇 レヴュー・スタァライト"
+    }
+  ],
+  "22/7": [],
+  "AKB48": []
+}

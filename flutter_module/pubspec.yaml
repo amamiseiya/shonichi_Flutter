@@ -79,8 +79,8 @@ flutter:
   # To add Flutter specific assets to your application, add an assets section,
   # like this:
   assets:
-    - example.json
-  #   - images/a_dot_ham.jpeg
+    - shot_data_example.json
+    - character_data.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'widgets/loading.dart';
 import 'pages/login.dart';
 import 'controllers/auth.dart';
+import 'controllers/character.dart';
 import 'controllers/project.dart';
 import 'controllers/song.dart';
 import 'controllers/lyric.dart';
@@ -27,6 +28,7 @@ import 'repositories/movement.dart';
 import 'repositories/formation.dart';
 import 'repositories/attachment.dart';
 import 'utils/localization.dart';
+import 'utils/theme.dart';
 
 //-------------------------main()-----------------------------
 //------------------------------------------------------------
@@ -36,6 +38,7 @@ Future<void> main() async {
   runApp(GetMaterialApp(
     title: 'shonichi',
     home: LoginPage(),
+    theme: NananijiTheme.theme,
     translations: Messages(),
     locale: window.locale,
     fallbackLocale: Locale('en', 'US'),
@@ -59,6 +62,7 @@ Future<void> initServices() async {
   Get.put(ProjectController(
       projectRepository, songRepository, attachmentRepository));
   Get.put(SongController(songRepository, attachmentRepository));
+  Get.put(CharacterController(attachmentRepository));
   Get.put(LyricController(lyricRepository, attachmentRepository));
   Get.put(StoryboardController(storyboardRepository));
   Get.put(ShotController(

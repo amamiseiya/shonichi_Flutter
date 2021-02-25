@@ -4,6 +4,8 @@ import 'dart:math';
 import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart' as rx;
 
+import '../controllers/character.dart';
+import '../models/storyboard.dart';
 import '../models/shot.dart';
 import '../models/lyric.dart';
 import '../models/character.dart';
@@ -18,6 +20,7 @@ import '../repositories/attachment.dart';
 
 class ShotController extends GetxController {
   // Controller
+  final CharacterController characterController = Get.find();
   final ProjectController projectController = Get.find();
   final SongController songController = Get.find();
   final LyricController lyricController = Get.find();
@@ -30,12 +33,14 @@ class ShotController extends GetxController {
   final AttachmentRepository attachmentRepository;
 
   // 生成的Stream
-  RxList<Map<String, dynamic>> coverageStream = RxList<Map<String, dynamic>>();
+  late Worker worker;
+  RxList<Map<String, dynamic>> coverageStream =
+      RxList<Map<String, dynamic>>(null);
   Stream<Map<String, int>> statisticsStream = Stream.empty();
 
   // 控制的变量
-  RxList<SNShot> shots = RxList<SNShot>();
-  RxList<SNShot> selectedShots = RxList<SNShot>();
+  Rx<List<SNShot>?> shots = Rx<List<SNShot>>(null);
+  RxList<SNShot> selectedShots = RxList<SNShot>(List.empty());
   Rx<int?> editingShotIndex = Rx<int>(null);
 
   ShotController(this.songRepository, this.lyricRepository, this.shotRepository,
@@ -44,54 +49,73 @@ class ShotController extends GetxController {
         assert(lyricRepository != null),
         assert(shotRepository != null),
         assert(attachmentRepository != null) {
-    storyboardController.editingStoryboard.listen((newStoryboard) async {
-      if (newStoryboard != null) {
-        await retrieveForTable();
-      }
-      print(
-          '${shots.length} shot(s) retrieved -- listening to editingStoryboard');
-    });
-
     coverageStream.bindStream(
         rx.Rx.combineLatest2(shots.stream, lyricController.lyrics.stream,
-            (List<SNShot> shots, List<SNLyric> lyrics) {
-      return List.generate(lyrics.length, (i) {
-        int count = 0;
-        for (SNShot shot in shots) {
-          if (shot.startTime == lyrics[i].startTime) {
-            count++;
+            (List<SNShot>? shots, List<SNLyric>? lyrics) {
+      if (shots == null || lyrics == null) {
+        return List.empty();
+      } else if (shots != null && lyrics != null) {
+        return List.generate(lyrics.length, (i) {
+          int count = 0;
+          for (SNShot shot in shots) {
+            if (shot.startTime == lyrics[i].startTime) {
+              count++;
+            }
           }
-        }
-        return {
-          'lyricTime': lyrics[i].startTime.inMilliseconds,
-          'lyricText': lyrics[i].text,
-          'coverageCount': count
-        };
-      });
+          return {
+            'lyricTime': lyrics[i].startTime.inMilliseconds,
+            'lyricText': lyrics[i].text,
+            'coverageCount': count
+          };
+        });
+      } else {
+        throw FormatException();
+      }
     }));
 
-    statisticsStream = shots.stream.asyncMap((List<SNShot> shots) {
-      Map<String, int> characterCountMap = Map.fromIterable(
-          SNCharacter.membersSortedByGrade(
-              songController.editingSong.value.subordinateKikaku),
-          key: (character) => character.name,
-          value: (_) => 0);
-      for (SNShot shot in shots) {
-        for (SNCharacter character in shot.characters) {
-          // ! 野蛮
-          characterCountMap[character.name] =
-              characterCountMap[character.name]! + 1;
+    statisticsStream = shots.stream.asyncMap((List<SNShot>? shots) {
+      if (shots == null) {
+        return Map();
+      } else if (shots != null) {
+        Map<String, int> characterCountMap = Map.fromIterable(
+            characterController.editingCharacters.value!,
+            key: (character) => character?.name,
+            value: (_) => 0);
+        for (SNShot shot in shots) {
+          for (SNCharacter character in shot.characters) {
+            // ! 野蛮
+            if (characterCountMap[character.name] != null) {
+              characterCountMap[character.name] =
+                  characterCountMap[character.name]! + 1;
+            }
+          }
         }
+        return characterCountMap;
+      } else {
+        throw FormatException();
       }
-      return characterCountMap;
     });
   }
 
-  Future<void> retrieveForTable() async {
+  void onInit() {
+    super.onInit();
+    worker = ever(storyboardController.editingStoryboard,
+        (SNStoryboard? newStoryboard) async {
+      await retrieveForEditingStoryboard();
+      print(
+          '${shots.value?.length} shot(s) retrieved -- listening to editingStoryboard');
+    });
+  }
+
+  Future<void> retrieveForEditingStoryboard() async {
     try {
-      print('Retrieving shots');
-      shots(await shotRepository
-          .retrieveForTable(storyboardController.editingStoryboard.value!.id));
+      print('Retrieving shots for editingStoryboard');
+      if (storyboardController.editingStoryboard.value == null) {
+        shots.nil();
+      } else if (storyboardController.editingStoryboard.value != null) {
+        shots(await shotRepository.retrieveForTable(
+            storyboardController.editingStoryboard.value!.id));
+      }
     } catch (e) {
       print(e);
     }
@@ -100,7 +124,7 @@ class ShotController extends GetxController {
   Future<void> updateShot(SNShot shot) async {
     try {
       await shotRepository.update(shot);
-      await retrieveForTable();
+      await retrieveForEditingStoryboard();
     } catch (e) {
       print(e);
     }
@@ -110,7 +134,7 @@ class ShotController extends GetxController {
     try {
       await shotRepository.create(SNShot.initialValue(
           storyboardController.editingStoryboard.value!.id));
-      await retrieveForTable();
+      await retrieveForEditingStoryboard();
     } catch (e) {
       print(e);
     }
@@ -119,7 +143,7 @@ class ShotController extends GetxController {
   Future<void> delete(SNShot shot) async {
     try {
       await shotRepository.delete(shot.id);
-      await retrieveForTable();
+      await retrieveForEditingStoryboard();
     } catch (e) {
       print(e);
     }
@@ -129,52 +153,57 @@ class ShotController extends GetxController {
     try {
       await shotRepository
           .deleteMultiple(List.generate(shots.length, (i) => shots[i].id));
-      await retrieveForTable();
+      await retrieveForEditingStoryboard();
     } catch (e) {
       print(e);
     }
   }
 
   int? selectShot(double value) {
-    final ms = value * songController.editingSong.value.duration.inMilliseconds;
-    if (shots.length == 1) {
-      return editingShotIndex(0);
-    } else if (shots.first.startTime.inMilliseconds > ms) {
-      return editingShotIndex(0);
-    } else if (shots.last.startTime.inMilliseconds < ms) {
-      return editingShotIndex(shots.length - 1);
-    } else if (shots.length == 2) {
-      return ms - shots[0].startTime.inMilliseconds >
-              shots[1].startTime.inMilliseconds - ms
-          ? editingShotIndex(1)
-          : editingShotIndex(0);
-    }
-    int left = 0;
-    int right = shots.length - 1;
-    int mid = 0;
-    while (left <= right) {
-      mid = (left + right) ~/ 2;
-      if (shots[mid].startTime.inMilliseconds < ms) {
-        left = mid + 1;
-      } else if (shots[mid].startTime.inMilliseconds > ms) {
-        right = mid - 1;
-      } else {
-        break;
+    if (shots.value != null) {
+      final ms =
+          value * songController.editingSong.value!.duration.inMilliseconds;
+      if (shots.value!.length == 1) {
+        return editingShotIndex(0);
+      } else if (shots.value!.first.startTime.inMilliseconds > ms) {
+        return editingShotIndex(0);
+      } else if (shots.value!.last.startTime.inMilliseconds < ms) {
+        return editingShotIndex(shots.value!.length - 1);
+      } else if (shots.value!.length == 2) {
+        return ms - shots.value![0].startTime.inMilliseconds >
+                shots.value![1].startTime.inMilliseconds - ms
+            ? editingShotIndex(1)
+            : editingShotIndex(0);
       }
-    }
-    if (left <= right) {
-      return editingShotIndex(mid);
-    }
-    if (shots[mid].startTime.inMilliseconds < ms) {
-      return ms - shots[mid].startTime.inMilliseconds >
-              shots[mid + 1].startTime.inMilliseconds - ms
-          ? editingShotIndex(mid + 1)
-          : editingShotIndex(mid);
+      int left = 0;
+      int right = shots.value!.length - 1;
+      int mid = 0;
+      while (left <= right) {
+        mid = (left + right) ~/ 2;
+        if (shots.value![mid].startTime.inMilliseconds < ms) {
+          left = mid + 1;
+        } else if (shots.value![mid].startTime.inMilliseconds > ms) {
+          right = mid - 1;
+        } else {
+          break;
+        }
+      }
+      if (left <= right) {
+        return editingShotIndex(mid);
+      }
+      if (shots.value![mid].startTime.inMilliseconds < ms) {
+        return ms - shots.value![mid].startTime.inMilliseconds >
+                shots.value![mid + 1].startTime.inMilliseconds - ms
+            ? editingShotIndex(mid + 1)
+            : editingShotIndex(mid);
+      } else {
+        return shots.value![mid].startTime.inMilliseconds - ms >
+                ms - shots.value![mid - 1].startTime.inMilliseconds
+            ? editingShotIndex(mid - 1)
+            : editingShotIndex(mid);
+      }
     } else {
-      return shots[mid].startTime.inMilliseconds - ms >
-              ms - shots[mid - 1].startTime.inMilliseconds
-          ? editingShotIndex(mid - 1)
-          : editingShotIndex(mid);
+      return 0;
     }
   }
 }

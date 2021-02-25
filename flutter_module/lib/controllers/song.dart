@@ -13,37 +13,46 @@ class SongController extends GetxController {
 
   final SongRepository songRepository;
   final AttachmentRepository attachmentRepository;
+  late Workers workers;
 
-  RxList<SNSong> songs = RxList<SNSong>(null);
-  Rx<SNSong> editingSong = Rx<SNSong>(null);
+  Rx<List<SNSong>?> songs = Rx<List<SNSong>?>(null);
+  Rx<SNSong?> editingSong = Rx<SNSong>(null);
   Rx<String?> firstCoverURI = Rx<String>(null);
   Rx<String?> videoURI = Rx<String>(
       'https://assets.mixkit.co/videos/preview/mixkit-landscape-from-the-top-of-a-cloudy-mountain-range-39703-large.mp4');
 
   SongController(this.songRepository, this.attachmentRepository)
       : assert(songRepository != null),
-        assert(attachmentRepository != null) {
-    projectController.projects.listen((projects) async {
-      if (projects.isNotEmpty) {
-        final SNSong firstSong =
-            await songRepository.retrieveById(projects[0].songId!);
-        firstCoverURI(
-            await attachmentRepository.getImageURI(firstSong.coverURI));
-      } else {
-        firstCoverURI.nil();
-      }
-    });
+        assert(attachmentRepository != null);
 
-    projectController.editingProject.listen((newProject) async {
-      if (newProject.songId == null) {
-        print('editingSong changed to null -- listening to editingProject');
-      } else {
-        editingSong.value =
-            await songRepository.retrieveById(newProject.songId!);
-        print(
-            'editingSong changed to ${editingSong.value.id} -- listening to editingProject');
-      }
-    });
+  void onInit() {
+    super.onInit();
+    workers = Workers([
+      ever(projectController.projects, (List<SNProject>? projects) async {
+        if (projects == null || projects.isEmpty) {
+          firstCoverURI.nil();
+        } else if (projects.isNotEmpty) {
+          final SNSong firstSong =
+              await songRepository.retrieveById(projects[0].songId!);
+          firstCoverURI(
+              await attachmentRepository.getImageURI(firstSong.coverURI));
+        } else {
+          throw FormatException();
+        }
+      }),
+      ever(projectController.editingProject, (SNProject? newProject) async {
+        if (newProject == null) {
+          editingSong.nil();
+          print('editingSong changed to null -- listening to editingProject');
+        } else if (newProject != null) {
+          await select(newProject.songId!);
+          print(
+              'editingSong changed to ${editingSong.value!.id} -- listening to editingProject');
+        } else {
+          throw FormatException();
+        }
+      })
+    ]);
   }
 
   Future<void> retrieveSongVideo() async {
@@ -57,13 +66,13 @@ class SongController extends GetxController {
       if (song != null) {
         await songRepository.create(song);
       }
-      retrieve();
+      retrieveAll();
     } catch (e) {
       print(e);
     }
   }
 
-  Future<void> retrieve() async {
+  Future<void> retrieveAll() async {
     try {
       print('Retrieving songs');
       songs(await songRepository.retrieveAll());
@@ -77,7 +86,7 @@ class SongController extends GetxController {
       if (song != null) {
         await songRepository.update(song);
       }
-      retrieve();
+      retrieveAll();
     } catch (e) {
       print(e);
     }
@@ -86,7 +95,7 @@ class SongController extends GetxController {
   Future<void> delete(SNSong song) async {
     try {
       await songRepository.delete(song.id);
-      retrieve();
+      retrieveAll();
     } catch (e) {
       print(e);
     }
@@ -96,7 +105,16 @@ class SongController extends GetxController {
     try {
       await songRepository
           .deleteMultiple(List.generate(songs.length, (i) => songs[i].id));
-      retrieve();
+      retrieveAll();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> select(String id) async {
+    try {
+      editingSong(await songRepository.retrieveById(id));
+      print('editingSong is ${editingSong.value!.id}');
     } catch (e) {
       print(e);
     }

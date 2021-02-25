@@ -5,10 +5,12 @@ import 'package:path/path.dart';
 import '../widgets/drawer.dart';
 import '../widgets/loading.dart';
 import '../widgets/error.dart';
+import '../controllers/character.dart';
 import '../controllers/song.dart';
 import '../models/kikaku.dart';
 import '../models/song.dart';
 import '../utils/data_convert.dart';
+import '../utils/theme.dart';
 
 class SongListPage extends GetView<SongController> {
   @override
@@ -17,12 +19,12 @@ class SongListPage extends GetView<SongController> {
         appBar: AppBar(title: Text('All Song List'.tr)),
         drawer: MyDrawer(),
         body: GetX(
-            initState: (_) => controller.retrieve(),
+            initState: (_) => controller.retrieveAll(),
             builder: (_) {
               if (controller.songs.value == null) {
                 return LoadingAnimationLinear();
               }
-              if (controller.songs.value.isEmpty) {
+              if (controller.songs.value!.isEmpty) {
                 return _EmptyPage();
               }
               return Row(
@@ -62,9 +64,9 @@ class _SongDataTableState extends State<SongDataTable> {
 
   void _sort(int index, bool ascending) {
     if (ascending) {
-      songController.songs.sort((a, b) => a.name.compareTo(b.name));
+      songController.songs.value!.sort((a, b) => a.name.compareTo(b.name));
     } else {
-      songController.songs.sort((a, b) => b.name.compareTo(a.name));
+      songController.songs.value!.sort((a, b) => b.name.compareTo(a.name));
     }
     _sortColumnIndex = index;
     _sortAscending = ascending;
@@ -90,7 +92,7 @@ class _SongDataTableState extends State<SongDataTable> {
             ),
             DataColumn(label: Text('Subordinates'.tr)),
           ],
-          rows: songController.songs
+          rows: songController.songs.value!
               .map((song) => DataRow(cells: [
                     DataCell(Text(song.name), onTap: () {
                       print('Pressed from DataCell');
@@ -115,16 +117,17 @@ class _EmptyPage extends StatelessWidget {
 class SongUpsertDialog extends StatelessWidget {
   late SNSong s;
   SongController songController = Get.find();
+  CharacterController characterController = Get.find();
 
   TextEditingController _nameController = TextEditingController();
-  TextEditingController _coverIdController = TextEditingController();
+  TextEditingController _coverURIController = TextEditingController();
   TextEditingController _durationController = TextEditingController();
   TextEditingController _lyricOffsetController = TextEditingController();
 
   SongUpsertDialog(SNSong? song) {
     s = song ?? SNSong.initialValue();
     _nameController.text = s.name;
-    _coverIdController.text = s.coverURI;
+    _coverURIController.text = s.coverURI;
     _durationController.text = s.duration.inMilliseconds.toString();
     _lyricOffsetController.text = s.lyricOffset.toString();
   }
@@ -134,74 +137,84 @@ class SongUpsertDialog extends StatelessWidget {
         children: <Widget>[
           Padding(
               padding: EdgeInsets.all(10.0),
-              child: Column(children: [
-                Form(
-                    child: Column(children: [
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: InputDecoration(hintText: 'Song name'.tr),
-                    onEditingComplete: () {},
-                  ),
-                  DropdownButton(
-                    value: s.subordinateKikaku,
-                    icon: Icon(Icons.arrow_downward),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.deepPurpleAccent,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Form(
+                        child: Column(children: [
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: InputDecoration(labelText: 'Song name'.tr),
+                        onEditingComplete: () {},
+                      ),
+                      DropdownButton(
+                        value: s.subordinateKikaku,
+                        icon: Icon(Icons.arrow_downward),
+                        isExpanded: true,
+                        underline: Container(
+                          height: 2,
+                          color: Theme.of(context).accentColor,
+                        ),
+                        onChanged: (String? value) {
+                          (context as Element).markNeedsBuild(); // 妙啊，实在是妙
+                          s.subordinateKikaku = value!;
+                        },
+                        items: [
+                              DropdownMenuItem<String>(
+                                value: '',
+                                child: Text('(undefined)'.tr),
+                              )
+                            ] +
+                            characterController.kikakus
+                                .map<DropdownMenuItem<String>>(
+                                    (SNKikaku kikaku) =>
+                                        DropdownMenuItem<String>(
+                                          value: kikaku.name,
+                                          child: Text(
+                                            kikaku.name,
+                                            overflow: TextOverflow.fade,
+                                            softWrap: false,
+                                          ),
+                                        ))
+                                .toList(),
+                      ),
+                      TextFormField(
+                        controller: _coverURIController,
+                        decoration: InputDecoration(labelText: 'Cover URI'.tr),
+                        onEditingComplete: () {},
+                      ),
+                      TextFormField(
+                        controller: _durationController,
+                        decoration:
+                            InputDecoration(labelText: 'Song duration'.tr),
+                        onEditingComplete: () {},
+                      ),
+                      TextFormField(
+                        controller: _lyricOffsetController,
+                        decoration:
+                            InputDecoration(labelText: 'Lyric offset'.tr),
+                        onEditingComplete: () {},
+                      ),
+                    ])),
+                    SimpleDialogOption(
+                      onPressed: () {
+                        songController.delete(s); // ! song could be null
+                        Get.back();
+                      },
+                      child: Text('Delete'.tr),
                     ),
-                    onChanged: (String? value) {
-                      (context as Element).markNeedsBuild(); // 妙啊，实在是妙
-                      s.subordinateKikaku = value!;
-                    },
-                    items: [
-                          DropdownMenuItem<String>(
-                            value: '',
-                            child: Text('(not set)'.tr),
-                          )
-                        ] +
-                        SNKikaku.kikakus
-                            .map<DropdownMenuItem<String>>(
-                                (SNKikaku kikaku) => DropdownMenuItem<String>(
-                                      value: kikaku.name,
-                                      child: Text(kikaku.name),
-                                    ))
-                            .toList(),
-                  ),
-                  TextFormField(
-                    controller: _coverIdController,
-                    decoration: InputDecoration(hintText: 'Cover ID'.tr),
-                    onEditingComplete: () {},
-                  ),
-                  TextFormField(
-                    controller: _durationController,
-                    decoration: InputDecoration(hintText: 'Song duration'.tr),
-                    onEditingComplete: () {},
-                  ),
-                  TextFormField(
-                    controller: _lyricOffsetController,
-                    decoration: InputDecoration(hintText: 'Lyric offset'.tr),
-                    onEditingComplete: () {},
-                  ),
-                ])),
-                SimpleDialogOption(
-                  onPressed: () {
-                    songController.delete(s); // ! song could be null
-                    Get.back();
-                  },
-                  child: Text('Delete'.tr),
-                ),
-                SimpleDialogOption(
-                  onPressed: () {
-                    s.name = _nameController.text;
-                    s.coverURI = _coverIdController.text;
-                    s.duration = Duration(
-                        milliseconds: int.parse(_durationController.text));
-                    s.lyricOffset = int.parse(_lyricOffsetController.text);
-                    Get.back(result: s);
-                  },
-                  child: Text('Submit'.tr),
-                ),
-              ]))
+                    SimpleDialogOption(
+                      onPressed: () {
+                        s.name = _nameController.text;
+                        s.coverURI = _coverURIController.text;
+                        s.duration = Duration(
+                            milliseconds: int.parse(_durationController.text));
+                        s.lyricOffset = int.parse(_lyricOffsetController.text);
+                        Get.back(result: s);
+                      },
+                      child: Text('Submit'.tr),
+                    ),
+                  ]))
         ],
       );
 }

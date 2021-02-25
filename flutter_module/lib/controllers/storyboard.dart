@@ -11,21 +11,31 @@ class StoryboardController extends GetxController {
 
   final StoryboardRepository storyboardRepository;
 
-  RxList<SNStoryboard> storyboardsForSong = RxList<SNStoryboard>(null);
+  Rx<List<SNStoryboard>?> storyboardsForSong = Rx<List<SNStoryboard>>(null);
   Rx<SNStoryboard?> editingStoryboard = Rx<SNStoryboard>(null);
 
   StoryboardController(this.storyboardRepository)
       : assert(storyboardRepository != null);
 
-  void submitCreate(SNStoryboard storyboard) async {
+  void submitCreate(SNStoryboard? storyboard) async {
     try {
-      if (storyboard == null) {
-        throw FormatException('Null value passed in');
+      if (storyboard != null) {
+        storyboard.creatorId = authController.user.value!.uid;
+        storyboard.songId = songController.editingSong.value!.id;
+        await storyboardRepository.create(storyboard);
+        retrieve();
       }
-      storyboard.creatorId = authController.user.value!.uid;
-      storyboard.songId = songController.editingSong.value!.id;
-      await storyboardRepository.create(storyboard);
-      retrieve();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void submitUpdate(SNStoryboard? storyboard) async {
+    try {
+      if (storyboard != null) {
+        await storyboardRepository.update(storyboard);
+        retrieve();
+      }
     } catch (e) {
       print(e);
     }
@@ -34,18 +44,26 @@ class StoryboardController extends GetxController {
   Future<void> retrieve() async {
     try {
       print('Retrieving storyboards');
-      storyboardsForSong(await (storyboardRepository.retrieveForSong(
-          authController.user.value!.uid,
-          songController.editingSong.value!.id)));
+      if (authController.user.value == null ||
+          songController.editingSong.value == null) {
+        storyboardsForSong.nil();
+      } else if (authController.user.value != null &&
+          songController.editingSong.value != null) {
+        storyboardsForSong(await (storyboardRepository.retrieveForSong(
+            authController.user.value!.uid,
+            songController.editingSong.value!.id)));
+      }
     } catch (e) {
       print(e);
     }
   }
 
-  Future<void> delete(SNStoryboard storyboard) async {
+  Future<void> delete(SNStoryboard? storyboard) async {
     try {
-      await storyboardRepository.delete(storyboard.id);
-      retrieve();
+      if (storyboard != null) {
+        await storyboardRepository.delete(storyboard.id);
+        retrieve();
+      }
     } catch (e) {
       print(e);
     }

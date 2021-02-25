@@ -11,21 +11,31 @@ class FormationController extends GetxController {
 
   final FormationRepository formationRepository;
 
-  RxList<SNFormation> formationsForSong = RxList<SNFormation>(null);
+  Rx<List<SNFormation>?> formationsForSong = Rx<List<SNFormation>?>(null);
   Rx<SNFormation?> editingFormation = Rx<SNFormation>(null);
 
   FormationController(this.formationRepository)
       : assert(formationRepository != null);
 
-  void submitCreate(SNFormation formation) async {
+  void submitCreate(SNFormation? formation) async {
     try {
-      if (formation == null) {
-        throw FormatException('Null value passed in');
+      if (formation != null) {
+        formation.creatorId = authController.user.value!.uid;
+        formation.songId = songController.editingSong.value!.id;
+        await formationRepository.create(formation);
+        retrieve();
       }
-      formation.creatorId = authController.user.value!.uid;
-      formation.songId = songController.editingSong.value!.id;
-      await formationRepository.create(formation);
-      retrieve();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void submitUpdate(SNFormation? formation) async {
+    try {
+      if (formation != null) {
+        await formationRepository.update(formation);
+        retrieve();
+      }
     } catch (e) {
       print(e);
     }
@@ -42,10 +52,12 @@ class FormationController extends GetxController {
     }
   }
 
-  Future<void> delete(SNFormation formation) async {
+  Future<void> delete(SNFormation? formation) async {
     try {
-      await formationRepository.delete(formation.id);
-      retrieve();
+      if (formation != null) {
+        await formationRepository.delete(formation.id);
+        retrieve();
+      }
     } catch (e) {
       print(e);
     }

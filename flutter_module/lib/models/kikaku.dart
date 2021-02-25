@@ -4,15 +4,6 @@ class SNKikaku {
 
   SNKikaku({required this.name, required this.teamName});
 
-  static List<SNKikaku> get kikakus => [
-        SNKikaku.ll(),
-        SNKikaku.llss(),
-        SNKikaku.nijigaku(),
-        SNKikaku.shoujokageki(),
-        SNKikaku.nananiji(),
-        SNKikaku.akb48()
-      ];
-
   SNKikaku.ll() : this(name: 'ラブライブ！', teamName: 'μ\'s');
   SNKikaku.llss() : this(name: 'ラブライブ！サンシャイン!!', teamName: 'Aqours');
   SNKikaku.nijigaku()

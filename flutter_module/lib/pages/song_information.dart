@@ -22,7 +22,7 @@ class SongInformationPage extends GetView<LyricController> {
           if (controller.lyrics.value == null) {
             return LoadingAnimationLinear();
           }
-          if (controller.lyrics.value.isEmpty) {
+          if (controller.lyrics.value!.isEmpty) {
             return _EmptyPage();
           }
           return Row(
@@ -68,9 +68,11 @@ class _LyricDataTableState extends State<LyricDataTable> {
 
   void _sort(int index, bool ascending) {
     if (ascending) {
-      lyricController.lyrics.sort((a, b) => a.startTime.compareTo(b.startTime));
+      lyricController.lyrics.value!
+          .sort((a, b) => a.startTime.compareTo(b.startTime));
     } else {
-      lyricController.lyrics.sort((a, b) => b.startTime.compareTo(a.startTime));
+      lyricController.lyrics.value!
+          .sort((a, b) => b.startTime.compareTo(a.startTime));
     }
     _sortColumnIndex = index;
     _sortAscending = ascending;
@@ -99,7 +101,7 @@ class _LyricDataTableState extends State<LyricDataTable> {
                   DataColumn(label: Text('Lyric text'.tr)),
                   DataColumn(label: Text('Solo Part'.tr)),
                 ],
-                rows: lyricController.lyrics
+                rows: lyricController.lyrics.value!
                     .map((lyric) => DataRow(
                             selected:
                                 lyricController.selectedLyrics.contains(lyric),
@@ -180,7 +182,7 @@ class LyricInspectorState extends State<LyricInspector> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Text('当前企划：'),
-                    Text(songController.editingSong.value.subordinateKikaku),
+                    Text(songController.editingSong.value!.subordinateKikaku),
                   ]);
             } else {
               return Container();
@@ -230,14 +232,14 @@ class ImportDialog extends StatelessWidget {
             Form(
                 child: Column(children: [
               // TextFormField(
-              //   decoration: InputDecoration(hintText: '输入歌曲编号'),
+              //   decoration: InputDecoration(labelText: '输入歌曲编号'),
               //   onEditingComplete: (value) {
               //     songId = int.parse(value);
               //   },
               // ),
               TextFormField(
                 controller: _lyricTextController,
-                decoration: InputDecoration(hintText: '歌词'),
+                decoration: InputDecoration(labelText: '歌词'),
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 onEditingComplete: () {},

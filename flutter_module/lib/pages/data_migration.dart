@@ -134,7 +134,7 @@ class DesKeyDialog extends StatelessWidget {
               //   WhitelistingTextInputFormatter(
               //       RegExp(r'\S{8}'))
               // ],
-              decoration: InputDecoration(hintText: '请输入8位字符。'),
+              decoration: InputDecoration(labelText: '请输入8位字符。'),
               maxLength: 8,
               maxLengthEnforcement: MaxLengthEnforcement.enforced,
             ),

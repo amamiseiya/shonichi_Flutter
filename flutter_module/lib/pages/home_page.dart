@@ -36,7 +36,7 @@ class HomePage extends GetView<ProjectController> {
               if (controller.projects.value == null) {
                 return LoadingAnimationLinear();
               }
-              if (controller.projects.value.isEmpty) {
+              if (controller.projects.value!.isEmpty) {
                 return _EmptyPage();
               }
               return _Dashboard();
@@ -89,96 +89,113 @@ class _Dashboard extends GetView<ProjectController> {
       heightFactor: 1.0,
       child: ListView(children: [
         Card(
-            margin: EdgeInsets.all(10.0),
+            margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 5.0),
             elevation: 4.0,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            child: Text(
-              'Welcome back!'.tr,
-              textScaleFactor: 1.8,
-            )),
+            child: Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                  'Welcome back!'.tr,
+                  textScaleFactor: 1.8,
+                ))),
         Obx(() {
           if (songController.firstCoverURI.value == null) {
             return Container();
           }
           return Card(
-              margin: EdgeInsets.all(10.0),
+              margin: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
               elevation: 4.0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10.0))),
               clipBehavior: Clip.antiAlias,
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Current project:'.tr,
-                      textScaleFactor: 1.2,
-                    ),
-                    Ink.image(
-                      image: NetworkImage(songController.firstCoverURI.value!),
-                      fit: BoxFit.fitWidth,
-                      // width: 300,
-                      height: 300,
-                      child: InkWell(
-                        onTap: () {
-                          controller.select(controller.projects[0].id);
-                        },
-                      ),
-                    ),
-                    Text(
-                      controller.projects[0].songId.toString(),
-                      textScaleFactor: 1.5,
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    Text('At: '.tr +
-                        controller.projects[0].createdTime.toString()),
-                    Text('With: '.tr + controller.projects[0].dancerName),
-                  ]));
+              child: Padding(
+                  padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Current project:'.tr,
+                          textScaleFactor: 1.2,
+                        ),
+                        Ink.image(
+                          image:
+                              NetworkImage(songController.firstCoverURI.value!),
+                          fit: BoxFit.fitWidth,
+                          // width: 300,
+                          height: 300,
+                          child: InkWell(
+                            onTap: () {
+                              controller
+                                  .select(controller.projects.value![0].id);
+                            },
+                          ),
+                        ),
+                        Text(
+                          controller.projects.value![0].songId.toString(),
+                          textScaleFactor: 1.5,
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        Text('At: '.tr +
+                            controller.projects.value![0].createdTime
+                                .toString()),
+                        Text('With: '.tr +
+                            controller.projects.value![0].dancerName),
+                      ])));
         }),
         Card(
-            margin: EdgeInsets.all(10.0),
+            margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 5.0),
             elevation: 4.0,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            child: Column(children: <Widget>[
-              Text(
-                'Or another project:'.tr,
-                textScaleFactor: 1.2,
-              ),
-              Column(
-                  children: List.generate(
-                      3,
-                      (i) => (controller.projects.length >= i + 2)
-                          ? (ListTile(
-                              title: Text(
-                                  controller.projects[i + 1].songId.toString()),
-                              subtitle: Text('With: ' +
-                                  controller.projects[i + 1].dancerName),
-                              onTap: () {
-                                controller
-                                    .select(controller.projects[i + 1].id);
-                              },
-                            ))
-                          : Container()))
-            ])),
+            child: Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Or another project:'.tr,
+                        textScaleFactor: 1.2,
+                      ),
+                      Column(
+                          children: List.generate(
+                              3,
+                              (i) =>
+                                  (controller.projects.value!.length >= i + 2)
+                                      ? (ListTile(
+                                          title: Text(controller
+                                              .projects.value![i + 1].songId
+                                              .toString()),
+                                          subtitle: Text('With: ' +
+                                              controller.projects.value![i + 1]
+                                                  .dancerName),
+                                          onTap: () {
+                                            controller.select(controller
+                                                .projects.value![i + 1].id);
+                                          },
+                                        ))
+                                      : Container()))
+                    ]))),
         Card(
-            margin: EdgeInsets.all(10.0),
+            margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 5.0),
             elevation: 4.0,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            child: Column(children: [
-              Text(
-                'Input project ID:'.tr,
-                textScaleFactor: 1.2,
-              ),
-              TextField(
-                decoration: InputDecoration(
-                    fillColor: Colors.blue.shade100, filled: true),
-                onSubmitted: (value) {
-                  controller.select(value);
-                },
-              )
-            ])),
+            child: Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Input project ID:'.tr,
+                        textScaleFactor: 1.2,
+                      ),
+                      TextField(
+                        onSubmitted: (value) {
+                          controller.select(value);
+                        },
+                      )
+                    ]))),
       ]),
     );
   }
@@ -219,27 +236,31 @@ class _ProjectUpsertDialog extends StatelessWidget {
                   initialDate: p.createdTime,
                   firstDate: DateTime.now().subtract(Duration(days: 3650)),
                   lastDate: DateTime.now().add(Duration(days: 3650)),
-                ).then((value) => p.createdTime = value!),
+                ).then((value) {
+                  if (value != null) {
+                    p.createdTime = value;
+                  }
+                }),
                 child: Text('Created time'.tr),
               ),
               TextFormField(
                 controller: _dancerNameController,
-                decoration: InputDecoration(hintText: 'Dancer name'.tr),
+                decoration: InputDecoration(labelText: 'Dancer name'.tr),
                 onEditingComplete: () {},
               ),
               TextFormField(
                 controller: _songIdController,
-                decoration: InputDecoration(hintText: 'Song ID'.tr),
+                decoration: InputDecoration(labelText: 'Song ID'.tr),
                 onEditingComplete: () {},
               ),
               TextFormField(
                 controller: _storyboardIdController,
-                decoration: InputDecoration(hintText: 'Storyboard ID'.tr),
+                decoration: InputDecoration(labelText: 'Storyboard ID'.tr),
                 onEditingComplete: () {},
               ),
               TextFormField(
                 controller: _formationIdController,
-                decoration: InputDecoration(hintText: 'Formation ID'.tr),
+                decoration: InputDecoration(labelText: 'Formation ID'.tr),
                 onEditingComplete: () {},
               ),
             ])),

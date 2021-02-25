@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import '../widgets/drawer.dart';
 import '../widgets/loading.dart';
 import '../widgets/error.dart';
+import '../controllers/character.dart';
 import '../controllers/lyric.dart';
 import '../controllers/formation.dart';
 import '../controllers/movement.dart';
@@ -45,15 +46,15 @@ class FormationPage extends StatelessWidget {
           if (formationController.formationsForSong.value == null) {
             return LoadingAnimationLinear();
           }
-          if (formationController.formationsForSong.isEmpty) {}
+          if (formationController.formationsForSong.value!.isEmpty) {}
 
           return Column(children: [
-            FormationSelector(),
+            FormationChipSelector(),
             Obx(() {
               if (movementController.movementsForTable.value == null) {
                 return LoadingAnimationLinear();
               }
-              if (movementController.movementsForTable.isEmpty) {}
+              if (movementController.movementsForTable.value!.isEmpty) {}
               return MovementEditor();
             })
           ]);
@@ -79,33 +80,52 @@ class FormationPage extends StatelessWidget {
   }
 }
 
-class FormationSelector extends GetView<FormationController> {
+class FormationChipSelector extends GetView<FormationController> {
   @override
   Widget build(BuildContext context) {
     return Container(
         height: 40,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: controller.formationsForSong.length + 1,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == controller.formationsForSong.length) {
-              return ActionChip(
-                label: Icon(Icons.add),
-                onPressed: () => Get.dialog(FormationUpsertDialog(null))
-                    .then((formation) => controller.submitCreate(formation)),
-              );
-            }
-            return Obx(() => ChoiceChip(
-                  label: Text(controller.formationsForSong[index].name),
-                  tooltip: '',
-                  selected: controller.editingFormation.value?.id ==
-                      controller.formationsForSong[index]!.id,
-                  selectedColor: Colors.orange.shade100,
-                  onSelected: (_) =>
-                      controller.select(controller.formationsForSong[index].id),
-                ));
-          },
-        ));
+        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          Expanded(
+              child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: controller.formationsForSong.value!.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Obx(() => ChoiceChip(
+                    label:
+                        Text(controller.formationsForSong.value![index].name),
+                    tooltip: '',
+                    selected: controller.editingFormation.value?.id ==
+                        controller.formationsForSong.value![index].id,
+                    selectedColor: Colors.orange.shade100,
+                    onSelected: (_) => controller
+                        .select(controller.formationsForSong.value![index].id),
+                  ));
+            },
+          )),
+          Flexible(
+              child: Row(children: [
+            ActionChip(
+              label: Icon(Icons.add),
+              tooltip: '',
+              onPressed: () => Get.dialog(_FormationUpsertDialog(null))
+                  .then((formation) => controller.submitCreate(formation)),
+            ),
+            ActionChip(
+              label: Icon(Icons.edit),
+              tooltip: '',
+              onPressed: () => Get.dialog(
+                      _FormationUpsertDialog(controller.editingFormation.value))
+                  .then((formation) => controller.submitUpdate(formation)),
+            ),
+            ActionChip(
+              label: Icon(Icons.delete),
+              tooltip: '',
+              onPressed: () =>
+                  controller.delete(controller.editingFormation.value),
+            ),
+          ]))
+        ]));
   }
 }
 
@@ -196,20 +216,20 @@ class MovementEditor extends GetView<MovementController> {
                                 }
                                 return ListView(
                                     children: snapshot.data
-                                        .map<Widget>((movement) => ListTile(
+                                        .map<Widget>((SNMovement movement) =>
+                                            ListTile(
                                               selected: false,
                                               onTap: () =>
                                                   controller.changeTime(
                                                       movement.startTime),
                                               leading: CircleAvatar(
-                                                  backgroundColor: SNCharacter
-                                                          .fromString(movement
-                                                              .characterName)
-                                                      .memberColor,
+                                                  backgroundColor: movement
+                                                      .character.memberColor,
                                                   child: Text(
                                                       characterNameFirstNameRegExp
                                                           .stringMatch(movement
-                                                              .characterName)!)),
+                                                              .character
+                                                              .name)!)),
                                               title: Text(simpleDurationRegExp
                                                   .stringMatch(movement
                                                       .startTime
@@ -258,11 +278,13 @@ class TimeSlider extends GetView<MovementController> {
                     // value: currentTime.inSeconds.toDouble(),
                     min: 0.0,
                     max: (lyricController.lyrics.value != null)
-                        ? lyricController.lyrics.last.endTime.inMilliseconds
+                        ? lyricController
+                            .lyrics.value!.last.endTime.inMilliseconds
                             .toDouble()
                         : 1.0,
                     divisions: (lyricController.lyrics.value != null)
-                        ? lyricController.lyrics.last.endTime.inMilliseconds ~/
+                        ? lyricController
+                                .lyrics.value!.last.endTime.inMilliseconds ~/
                             100
                         : null,
                     onChanged: (value) {
@@ -281,23 +303,26 @@ class TimeSlider extends GetView<MovementController> {
 class CharacterFilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>
-      GetX<MovementController>(builder: (controller) {
-        if (controller.characters.value == null) {
+      GetX<CharacterController>(builder: (characterController) {
+        if (characterController.editingCharacters.value == null) {
           return LoadingAnimationLinear();
         }
-        if (controller.characters.isEmpty) {}
+        if (characterController.editingCharacters.value!.isEmpty) {}
         return Wrap(
-          children: controller.characters.value
-              .map<Widget>((character) => Obx(() => ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: (controller.characterFilter.value?.name ==
-                                character.name)
-                            ? Colors.blueAccent.shade100
-                            : Colors.grey.shade300),
-                    onPressed: () => controller.changeCharacter(character),
-                    child: Text(characterNameFirstNameRegExp
-                        .stringMatch(character.name)!),
-                  )))
+          children: characterController.editingCharacters.value!
+              .map<Widget>((character) => GetX<MovementController>(
+                  builder: (movementController) => ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: (movementController
+                                        .characterFilter.value?.name ==
+                                    character.name)
+                                ? Colors.blueAccent.shade100
+                                : Colors.grey.shade300),
+                        onPressed: () =>
+                            movementController.changeCharacter(character),
+                        child: Text(characterNameFirstNameRegExp
+                            .stringMatch(character.name)!),
+                      )))
               .toList(),
         );
       });
@@ -372,8 +397,7 @@ class ProgramPainter extends CustomPainter {
               .getMovementPos(movementController.programPainterSize),
           20,
           Paint()
-            ..color = SNCharacter.fromString(characterMovement.characterName)
-                .memberColor!
+            ..color = characterMovement.character.memberColor!
             ..strokeWidth = 5
             ..style = PaintingStyle.stroke);
     }
@@ -448,7 +472,7 @@ class KCurvePainter extends CustomPainter {
       oldDelegate.editingKCurve != editingKCurve;
 }
 
-class FormationUpsertDialog extends GetView<FormationController> {
+class _FormationUpsertDialog extends GetView<FormationController> {
   // 在dialog最终pop时才给对象赋值，不确定这样的方式是否合适
 
   late SNFormation f;
@@ -456,7 +480,7 @@ class FormationUpsertDialog extends GetView<FormationController> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  FormationUpsertDialog(SNFormation? formation) {
+  _FormationUpsertDialog(SNFormation? formation) {
     f = formation ?? SNFormation.initialValue();
     _nameController.text = f.name;
     _descriptionController.text = f.description;
@@ -473,13 +497,13 @@ class FormationUpsertDialog extends GetView<FormationController> {
                   TextFormField(
                     controller: _nameController,
                     decoration:
-                        InputDecoration(hintText: 'Input formation name'),
+                        InputDecoration(labelText: 'Input formation name'),
                     onEditingComplete: () {},
                   ),
                   TextFormField(
                     controller: _descriptionController,
                     decoration: InputDecoration(
-                        hintText: 'Input formation description'),
+                        labelText: 'Input formation description'),
                     onEditingComplete: () {},
                   ),
                 ])),

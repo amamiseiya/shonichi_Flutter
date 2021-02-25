@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:shonichi_flutter_module/models/character.dart';
 // import 'package:leancloud_storage/leancloud.dart';
 
 enum KCurveType { X, Y, Z, Rotation, Camera }
@@ -19,7 +20,7 @@ class SNMovement {
   int curveY2X;
   int curveY2Y;
 
-  String characterName;
+  SNCharacter character;
   String tableId;
 
   SNMovement(
@@ -35,11 +36,11 @@ class SNMovement {
       required this.curveY1Y,
       required this.curveY2X,
       required this.curveY2Y,
-      required this.characterName,
+      required this.character,
       required this.tableId});
 
   factory SNMovement.initialValue(
-          Duration startTime, String characterName, String formationId) =>
+          Duration startTime, SNCharacter character, String formationId) =>
       SNMovement(
           id: 'initial',
           startTime: startTime,
@@ -53,7 +54,7 @@ class SNMovement {
           curveY1Y: 0,
           curveY2X: 127,
           curveY2Y: 127,
-          characterName: characterName,
+          character: character,
           tableId: formationId);
 
   factory SNMovement.fromMap(Map<String, dynamic> map, String id) {
@@ -70,7 +71,7 @@ class SNMovement {
         curveY1Y: map['curveY1Y'],
         curveY2X: map['curveY2X'],
         curveY2Y: map['curveY2Y'],
-        characterName: map['characterName'],
+        character: SNCharacter.fromMap(map['character']),
         tableId: map['tableId']);
   }
 
@@ -105,7 +106,7 @@ class SNMovement {
       'curveY1Y': curveY1Y,
       'curveY2X': curveY2X,
       'curveY2Y': curveY2Y,
-      'characterName': characterName,
+      'character': character.toMap(),
       'tableId': tableId
     };
   }

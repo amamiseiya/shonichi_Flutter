@@ -14,23 +14,33 @@ class LyricController extends GetxController {
   final LyricRepository lyricRepository;
   final AttachmentRepository attachmentRepository;
 
-  RxList<SNLyric> lyrics = RxList<SNLyric>(null);
-  RxList<SNLyric> selectedLyrics = RxList<SNLyric>();
+  late Worker worker;
+
+  Rx<List<SNLyric>?> lyrics = Rx<List<SNLyric>?>(null);
+  RxList<SNLyric> selectedLyrics = RxList<SNLyric>(List.empty());
 
   LyricController(this.lyricRepository, this.attachmentRepository)
       : assert(lyricRepository != null),
-        assert(attachmentRepository != null) {
-    songController.editingSong.listen((newSong) async {
-      await retrieveForSong();
-      print('${lyrics.length} lyric(s) retrieved -- listening to editingSong');
+        assert(attachmentRepository != null);
+
+  void onInit() {
+    super.onInit();
+    worker = ever(songController.editingSong, (SNSong? newSong) async {
+      await retrieveForEditingSong();
+      print(
+          '${lyrics.value?.length} lyric(s) retrieved -- listening to editingSong');
     });
   }
 
-  Future<void> retrieveForSong() async {
+  Future<void> retrieveForEditingSong() async {
     try {
-      print('Retrieving lyrics');
-      lyrics(await lyricRepository
-          .retrieveForSong(songController.editingSong.value.id));
+      print('Retrieving lyrics for editingSong');
+      if (songController.editingSong.value == null) {
+        lyrics.nil();
+      } else if (songController.editingSong.value != null) {
+        lyrics(await lyricRepository
+            .retrieveForSong(songController.editingSong.value!.id));
+      }
     } catch (e) {
       print(e);
     }
@@ -39,7 +49,7 @@ class LyricController extends GetxController {
   Future<void> updateLyric(SNLyric lyric) async {
     try {
       await lyricRepository.update(lyric);
-      await retrieveForSong();
+      await retrieveForEditingSong();
     } catch (e) {
       print(e);
     }
@@ -50,12 +60,12 @@ class LyricController extends GetxController {
       if (lrcStr != null) {
         final lyrics = SNLyric.parseFromLrc(
             lrcStr,
-            songController.editingSong.value.id,
-            songController.editingSong.value.lyricOffset);
+            songController.editingSong.value!.id,
+            songController.editingSong.value!.lyricOffset);
         for (SNLyric lyric in lyrics) {
           await lyricRepository.create(lyric);
         }
-        await retrieveForSong();
+        await retrieveForEditingSong();
       }
     } catch (e) {
       print(e);
@@ -65,7 +75,7 @@ class LyricController extends GetxController {
   Future<void> delete(SNLyric lyric) async {
     try {
       await lyricRepository.delete(lyric.id);
-      await retrieveForSong();
+      await retrieveForEditingSong();
     } catch (e) {
       print(e);
     }

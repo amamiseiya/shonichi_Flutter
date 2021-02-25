@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shonichi_flutter_module/controllers/character.dart';
 
 import '../models/project.dart';
 import '../models/song.dart';
@@ -25,6 +26,7 @@ import '../utils/reg_exp.dart';
 import '../utils/data_convert.dart';
 
 class DataMigrationController extends GetxController {
+  final CharacterController characterController = Get.find();
   final ProjectController projectController = Get.find();
   final SongController songController = Get.find();
 
@@ -60,7 +62,7 @@ class DataMigrationController extends GetxController {
   void importMarkdown(String? key) async {
     try {
       String mdText = await attachmentRepository
-          .importMarkdown(projectController.editingProject.value);
+          .importMarkdown(projectController.editingProject.value!);
       if (key != null) {
         mdText = desDecrypt(mdText, key);
       }
@@ -73,7 +75,7 @@ class DataMigrationController extends GetxController {
   void confirmImportMarkdown() async {
     try {
       final List<SNShot> shots = await parseShots(
-          projectController.editingProject.value, markdownText.value);
+          projectController.editingProject.value!, markdownText.value);
       for (SNShot shot in shots) {
         await shotRepository.create(shot);
       }
@@ -98,39 +100,90 @@ class DataMigrationController extends GetxController {
       List<RegExpMatch> shotProps =
           RegExp(r'(?<=\|\s)[^\|]*(?=\s\|)').allMatches(shotText).toList();
       return SNShot(
-        id: 'initial',
-        sceneNumber: int.parse(shotProps[0].group(0)!),
-        shotNumber: int.parse(shotProps[1].group(0)!),
-        startTime: simpleDurationToDuration(shotProps[2].group(0)!),
-        endTime: simpleDurationToDuration(shotProps[3].group(0)!),
-        lyric: shotProps[4].group(0)!,
-        shotType: shotProps[5].group(0)!,
-        shotMovement: shotProps[6].group(0)!,
-        shotAngle: shotProps[7].group(0)!,
-        text: shotProps[8].group(0)!,
-        imageURI: shotProps[9].group(0)!,
-        comment: shotProps[10].group(0)!,
-        tableId: tableId,
-        characters:
-            SNCharacter.abbrStringToList(shotProps[11].group(0)!, kikaku),
-      );
+          id: 'initial',
+          sceneNumber: int.parse(shotProps[0].group(0)!),
+          shotNumber: int.parse(shotProps[1].group(0)!),
+          startTime: simpleDurationToDuration(shotProps[2].group(0)!),
+          endTime: simpleDurationToDuration(shotProps[3].group(0)!),
+          lyric: shotProps[4].group(0)!,
+          shotType: shotProps[5].group(0)!,
+          shotMovement: shotProps[6].group(0)!,
+          shotAngle: shotProps[7].group(0)!,
+          text: shotProps[8].group(0)!,
+          imageURI: shotProps[9].group(0)!,
+          comment: shotProps[10].group(0)!,
+          tableId: tableId,
+          characters: json
+              .decode(shotProps[11].group(0)!)
+              .map((Map<String, dynamic> cm) => SNCharacter.fromMap(cm))
+              .toList());
     }).toList();
+  }
+
+  // 输入角色列表返回String
+  String serializeCharacters(List<SNCharacter> characters,
+      {required CharacterSerializeMode mode}) {
+    String str = '';
+    for (SNCharacter character in characters) {
+      if (mode == CharacterSerializeMode.Normal) {
+        str += character.name + ', ';
+      }
+      if (mode == CharacterSerializeMode.Abbreviation) {
+        str += character.nameAbbr + ', ';
+      }
+    }
+    str.substring(0, str.lastIndexOf(', '));
+    return str;
+  }
+
+  // 输入String返回角色列表
+  List<SNCharacter> unserializeCharacters(String str,
+      {required CharacterSerializeMode mode}) {
+    if (str != null) {
+      final Iterable<String> csi =
+          str.split(', ').where((row) => characterNameRegExp.hasMatch(row));
+      final List<SNCharacter> cl = [];
+      if (mode == CharacterSerializeMode.Normal) {
+        csi.forEach((cs) async {
+          cl.add(await characterController.retrieveFromString(
+              name: cs,
+              kikaku: songController.editingSong.value!.subordinateKikaku));
+        });
+        return cl;
+      } else if (mode == CharacterSerializeMode.Abbreviation) {
+        csi.forEach((cs) async {
+          cl.add(await characterController.retrieveFromString(
+              nameAbbr: cs,
+              kikaku: songController.editingSong.value!.subordinateKikaku));
+        });
+        return cl;
+      } else {
+        throw FormatException();
+      }
+    } else {
+      return [];
+    }
   }
 
   void previewMarkdown() async {
     try {
-      markdownText(generateIntro(projectController.editingProject.value,
-              songController.editingSong.value) +
+      markdownText(generateIntro(projectController.editingProject.value!,
+              songController.editingSong.value!) +
           generateShotDataTable(await shotRepository.retrieveForTable(
-              projectController.editingProject.value.storyboardId!)));
+              projectController.editingProject.value!.storyboardId!)));
     } catch (e) {
       print(e);
     }
   }
 
   String generateIntro(SNProject project, SNSong song) {
-    String mdText =
-        '# ' + project.dancerName + ' ' + song.name + ' 拍摄计划\n\n拍摄日期：\n';
+    String mdText = '# ' +
+        project.dancerName +
+        ' ' +
+        song.name +
+        ' 拍摄计划\n\n拍摄日期：' +
+        project.createdTime.toString() +
+        '\n';
     return mdText;
   }
 
@@ -167,7 +220,8 @@ class DataMigrationController extends GetxController {
           ' | ' +
           shot.comment +
           ' | ' +
-          SNCharacter.listToAbbrString(shot.characters) +
+          json.encode(
+              shot.characters.map((character) => character.toMap()).toList()) +
           ' |\n';
     }
     return mdText;
@@ -177,11 +231,11 @@ class DataMigrationController extends GetxController {
     try {
       if (key != null) {
         await attachmentRepository.exportMarkdown(
-            projectController.editingProject.value,
+            projectController.editingProject.value!,
             desEncrypt(markdownText.value, key));
       } else {
         await attachmentRepository.exportMarkdown(
-            projectController.editingProject.value, markdownText.value);
+            projectController.editingProject.value!, markdownText.value);
       }
     } catch (e) {
       print(e);
@@ -197,7 +251,8 @@ class DataMigrationController extends GetxController {
       'sn_shot': []
     };
 
-    await attachmentRepository.exportJson(json.encode(map));
+    await attachmentRepository.exportJson(
+        json.encode(map), 'shot_data_export.json');
   }
 
   Future<void> importJson() async {
@@ -209,8 +264,8 @@ class DataMigrationController extends GetxController {
     // await db.delete('sn_formation');
     // await db.delete('sn_movement');
 
-    final map = Map<String, List>.from(json
-        .decode(await attachmentRepository.importFromAssets('example.json')));
+    final map = Map<String, List>.from(json.decode(
+        await attachmentRepository.importFromAssets('shot_data_example.json')));
     map['sn_project']!.forEach((p) async => await FirebaseFirestore.instance
         .collection('sn_project')
         .doc(p['id'])

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../controllers/auth.dart';
 import '../pages/home_page.dart';
@@ -22,24 +23,27 @@ class _LoginPageState extends State<LoginPage> {
           title: Text('Login Page'.tr),
         ),
         body: Container(
-            child: Center(
-                child: Column(children: [
+            child: Column(children: [
           Container(
               width: MediaQuery.of(context).size.width / 2,
               height: MediaQuery.of(context).size.height / 3,
-              child: Text('Shoshin wo wasurezu')),
+              child: Center(
+                  child: Text(
+                '初心忘るべからず',
+                style: GoogleFonts.notoSerif(),
+              ))),
           Container(
               padding: EdgeInsets.all(10),
               child: TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(hintText: 'Email address'.tr),
+                decoration: InputDecoration(labelText: 'Email address'.tr),
                 onEditingComplete: () {},
               )),
           Container(
               padding: EdgeInsets.all(10),
               child: TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(hintText: 'Password'.tr),
+                decoration: InputDecoration(labelText: 'Password'.tr),
                 onEditingComplete: () {},
               )),
           Row(children: [
@@ -73,6 +77,6 @@ class _LoginPageState extends State<LoginPage> {
             }
             return Container();
           })
-        ]))));
+        ])));
   }
 }

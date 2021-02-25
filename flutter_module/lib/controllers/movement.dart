@@ -4,13 +4,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart' as rx;
-import 'package:shonichi_flutter_module/controllers/formation.dart';
 
+import '../controllers/formation.dart';
 import '../models/project.dart';
 import '../models/song.dart';
 import '../models/lyric.dart';
 import '../models/movement.dart';
 import '../models/character.dart';
+import '../models/formation.dart';
 import 'project.dart';
 import 'song.dart';
 import 'lyric.dart';
@@ -18,31 +19,37 @@ import '../repositories/attachment.dart';
 import '../repositories/movement.dart';
 
 class MovementController extends GetxController with StateMixin {
-  final MovementRepository movementRepository;
-  final AttachmentRepository attachmentRepository;
-
   final ProjectController projectController = Get.find();
   final SongController songController = Get.find();
   final LyricController lyricController = Get.find();
   final FormationController formationController = Get.find();
 
-  RxList<SNMovement> movementsForTable = RxList<SNMovement>(null);
-  RxList<SNCharacter> characters = RxList<SNCharacter>(null);
+  final MovementRepository movementRepository;
+  final AttachmentRepository attachmentRepository;
+
+  late Worker worker;
+  Rx<List<SNMovement>?> movementsForTable = Rx<List<SNMovement>?>(null);
 
   Rx<SNCharacter?> characterFilter = Rx<SNCharacter>(null);
-  Rx<Duration> timeFilter = Rx<Duration>(Duration(seconds: 0));
+  Rx<Duration?> timeFilter = Rx<Duration>(null);
   Rx<KCurveType?> kCurveTypeFilter = Rx<KCurveType>(null);
 
   RxList<SNMovement> movementsForCharacter = RxList<SNMovement>(null);
   RxList<SNMovement> movementsForTime = RxList<SNMovement>(null);
   Rx<SNMovement?> editingMovement = Rx<SNMovement>(null);
-  RxList<Offset> editingKCurve = RxList<Offset>(null);
+  Rx<List<Offset>?> editingKCurve = Rx<List<Offset>?>(null);
 
   @override
   void onInit() {
-    change(null, status: RxStatus.loading());
-    print('onInit() completed');
     super.onInit();
+    change(null, status: RxStatus.loading());
+    worker = ever(formationController.editingFormation,
+        (SNFormation? newFormation) async {
+      await retrieveForEditingFormation();
+      print(
+          '${movementsForTable.value?.length} movement(s) retrieved -- listening to editingFormation');
+    });
+    print('onInit() completed');
   }
 
   int draggedPos = -1;
@@ -54,67 +61,85 @@ class MovementController extends GetxController with StateMixin {
   MovementController(this.movementRepository, this.attachmentRepository)
       : assert(movementRepository != null),
         assert(attachmentRepository != null) {
-    formationController.editingFormation.listen((newFormation) async {
-      if (newFormation != null) {
-        await retrieveForTable();
+    movementsForCharacter.bindStream(
+        rx.Rx.combineLatest2(movementsForTable.stream, characterFilter.stream,
+            (List<SNMovement>? stream, SNCharacter? filter) {
+      if (stream == null) {
+        return List.empty();
+      } else if (stream != null && filter == null) {
+        return stream;
+      } else if (stream != null && filter != null) {
+        return stream
+            .where((movement) => movement.character.name == filter.name)
+            .toList();
+      } else {
+        throw FormatException();
       }
-      print(
-          '${movementsForTable.length} movement(s) retrieved -- listening to editingFormation');
-    });
-
-    movementsForCharacter.bindStream(rx.Rx.combineLatest2(
-        movementsForTable.stream,
-        characterFilter.stream,
-        (List<SNMovement> stream, SNCharacter? filter) => (filter == null)
-            ? stream
-            : stream
-                .where((movement) => movement.characterName == filter.name)
-                .toList()));
-    movementsForTime.bindStream(rx.Rx.combineLatest2(
-        movementsForTable.stream,
-        timeFilter.stream,
-        (List<SNMovement> stream, Duration filter) => (filter.isNegative)
-            ? stream
-            : stream
-                .where((movement) => movement.startTime == filter)
-                .toList()));
-    // ! 不确定.first会不会带来问题
+    }));
+    movementsForTime.bindStream(
+        rx.Rx.combineLatest2(movementsForTable.stream, timeFilter.stream,
+            (List<SNMovement>? stream, Duration? filter) {
+      if (stream == null) {
+        return List.empty();
+      } else if (stream != null && filter == null) {
+        return stream;
+      } else if (stream != null && filter != null) {
+        return stream
+            .where((movement) => movement.startTime == filter)
+            .toList();
+      } else {
+        throw FormatException();
+      }
+    }));
+    // ? 不确定.first会不会带来问题
     editingMovement.bindStream(rx.Rx.combineLatest3(
         movementsForTable.stream, characterFilter.stream, timeFilter.stream,
-        (List<SNMovement> stream, SNCharacter? characterFilter,
-            Duration timeFilter) {
-      final Iterable<SNMovement> m = stream
-          .where((movement) => movement.characterName == characterFilter?.name)
-          .where((movement) => movement.startTime == timeFilter);
-      if (m.isEmpty) {
+        (List<SNMovement>? stream, SNCharacter? characterFilter,
+            Duration? timeFilter) {
+      if (stream == null) {
         return null;
-      } else if (m.length == 1) {
-        return m.first;
-      } else {
-        throw FormatException('Multiple movements exist');
+      } else if (stream != null) {
+        final Iterable<SNMovement> m = stream
+            .where(
+                (movement) => movement.character.name == characterFilter?.name)
+            .where((movement) => movement.startTime == timeFilter);
+        if (m.isEmpty) {
+          return null;
+        } else if (m.length == 1) {
+          return m.first;
+        } else {
+          throw FormatException('Multiple movements exist');
+        }
       }
     }));
     editingKCurve.bindStream(
         rx.Rx.combineLatest2(editingMovement.stream, kCurveTypeFilter.stream,
             (SNMovement? movement, KCurveType? kCurveType) {
+      if (movement == null || kCurveType == null) {
+        return null;
+      }
       if (movement != null && kCurveType != null) {
         return List.generate(
           2,
           (i) => movement.getMovementPoint(kCurveType, i, kCurvePainterSize),
         );
       } else {
-        return null;
+        throw FormatException();
       }
     }));
   }
 
-  Future<void> retrieveForTable() async {
+  Future<void> retrieveForEditingFormation() async {
     try {
-      characters(SNCharacter.membersSortedByGrade(
-          songController.editingSong.value!.subordinateKikaku));
-      movementsForTable(await movementRepository
-          .retrieveForTable(formationController.editingFormation.value!.id));
-      change(0, status: RxStatus.success());
+      print('Retrieving shots for editingFormation');
+      if (formationController.editingFormation.value == null) {
+        movementsForTable.nil();
+        change(0, status: RxStatus.success());
+      } else if (formationController.editingFormation.value != null) {
+        movementsForTable(await movementRepository
+            .retrieveForTable(formationController.editingFormation.value!.id));
+        change(0, status: RxStatus.success());
+      }
     } catch (e) {
       print(e);
     }
@@ -156,8 +181,11 @@ class MovementController extends GetxController with StateMixin {
 
   void changeKCurveType(KCurveType kCurveType) async {
     try {
-      kCurveTypeFilter(
-          (kCurveTypeFilter.value == kCurveType) ? null : kCurveType);
+      if (kCurveTypeFilter.value == kCurveType) {
+        return kCurveTypeFilter.nil();
+      } else {
+        kCurveTypeFilter(kCurveType);
+      }
     } catch (e) {
       print(e);
     }
@@ -166,7 +194,9 @@ class MovementController extends GetxController with StateMixin {
   Future<void> create() async {
     try {
       bool isValid = true;
-      if (characterFilter.value == null) isValid = false;
+      if (characterFilter.value == null || timeFilter.value == null) {
+        isValid = false;
+      }
       movementsForCharacter.forEach((SNMovement movement) {
         if (movement.startTime == timeFilter.value) {
           isValid = false;
@@ -174,10 +204,10 @@ class MovementController extends GetxController with StateMixin {
       });
       if (isValid) {
         movementRepository.create(SNMovement.initialValue(
-            timeFilter.value,
-            characterFilter.value!.name,
+            timeFilter.value!,
+            characterFilter.value!,
             formationController.editingFormation.value!.id));
-        await retrieveForTable();
+        await retrieveForEditingFormation();
       }
     } catch (e) {
       print(e);
@@ -187,7 +217,7 @@ class MovementController extends GetxController with StateMixin {
   Future<void> delete() async {
     try {
       movementRepository.delete(editingMovement.value!.id);
-      await retrieveForTable();
+      await retrieveForEditingFormation();
     } catch (e) {
       print(e);
     }
@@ -231,7 +261,7 @@ class MovementController extends GetxController with StateMixin {
       print(
           '${movementsForTime[draggedPos].posX},${movementsForTime[draggedPos].posY}');
       await movementRepository.update(movementsForTime[draggedPos]);
-      await retrieveForTable();
+      await retrieveForEditingFormation();
     }
   }
 
@@ -272,7 +302,7 @@ class MovementController extends GetxController with StateMixin {
       print(
           '${editingMovement.value!.curveY1X},${editingMovement.value!.curveY1Y},${editingMovement.value!.curveY2X},${editingMovement.value!.curveY2Y}');
       await movementRepository.update(editingMovement.value!);
-      await retrieveForTable();
+      await retrieveForEditingFormation();
     }
   }
 

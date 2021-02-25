@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:convert';
 
 import 'character.dart';
 import '../utils/data_convert.dart';
@@ -84,7 +85,9 @@ class SNShot {
       imageURI: map['imageURI'],
       comment: map['comment'],
       tableId: map['tableId'],
-      characters: SNCharacter.stringToList(map['characters']),
+      characters: map['characters']
+          .map<SNCharacter>((cm) => SNCharacter.fromMap(cm))
+          .toList(),
     );
   }
 
@@ -101,7 +104,7 @@ class SNShot {
         'imageURI': imageURI,
         'comment': comment,
         'tableId': tableId,
-        'characters': SNCharacter.listToString(characters),
+        'characters': characters.map((character) => character.toMap()).toList(),
       };
 }
 

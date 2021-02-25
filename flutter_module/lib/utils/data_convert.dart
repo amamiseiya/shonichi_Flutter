@@ -1,3 +1,5 @@
+enum SerializeMode { Normal, Abbreviation }
+
 String listToString(List<String> list) {
   String str = '';
   for (String record in list) {
