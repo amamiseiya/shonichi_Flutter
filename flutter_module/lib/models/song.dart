@@ -1,5 +1,5 @@
 import '../utils/data_convert.dart';
-import 'attachment.dart';
+import 'asset.dart';
 
 class SNSong {
   String id;

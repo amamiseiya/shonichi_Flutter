@@ -11,10 +11,12 @@ class MovementSQLiteProvider extends SQLiteProvider {
     print('Provider: Create operation succeed');
   }
 
-  Future<List<SNMovement>> retrieveForTable(String tableId) async {
+  Future<List<SNMovement>> retrieveForFormation(String formationId) async {
     final db = await database;
     final mapList = await db.query('sn_movement',
-        where: 'tableId = ?', whereArgs: [tableId], orderBy: 'startTime DESC');
+        where: 'formationId = ?',
+        whereArgs: [formationId],
+        orderBy: 'startTime DESC');
     return List.generate(mapList.length,
         (i) => SNMovement.fromMap(mapList[i], mapList[i]['id'] as String));
   }

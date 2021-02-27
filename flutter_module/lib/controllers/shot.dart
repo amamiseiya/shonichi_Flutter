@@ -16,7 +16,7 @@ import 'storyboard.dart';
 import '../repositories/song.dart';
 import '../repositories/lyric.dart';
 import '../repositories/shot.dart';
-import '../repositories/attachment.dart';
+import '../repositories/asset.dart';
 
 class ShotController extends GetxController {
   // Controller
@@ -30,7 +30,7 @@ class ShotController extends GetxController {
   final SongRepository songRepository;
   final LyricRepository lyricRepository;
   final ShotRepository shotRepository;
-  final AttachmentRepository attachmentRepository;
+  final AssetRepository assetRepository;
 
   // 生成的Stream
   late Worker worker;
@@ -44,11 +44,11 @@ class ShotController extends GetxController {
   Rx<int?> editingShotIndex = Rx<int>(null);
 
   ShotController(this.songRepository, this.lyricRepository, this.shotRepository,
-      this.attachmentRepository)
+      this.assetRepository)
       : assert(songRepository != null),
         assert(lyricRepository != null),
         assert(shotRepository != null),
-        assert(attachmentRepository != null) {
+        assert(assetRepository != null) {
     coverageStream.bindStream(
         rx.Rx.combineLatest2(shots.stream, lyricController.lyrics.stream,
             (List<SNShot>? shots, List<SNLyric>? lyrics) {
@@ -76,23 +76,21 @@ class ShotController extends GetxController {
     statisticsStream = shots.stream.asyncMap((List<SNShot>? shots) {
       if (shots == null) {
         return Map();
-      } else if (shots != null) {
+      } else {
         Map<String, int> characterCountMap = Map.fromIterable(
             characterController.editingCharacters.value!,
             key: (character) => character?.name,
             value: (_) => 0);
         for (SNShot shot in shots) {
-          for (SNCharacter character in shot.characters) {
+          shot.characters.forEach((SNCharacter character) {
             // ! 野蛮
             if (characterCountMap[character.name] != null) {
               characterCountMap[character.name] =
                   characterCountMap[character.name]! + 1;
             }
-          }
+          });
         }
         return characterCountMap;
-      } else {
-        throw FormatException();
       }
     });
   }
@@ -113,7 +111,7 @@ class ShotController extends GetxController {
       if (storyboardController.editingStoryboard.value == null) {
         shots.nil();
       } else if (storyboardController.editingStoryboard.value != null) {
-        shots(await shotRepository.retrieveForTable(
+        shots(await shotRepository.retrieveForStoryboard(
             storyboardController.editingStoryboard.value!.id));
       }
     } catch (e) {
@@ -154,6 +152,14 @@ class ShotController extends GetxController {
       await shotRepository
           .deleteMultiple(List.generate(shots.length, (i) => shots[i].id));
       await retrieveForEditingStoryboard();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> deleteForStoryboard(SNStoryboard storyboard) async {
+    try {
+      await shotRepository.deleteForStoryboard(storyboard.id);
     } catch (e) {
       print(e);
     }

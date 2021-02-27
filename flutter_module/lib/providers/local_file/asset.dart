@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-class AttachmentLocalFileProvider {
+class AssetLocalFileProvider {
   Future<void> writeAsString(
       String text, String folder, String fileName) async {
     final Directory appDocDir = await getApplicationDocumentsDirectory();

@@ -21,7 +21,7 @@ class SNMovement {
   int curveY2Y;
 
   SNCharacter character;
-  String tableId;
+  String formationId;
 
   SNMovement(
       {required this.id,
@@ -37,7 +37,7 @@ class SNMovement {
       required this.curveY2X,
       required this.curveY2Y,
       required this.character,
-      required this.tableId});
+      required this.formationId});
 
   factory SNMovement.initialValue(
           Duration startTime, SNCharacter character, String formationId) =>
@@ -55,7 +55,7 @@ class SNMovement {
           curveY2X: 127,
           curveY2Y: 127,
           character: character,
-          tableId: formationId);
+          formationId: formationId);
 
   factory SNMovement.fromMap(Map<String, dynamic> map, String id) {
     return SNMovement(
@@ -72,7 +72,7 @@ class SNMovement {
         curveY2X: map['curveY2X'],
         curveY2Y: map['curveY2Y'],
         character: SNCharacter.fromMap(map['character']),
-        tableId: map['tableId']);
+        formationId: map['formationId']);
   }
 
   // factory SNMovement.fromLCObject(LCObject object) {
@@ -90,7 +90,7 @@ class SNMovement {
   //       curveY2X: object['curveY2X'],
   //       curveY2Y: object['curveY2Y'],
   //       characterName: object['characterName'],
-  //       tableId: object['tableId']);
+  //       formationId: object['formationId']);
   // }
 
   Map<String, dynamic> toMap() {
@@ -107,7 +107,7 @@ class SNMovement {
       'curveY2X': curveY2X,
       'curveY2Y': curveY2Y,
       'character': character.toMap(),
-      'tableId': tableId
+      'formationId': formationId
     };
   }
 
@@ -124,7 +124,7 @@ class SNMovement {
   //   object['curveY2X'] = curveY2X;
   //   object['curveY2Y'] = curveY2Y;
   //   object['characterName'] = characterName;
-  //   object['tableId'] = tableId;
+  //   object['formationId'] = formationId;
   // }
 
   // range: ±8 meters

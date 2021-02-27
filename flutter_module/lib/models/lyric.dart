@@ -9,7 +9,7 @@ class SNLyric {
   String text;
 
   String songId;
-  List<SNCharacter> soloPart;
+  List<SNCharacter> characters;
 
   SNLyric(
       {required this.id,
@@ -17,7 +17,7 @@ class SNLyric {
       required this.endTime,
       required this.text,
       required this.songId,
-      required this.soloPart});
+      required this.characters});
 
   factory SNLyric.fromMap(Map<String, dynamic> map, String id) {
     return SNLyric(
@@ -26,7 +26,9 @@ class SNLyric {
         endTime: Duration(milliseconds: map['endTime']),
         text: map['text'],
         songId: map['songId'],
-        soloPart: map['soloPart']);
+        characters: map['characters']
+            .map<SNCharacter>((cm) => SNCharacter.fromMap(cm))
+            .toList());
   }
 
   Map<String, dynamic> toMap() {
@@ -35,7 +37,7 @@ class SNLyric {
       'endTime': endTime.inMilliseconds,
       'text': text,
       'songId': songId,
-      'soloPart': soloPart
+      'characters': characters.map((character) => character.toMap()).toList()
     };
   }
 
@@ -65,7 +67,7 @@ class SNLyric {
                   lyricOffset ~/ 100 * 100,
             ),
             endTime: Duration(),
-            soloPart: []);
+            characters: []);
       }).toList();
 
       for (int i = 0; i < result.length - 1; i++) {

@@ -51,7 +51,7 @@ class HomePage extends GetView<ProjectController> {
                     Icons.refresh,
                   ),
                   heroTag: 'ResetFAB',
-                  onPressed: () => controller.importJson())),
+                  onPressed: () => controller.importJson(context))),
           FloatingActionButton(
               tooltip: 'Create'.tr, // used by assistive technologies
               child: Icon(Icons.add),

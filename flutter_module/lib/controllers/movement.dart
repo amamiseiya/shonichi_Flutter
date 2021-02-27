@@ -15,7 +15,7 @@ import '../models/formation.dart';
 import 'project.dart';
 import 'song.dart';
 import 'lyric.dart';
-import '../repositories/attachment.dart';
+import '../repositories/asset.dart';
 import '../repositories/movement.dart';
 
 class MovementController extends GetxController with StateMixin {
@@ -25,10 +25,10 @@ class MovementController extends GetxController with StateMixin {
   final FormationController formationController = Get.find();
 
   final MovementRepository movementRepository;
-  final AttachmentRepository attachmentRepository;
+  final AssetRepository assetRepository;
 
   late Worker worker;
-  Rx<List<SNMovement>?> movementsForTable = Rx<List<SNMovement>?>(null);
+  Rx<List<SNMovement>?> movementsForFormation = Rx<List<SNMovement>?>(null);
 
   Rx<SNCharacter?> characterFilter = Rx<SNCharacter>(null);
   Rx<Duration?> timeFilter = Rx<Duration>(null);
@@ -47,7 +47,7 @@ class MovementController extends GetxController with StateMixin {
         (SNFormation? newFormation) async {
       await retrieveForEditingFormation();
       print(
-          '${movementsForTable.value?.length} movement(s) retrieved -- listening to editingFormation');
+          '${movementsForFormation.value?.length} movement(s) retrieved -- listening to editingFormation');
     });
     print('onInit() completed');
   }
@@ -58,12 +58,12 @@ class MovementController extends GetxController with StateMixin {
   final programPainterSize = Size(480, 270);
   final kCurvePainterSize = Size(270, 270);
 
-  MovementController(this.movementRepository, this.attachmentRepository)
+  MovementController(this.movementRepository, this.assetRepository)
       : assert(movementRepository != null),
-        assert(attachmentRepository != null) {
-    movementsForCharacter.bindStream(
-        rx.Rx.combineLatest2(movementsForTable.stream, characterFilter.stream,
-            (List<SNMovement>? stream, SNCharacter? filter) {
+        assert(assetRepository != null) {
+    movementsForCharacter.bindStream(rx.Rx.combineLatest2(
+        movementsForFormation.stream, characterFilter.stream,
+        (List<SNMovement>? stream, SNCharacter? filter) {
       if (stream == null) {
         return List.empty();
       } else if (stream != null && filter == null) {
@@ -77,7 +77,7 @@ class MovementController extends GetxController with StateMixin {
       }
     }));
     movementsForTime.bindStream(
-        rx.Rx.combineLatest2(movementsForTable.stream, timeFilter.stream,
+        rx.Rx.combineLatest2(movementsForFormation.stream, timeFilter.stream,
             (List<SNMovement>? stream, Duration? filter) {
       if (stream == null) {
         return List.empty();
@@ -93,7 +93,7 @@ class MovementController extends GetxController with StateMixin {
     }));
     // ? 不确定.first会不会带来问题
     editingMovement.bindStream(rx.Rx.combineLatest3(
-        movementsForTable.stream, characterFilter.stream, timeFilter.stream,
+        movementsForFormation.stream, characterFilter.stream, timeFilter.stream,
         (List<SNMovement>? stream, SNCharacter? characterFilter,
             Duration? timeFilter) {
       if (stream == null) {
@@ -133,13 +133,53 @@ class MovementController extends GetxController with StateMixin {
     try {
       print('Retrieving shots for editingFormation');
       if (formationController.editingFormation.value == null) {
-        movementsForTable.nil();
+        movementsForFormation.nil();
         change(0, status: RxStatus.success());
       } else if (formationController.editingFormation.value != null) {
-        movementsForTable(await movementRepository
-            .retrieveForTable(formationController.editingFormation.value!.id));
+        movementsForFormation(await movementRepository.retrieveForFormation(
+            formationController.editingFormation.value!.id));
         change(0, status: RxStatus.success());
       }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> create() async {
+    try {
+      bool isValid = true;
+      if (characterFilter.value == null || timeFilter.value == null) {
+        isValid = false;
+      }
+      movementsForCharacter.forEach((SNMovement movement) {
+        if (movement.startTime == timeFilter.value) {
+          isValid = false;
+        }
+      });
+      if (isValid) {
+        movementRepository.create(SNMovement.initialValue(
+            timeFilter.value!,
+            characterFilter.value!,
+            formationController.editingFormation.value!.id));
+        await retrieveForEditingFormation();
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> delete() async {
+    try {
+      movementRepository.delete(editingMovement.value!.id);
+      await retrieveForEditingFormation();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> deleteForFormation(SNFormation formation) async {
+    try {
+      await movementRepository.deleteForFormation(formation.id);
     } catch (e) {
       print(e);
     }
@@ -186,38 +226,6 @@ class MovementController extends GetxController with StateMixin {
       } else {
         kCurveTypeFilter(kCurveType);
       }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future<void> create() async {
-    try {
-      bool isValid = true;
-      if (characterFilter.value == null || timeFilter.value == null) {
-        isValid = false;
-      }
-      movementsForCharacter.forEach((SNMovement movement) {
-        if (movement.startTime == timeFilter.value) {
-          isValid = false;
-        }
-      });
-      if (isValid) {
-        movementRepository.create(SNMovement.initialValue(
-            timeFilter.value!,
-            characterFilter.value!,
-            formationController.editingFormation.value!.id));
-        await retrieveForEditingFormation();
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future<void> delete() async {
-    try {
-      movementRepository.delete(editingMovement.value!.id);
-      await retrieveForEditingFormation();
     } catch (e) {
       print(e);
     }
@@ -306,8 +314,8 @@ class MovementController extends GetxController with StateMixin {
     }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
 }

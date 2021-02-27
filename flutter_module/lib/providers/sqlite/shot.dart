@@ -11,10 +11,12 @@ class ShotSQLiteProvider extends SQLiteProvider {
     print('Provider: Create operation succeed');
   }
 
-  Future<List<SNShot>> retrieveForTable(String tableId) async {
+  Future<List<SNShot>> retrieveForStoryboard(String storyboardId) async {
     final db = await database;
     final mapList = await db.query('sn_shot',
-        where: 'tableId = ?', whereArgs: [tableId], orderBy: 'startTime DESC');
+        where: 'storyboardId = ?',
+        whereArgs: [storyboardId],
+        orderBy: 'startTime DESC');
     return List.generate(mapList.length,
         (i) => SNShot.fromMap(mapList[i], mapList[i]['id'] as String));
   }

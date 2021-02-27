@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import '../models/storyboard.dart';
 import 'auth.dart';
 import 'song.dart';
+import 'shot.dart';
 import '../repositories/storyboard.dart';
 
 class StoryboardController extends GetxController {
-  AuthController authController = Get.find();
-  SongController songController = Get.find();
+  final AuthController authController = Get.find();
+  final SongController songController = Get.find();
+  late ShotController shotController = Get.find();
 
   final StoryboardRepository storyboardRepository;
 
@@ -61,7 +63,11 @@ class StoryboardController extends GetxController {
   Future<void> delete(SNStoryboard? storyboard) async {
     try {
       if (storyboard != null) {
+        await shotController.deleteForStoryboard(storyboard);
         await storyboardRepository.delete(storyboard.id);
+        if (storyboard == editingStoryboard.value) {
+          editingStoryboard.nil();
+        }
         retrieve();
       }
     } catch (e) {

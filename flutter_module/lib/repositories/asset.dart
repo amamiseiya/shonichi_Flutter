@@ -1,34 +1,39 @@
 import 'dart:io';
 import 'dart:convert';
 
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
-import '../models/attachment.dart';
+import '../models/asset.dart';
+import '../models/character.dart';
 import '../models/project.dart';
-import '../models/song.dart';
 import '../providers/firestore/firestore.dart';
-import '../providers/firebase/attachment.dart';
+import '../providers/firebase/asset.dart';
 
-class AttachmentRepository {
-  final databaseProvider = AttachmentFirestoreProvider();
-  final storageProvider = AttachmentFirebaseProvider();
+class AssetRepository {
+  final databaseProvider = AssetFirestoreProvider();
+  final storageProvider = AssetFirebaseProvider();
 
   // * -------- Simple Functions --------
   Future<String> getImageURI(String id) async =>
       await storageProvider.getImageURI(id);
 
-  // * -------- Attachment For Song CRUD --------
+  // * -------- Asset CRUD --------
 
-  Future<List<SNAttachment>> retrieveAttachmentsForSong(String songId) async =>
-      await databaseProvider.retrieveAttachmentsForSong(songId);
+  Future<List<SNAsset>> retrieveAssetsForSong(String songId) async =>
+      await databaseProvider.retrieveAssetsForSong(songId);
+
+  Future<List<String?>> retrieveAssetForCharacters(
+          List<SNCharacter> characters) async =>
+      await databaseProvider.retrieveAssetForCharacters(characters);
 
   // * -------- Asset Loading --------
 
   // TODO:
-  Future<String> importFromAssets(String ref) async {
-    return await rootBundle.loadString(p.join('assets', ref));
+  Future<String> importFromAssets(BuildContext context, String ref) async {
+    return await DefaultAssetBundle.of(context)
+        .loadString(p.join('assets', ref));
   }
 
   // * -------- Data Migration --------

@@ -48,16 +48,16 @@ class StoryboardPage extends StatelessWidget {
                     return LoadingAnimationLinear();
                   }
                   if (storyboardController.storyboardsForSong.value!.isEmpty) {
-                    // return _EmptyStoryboardPage();
+                    return _EmptyStoryboardPage();
                   }
                   return Column(children: [
-                    StoryboardChipSelector(),
+                    _StoryboardChipSelector(),
                     Obx(() {
                       if (shotController.shots.value == null) {
                         return LoadingAnimationLinear();
                       }
                       if (shotController.shots.value!.isEmpty) {
-                        _EmptyShotPage();
+                        return _EmptyShotPage();
                       }
                       return Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -95,13 +95,20 @@ class StoryboardPage extends StatelessWidget {
   }
 }
 
-class _EmptyStoryboardPage extends StatelessWidget {
+class _EmptyStoryboardPage extends GetView<StoryboardController> {
   Widget build(BuildContext context) {
-    return Text('Empty Storyboard Page');
+    return Column(children: [
+      Text('Empty Storyboard Page'),
+      ElevatedButton(
+        child: Text('Create new'.tr),
+        onPressed: () => Get.dialog(_StoryboardUpsertDialog(null))
+            .then((storyboard) => controller.submitCreate(storyboard)),
+      )
+    ]);
   }
 }
 
-class StoryboardChipSelector extends GetView<StoryboardController> {
+class _StoryboardChipSelector extends GetView<StoryboardController> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -141,11 +148,90 @@ class StoryboardChipSelector extends GetView<StoryboardController> {
           ActionChip(
             label: Icon(Icons.delete),
             tooltip: '',
-            onPressed: () =>
-                controller.delete(controller.editingStoryboard.value),
+            onPressed: () => Get.dialog(_ConfirmDeleteDialog()).then((confirm) {
+              if (confirm == null || confirm! == false) {
+                return;
+              }
+              if (confirm! == true) {
+                controller.delete(controller.editingStoryboard.value);
+              }
+            }),
           ),
         ]))
       ]),
+    );
+  }
+}
+
+class _StoryboardUpsertDialog extends GetView<StoryboardController> {
+  // 在dialog最终pop时才给对象赋值，不确定这样的方式是否合适
+  late SNStoryboard s;
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  _StoryboardUpsertDialog(SNStoryboard? storyboard) {
+    s = storyboard ?? SNStoryboard.initialValue();
+    _nameController.text = s.name;
+    _descriptionController.text = s.description;
+  }
+
+  Widget build(BuildContext context) => SimpleDialog(
+        title: Text('Storyboard Upsert Dialog'),
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Column(children: [
+                Form(
+                    child: Column(children: [
+                  TextFormField(
+                    controller: _nameController,
+                    decoration:
+                        InputDecoration(labelText: 'Input storyboard name'),
+                    onEditingComplete: () {},
+                  ),
+                  TextFormField(
+                    controller: _descriptionController,
+                    decoration: InputDecoration(
+                        labelText: 'Input storyboard description'),
+                    onEditingComplete: () {},
+                  ),
+                ])),
+                SimpleDialogOption(
+                  onPressed: () {
+                    controller.delete(s); // ! storyboard could be null
+                    Get.back();
+                  },
+                  child: Text('Delete'.tr),
+                ),
+                SimpleDialogOption(
+                  onPressed: () {
+                    s.name = _nameController.text;
+                    s.description = _descriptionController.text;
+                    Get.back(result: s);
+                  },
+                  child: Text('Submit'.tr),
+                ),
+              ]))
+        ],
+      );
+}
+
+class _ConfirmDeleteDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: SingleChildScrollView(
+        child: Text(
+            'Are you sure that you want to delete this storyboard? All shots will be deleted as well!'
+                .tr),
+      ),
+      actions: [
+        ElevatedButton(
+            child: Text('Cancel'.tr), onPressed: () => Get.back(result: false)),
+        ElevatedButton(
+            child: Text('OK'.tr), onPressed: () => Get.back(result: true))
+      ],
     );
   }
 }
@@ -317,8 +403,8 @@ class _ShotItem extends GetView<ShotController> {
             Text(shot.imageURI),
             Text(shot.comment),
             CharacterSelector(
-                editingShot: shot,
-                updateShot: (shot) => controller.updateShot(shot))
+                editingData: shot,
+                updateData: () => controller.updateShot(shot))
           ]));
     });
   }
@@ -572,58 +658,4 @@ class _ShotFilterPanel extends StatelessWidget {
       ],
     ));
   }
-}
-
-class _StoryboardUpsertDialog extends GetView<StoryboardController> {
-  // 在dialog最终pop时才给对象赋值，不确定这样的方式是否合适
-  late SNStoryboard s;
-
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-
-  _StoryboardUpsertDialog(SNStoryboard? storyboard) {
-    s = storyboard ?? SNStoryboard.initialValue();
-    _nameController.text = s.name;
-    _descriptionController.text = s.description;
-  }
-
-  Widget build(BuildContext context) => SimpleDialog(
-        title: Text('Storyboard Upsert Dialog'),
-        children: <Widget>[
-          Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Column(children: [
-                Form(
-                    child: Column(children: [
-                  TextFormField(
-                    controller: _nameController,
-                    decoration:
-                        InputDecoration(labelText: 'Input storyboard name'),
-                    onEditingComplete: () {},
-                  ),
-                  TextFormField(
-                    controller: _descriptionController,
-                    decoration: InputDecoration(
-                        labelText: 'Input storyboard description'),
-                    onEditingComplete: () {},
-                  ),
-                ])),
-                SimpleDialogOption(
-                  onPressed: () {
-                    controller.delete(s); // ! storyboard could be null
-                    Get.back();
-                  },
-                  child: Text('Delete'.tr),
-                ),
-                SimpleDialogOption(
-                  onPressed: () {
-                    s.name = _nameController.text;
-                    s.description = _descriptionController.text;
-                    Get.back(result: s);
-                  },
-                  child: Text('Submit'.tr),
-                ),
-              ]))
-        ],
-      );
 }

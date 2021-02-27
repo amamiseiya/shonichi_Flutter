@@ -4,7 +4,7 @@ import 'dart:typed_data' show Uint8List;
 
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-class AttachmentFirebaseProvider {
+class AssetFirebaseProvider {
   final firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
 

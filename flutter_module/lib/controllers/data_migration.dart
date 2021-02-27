@@ -4,22 +4,22 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shonichi_flutter_module/controllers/character.dart';
 
+import 'character.dart';
+import 'project.dart';
+import 'song.dart';
 import '../models/project.dart';
 import '../models/song.dart';
 import '../models/lyric.dart';
 import '../models/storyboard.dart';
 import '../models/shot.dart';
 import '../models/character.dart';
-import 'project.dart';
-import 'song.dart';
 import '../repositories/project.dart';
 import '../repositories/song.dart';
 import '../repositories/lyric.dart';
 import '../repositories/storyboard.dart';
 import '../repositories/shot.dart';
-import '../repositories/attachment.dart';
+import '../repositories/asset.dart';
 import '../providers/firestore/firestore.dart';
 import '../utils/des.dart';
 import '../utils/reg_exp.dart';
@@ -35,7 +35,7 @@ class DataMigrationController extends GetxController {
   final LyricRepository lyricRepository;
   final StoryboardRepository storyboardRepository;
   final ShotRepository shotRepository;
-  final AttachmentRepository attachmentRepository;
+  final AssetRepository assetRepository;
 
   RxString markdownText = RxString(null);
   bool needEncrypt = false;
@@ -46,13 +46,13 @@ class DataMigrationController extends GetxController {
       this.lyricRepository,
       this.storyboardRepository,
       this.shotRepository,
-      this.attachmentRepository)
+      this.assetRepository)
       : assert(projectRepository != null),
         assert(songRepository != null),
         assert(lyricRepository != null),
         assert(storyboardRepository != null),
         assert(shotRepository != null),
-        assert(attachmentRepository != null);
+        assert(assetRepository != null);
 
   @override
   void onInit() {
@@ -61,7 +61,7 @@ class DataMigrationController extends GetxController {
 
   void importMarkdown(String? key) async {
     try {
-      String mdText = await attachmentRepository
+      String mdText = await assetRepository
           .importMarkdown(projectController.editingProject.value!);
       if (key != null) {
         mdText = desDecrypt(mdText, key);
@@ -88,7 +88,7 @@ class DataMigrationController extends GetxController {
     String storyboardText = storyboardChapterRegExp.stringMatch(mdText)!;
     String shotsText =
         RegExp(r'(?<=---\s\|\n).+', dotAll: true).stringMatch(storyboardText)!;
-    final String tableId =
+    final String storyboardId =
         (await storyboardRepository.getLatestStoryboard(project.songId!))!.id +
             '1';
     final String kikaku =
@@ -112,7 +112,7 @@ class DataMigrationController extends GetxController {
           text: shotProps[8].group(0)!,
           imageURI: shotProps[9].group(0)!,
           comment: shotProps[10].group(0)!,
-          tableId: tableId,
+          storyboardId: storyboardId,
           characters: json
               .decode(shotProps[11].group(0)!)
               .map((Map<String, dynamic> cm) => SNCharacter.fromMap(cm))
@@ -137,7 +137,7 @@ class DataMigrationController extends GetxController {
   }
 
   // 输入String返回角色列表
-  List<SNCharacter> unserializeCharacters(String str,
+  List<SNCharacter> unserializeCharacters(BuildContext context, String str,
       {required CharacterSerializeMode mode}) {
     if (str != null) {
       final Iterable<String> csi =
@@ -145,14 +145,14 @@ class DataMigrationController extends GetxController {
       final List<SNCharacter> cl = [];
       if (mode == CharacterSerializeMode.Normal) {
         csi.forEach((cs) async {
-          cl.add(await characterController.retrieveFromString(
+          cl.add(await characterController.retrieveFromString(context,
               name: cs,
               kikaku: songController.editingSong.value!.subordinateKikaku));
         });
         return cl;
       } else if (mode == CharacterSerializeMode.Abbreviation) {
         csi.forEach((cs) async {
-          cl.add(await characterController.retrieveFromString(
+          cl.add(await characterController.retrieveFromString(context,
               nameAbbr: cs,
               kikaku: songController.editingSong.value!.subordinateKikaku));
         });
@@ -169,7 +169,7 @@ class DataMigrationController extends GetxController {
     try {
       markdownText(generateIntro(projectController.editingProject.value!,
               songController.editingSong.value!) +
-          generateShotDataTable(await shotRepository.retrieveForTable(
+          generateShotDataTable(await shotRepository.retrieveForStoryboard(
               projectController.editingProject.value!.storyboardId!)));
     } catch (e) {
       print(e);
@@ -230,11 +230,11 @@ class DataMigrationController extends GetxController {
   Future<void> exportMarkdown(String? key) async {
     try {
       if (key != null) {
-        await attachmentRepository.exportMarkdown(
+        await assetRepository.exportMarkdown(
             projectController.editingProject.value!,
             desEncrypt(markdownText.value, key));
       } else {
-        await attachmentRepository.exportMarkdown(
+        await assetRepository.exportMarkdown(
             projectController.editingProject.value!, markdownText.value);
       }
     } catch (e) {
@@ -251,11 +251,12 @@ class DataMigrationController extends GetxController {
       'sn_shot': []
     };
 
-    await attachmentRepository.exportJson(
-        json.encode(map), 'shot_data_export.json');
+    await assetRepository.exportJson(json.encode(map), 'shot_data_export.json');
   }
 
-  Future<void> importJson() async {
+  Future<void> importJson(
+    BuildContext context,
+  ) async {
     // await db.delete('sn_project');
     // await db.delete('sn_song');
     // await db.delete('sn_lyric');
@@ -264,28 +265,32 @@ class DataMigrationController extends GetxController {
     // await db.delete('sn_formation');
     // await db.delete('sn_movement');
 
-    final map = Map<String, List>.from(json.decode(
-        await attachmentRepository.importFromAssets('shot_data_example.json')));
-    map['sn_project']!.forEach((p) async => await FirebaseFirestore.instance
-        .collection('sn_project')
-        .doc(p['id'])
-        .set(p));
-    map['sn_song']!.forEach((s) async => await FirebaseFirestore.instance
-        .collection('sn_song')
-        .doc(s['id'])
-        .set(s));
-    map['sn_lyric']!.forEach((l) async => await FirebaseFirestore.instance
-        .collection('sn_lyric')
-        .doc(l['id'])
-        .set(l));
-    map['sn_storyboard']!.forEach((st) async => await FirebaseFirestore.instance
-        .collection('sn_storyboard')
-        .doc(st['id'])
-        .set(st));
-    map['sn_shot']!.forEach((s) async => await FirebaseFirestore.instance
-        .collection('sn_shot')
-        .doc(s['id'])
-        .set(s));
+    final map = Map<String, List>.from(json.decode(await assetRepository
+        .importFromAssets(context, 'shot_data_example.json')));
+    // map['sn_project']!.forEach((p) async => await FirebaseFirestore.instance
+    //     .collection('sn_project')
+    //     .doc(p['id'])
+    //     .set(p));
+    // map['sn_song']!.forEach((s) async => await FirebaseFirestore.instance
+    //     .collection('sn_song')
+    //     .doc(s['id'])
+    //     .set(s));
+    // map['sn_lyric']!.forEach((l) async => await FirebaseFirestore.instance
+    //     .collection('sn_lyric')
+    //     .doc(l['id'])
+    //     .set(l));
+    // map['sn_storyboard']!.forEach((st) async => await FirebaseFirestore.instance
+    //     .collection('sn_storyboard')
+    //     .doc(st['id'])
+    //     .set(st));
+    // map['sn_shot']!.forEach((s) async => await FirebaseFirestore.instance
+    //     .collection('sn_shot')
+    //     .doc(s['id'])
+    //     .set(s));
+    map['sn_asset']!.forEach((a) async => await FirebaseFirestore.instance
+        .collection('sn_asset')
+        .doc(a['id'])
+        .set(a));
   }
 
   @override

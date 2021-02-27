@@ -26,7 +26,7 @@ import 'repositories/storyboard.dart';
 import 'repositories/shot.dart';
 import 'repositories/movement.dart';
 import 'repositories/formation.dart';
-import 'repositories/attachment.dart';
+import 'repositories/asset.dart';
 import 'utils/localization.dart';
 import 'utils/theme.dart';
 
@@ -56,26 +56,21 @@ Future<void> initServices() async {
   final StoryboardRepository storyboardRepository = StoryboardRepository();
   final FormationRepository formationRepository = FormationRepository();
   final ShotRepository shotRepository = ShotRepository();
-  final AttachmentRepository attachmentRepository = AttachmentRepository();
+  final AssetRepository assetRepository = AssetRepository();
 
   Get.put(AuthController(authRepository));
-  Get.put(ProjectController(
-      projectRepository, songRepository, attachmentRepository));
-  Get.put(SongController(songRepository, attachmentRepository));
-  Get.put(CharacterController(attachmentRepository));
-  Get.put(LyricController(lyricRepository, attachmentRepository));
+  Get.put(
+      ProjectController(projectRepository, songRepository, assetRepository));
+  Get.put(SongController(songRepository, assetRepository));
+  Get.put(CharacterController(assetRepository));
+  Get.put(LyricController(lyricRepository, assetRepository));
   Get.put(StoryboardController(storyboardRepository));
   Get.put(ShotController(
-      songRepository, lyricRepository, shotRepository, attachmentRepository));
+      songRepository, lyricRepository, shotRepository, assetRepository));
   Get.put(FormationController(formationRepository));
-  Get.put(MovementController(movementRepository, attachmentRepository));
-  Get.put(DataMigrationController(
-      projectRepository,
-      songRepository,
-      lyricRepository,
-      storyboardRepository,
-      shotRepository,
-      attachmentRepository));
+  Get.put(MovementController(movementRepository, assetRepository));
+  Get.put(DataMigrationController(projectRepository, songRepository,
+      lyricRepository, storyboardRepository, shotRepository, assetRepository));
 }
 
 class APIService extends GetxService {

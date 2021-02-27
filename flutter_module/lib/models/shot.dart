@@ -18,7 +18,7 @@ class SNShot {
   String imageURI;
   String comment;
 
-  String tableId;
+  String storyboardId;
   List<SNCharacter> characters;
 
   static List<String> titles = [
@@ -49,7 +49,7 @@ class SNShot {
       required this.text,
       required this.imageURI,
       required this.comment,
-      required this.tableId,
+      required this.storyboardId,
       required this.characters});
 
   factory SNShot.initialValue(String storyboardId) {
@@ -66,7 +66,7 @@ class SNShot {
         text: '',
         imageURI: '',
         comment: '',
-        tableId: storyboardId,
+        storyboardId: storyboardId,
         characters: []);
   }
 
@@ -84,7 +84,7 @@ class SNShot {
       text: map['text'],
       imageURI: map['imageURI'],
       comment: map['comment'],
-      tableId: map['tableId'],
+      storyboardId: map['storyboardId'],
       characters: map['characters']
           .map<SNCharacter>((cm) => SNCharacter.fromMap(cm))
           .toList(),
@@ -103,7 +103,7 @@ class SNShot {
         'text': text,
         'imageURI': imageURI,
         'comment': comment,
-        'tableId': tableId,
+        'storyboardId': storyboardId,
         'characters': characters.map((character) => character.toMap()).toList(),
       };
 }

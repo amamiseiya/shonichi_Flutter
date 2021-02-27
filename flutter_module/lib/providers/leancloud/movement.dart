@@ -8,9 +8,9 @@ class MovementLeanCloudProvider extends LeanCloudProvider {
   //   print('Provider: Create operation succeed');
   // }
 
-  // Future<List<SNMovement>> retrieveForTable(String tableId) async {
+  // Future<List<SNMovement>> retrieveForFormation(String formationId) async {
   //   LCQuery<LCObject> query = LCQuery('SNMovement')
-  //     ..whereEqualTo('tableId', tableId)
+  //     ..whereEqualTo('formationId', formationId)
   //     ..orderByDescending('startTime');
   //   final movements = await query.find();
   //   print(

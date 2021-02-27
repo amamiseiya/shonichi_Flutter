@@ -23,7 +23,7 @@ class AuthController extends GetxController {
   }
 
   Future<void> submitEmailAuth(String? email) async {
-    authRepository.sendSignInLinkToEmail(email).then((value) => null);
+    await authRepository.sendSignInLinkToEmail(email).then((value) => null);
   }
 
   Future<void> signOut() async {

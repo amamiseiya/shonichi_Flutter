@@ -6,13 +6,13 @@ import '../models/song.dart';
 import '../models/shot.dart';
 import '../models/character.dart';
 
-class CharacterSelector extends StatefulWidget {
-  final SNShot editingShot;
-  final Function updateShot;
+class CharacterSelector<T> extends StatefulWidget {
+  final T editingData;
+  final Function() updateData;
 
-  CharacterSelector({required this.editingShot, required this.updateShot});
+  CharacterSelector({required this.editingData, required this.updateData});
 
-  // ! 向createState()里传参是不对的，又是一个小细节
+  // 向createState()里传参是不对的，又是一个小细节
   @override
   CharacterSelectorState createState() => CharacterSelectorState();
 }
@@ -83,10 +83,10 @@ class CharacterSelectorState extends State<CharacterSelector>
                           .map((character) {
                         return GestureDetector(
                             onTap: () {
-                              if (!widget.editingShot.characters
+                              if (!widget.editingData.characters
                                   .any((c) => c.name == character.name)) {
-                                widget.editingShot.characters.add(character);
-                                widget.updateShot(widget.editingShot);
+                                widget.editingData.characters.add(character);
+                                widget.updateData();
                               }
                               setState(() {
                                 chipVisible = true;
@@ -101,12 +101,13 @@ class CharacterSelectorState extends State<CharacterSelector>
                     ))),
           ]),
           Wrap(
-            children: widget.editingShot.characters.map<Widget>((character) {
+            children: widget.editingData.characters
+                .map<Widget>((SNCharacter character) {
               return ActionChip(
                 backgroundColor: character.memberColor,
                 onPressed: () {
-                  widget.editingShot.characters.remove(character);
-                  widget.updateShot(widget.editingShot);
+                  widget.editingData.characters.remove(character);
+                  widget.updateData();
                 },
                 label: Text(character.nameAbbr),
               );

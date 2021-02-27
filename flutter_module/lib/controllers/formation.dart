@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import '../models/formation.dart';
 import 'auth.dart';
 import 'song.dart';
+import 'movement.dart';
 import '../repositories/formation.dart';
 
 class FormationController extends GetxController {
-  AuthController authController = Get.find();
-  SongController songController = Get.find();
+  final AuthController authController = Get.find();
+  final SongController songController = Get.find();
+  late MovementController movementController = Get.find();
 
   final FormationRepository formationRepository;
 
@@ -55,7 +57,11 @@ class FormationController extends GetxController {
   Future<void> delete(SNFormation? formation) async {
     try {
       if (formation != null) {
+        await movementController.deleteForFormation(formation);
         await formationRepository.delete(formation.id);
+        if (formation == editingFormation.value) {
+          editingFormation.nil();
+        }
         retrieve();
       }
     } catch (e) {

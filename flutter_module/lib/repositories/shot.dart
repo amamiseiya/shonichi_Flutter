@@ -10,8 +10,8 @@ class ShotRepository {
 
   Future<void> create(SNShot shot) async => await provider.create(shot);
 
-  Future<List<SNShot>> retrieveForTable(String tableId) async =>
-      await provider.retrieveForTable(tableId);
+  Future<List<SNShot>> retrieveForStoryboard(String storyboardId) async =>
+      await provider.retrieveForStoryboard(storyboardId);
 
   Future<void> update(SNShot shot) async => await provider.update(shot);
 
@@ -19,4 +19,7 @@ class ShotRepository {
 
   Future<void> deleteMultiple(List<String> ids) async =>
       await provider.deleteMultiple(ids);
+
+  Future<void> deleteForStoryboard(String storyboardId) async =>
+      await provider.deleteForStoryboard(storyboardId);
 }

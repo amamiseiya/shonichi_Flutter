@@ -46,15 +46,18 @@ class FormationPage extends StatelessWidget {
           if (formationController.formationsForSong.value == null) {
             return LoadingAnimationLinear();
           }
-          if (formationController.formationsForSong.value!.isEmpty) {}
-
+          if (formationController.formationsForSong.value!.isEmpty) {
+            return _EmptyFormationPage();
+          }
           return Column(children: [
-            FormationChipSelector(),
+            _FormationChipSelector(),
             Obx(() {
-              if (movementController.movementsForTable.value == null) {
+              if (movementController.movementsForFormation.value == null) {
                 return LoadingAnimationLinear();
               }
-              if (movementController.movementsForTable.value!.isEmpty) {}
+              if (movementController.movementsForFormation.value!.isEmpty) {
+                return _EmptyMovementPage();
+              }
               return MovementEditor();
             })
           ]);
@@ -80,7 +83,20 @@ class FormationPage extends StatelessWidget {
   }
 }
 
-class FormationChipSelector extends GetView<FormationController> {
+class _EmptyFormationPage extends GetView<FormationController> {
+  Widget build(BuildContext context) {
+    return Column(children: [
+      Text('Empty Formation Page'),
+      ElevatedButton(
+        child: Text('Create new'.tr),
+        onPressed: () => Get.dialog(_FormationUpsertDialog(null))
+            .then((formation) => controller.submitCreate(formation)),
+      )
+    ]);
+  }
+}
+
+class _FormationChipSelector extends GetView<FormationController> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -122,16 +138,91 @@ class FormationChipSelector extends GetView<FormationController> {
               label: Icon(Icons.delete),
               tooltip: '',
               onPressed: () =>
-                  controller.delete(controller.editingFormation.value),
+                  Get.dialog(_ConfirmDeleteDialog()).then((confirm) {
+                if (confirm == null || confirm! == false) {
+                  return;
+                }
+                if (confirm! == true) {
+                  controller.delete(controller.editingFormation.value);
+                }
+              }),
             ),
           ]))
         ]));
   }
 }
 
-class _EmptyFormationPage extends StatelessWidget {
+class _FormationUpsertDialog extends GetView<FormationController> {
+  // 在dialog最终pop时才给对象赋值，不确定这样的方式是否合适
+
+  late SNFormation f;
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  _FormationUpsertDialog(SNFormation? formation) {
+    f = formation ?? SNFormation.initialValue();
+    _nameController.text = f.name;
+    _descriptionController.text = f.description;
+  }
+
+  Widget build(BuildContext context) => SimpleDialog(
+        title: Text('Formation upsert dialog'),
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Column(children: [
+                Form(
+                    child: Column(children: [
+                  TextFormField(
+                    controller: _nameController,
+                    decoration:
+                        InputDecoration(labelText: 'Input formation name'),
+                    onEditingComplete: () {},
+                  ),
+                  TextFormField(
+                    controller: _descriptionController,
+                    decoration: InputDecoration(
+                        labelText: 'Input formation description'),
+                    onEditingComplete: () {},
+                  ),
+                ])),
+                SimpleDialogOption(
+                  onPressed: () {
+                    controller.delete(f); // ! formation could be null
+                    Get.back();
+                  },
+                  child: Text('Delete'.tr),
+                ),
+                SimpleDialogOption(
+                  onPressed: () {
+                    f.name = _nameController.text;
+                    f.description = _descriptionController.text;
+                    Get.back(result: f);
+                  },
+                  child: Text('Submit'.tr),
+                ),
+              ]))
+        ],
+      );
+}
+
+class _ConfirmDeleteDialog extends StatelessWidget {
+  @override
   Widget build(BuildContext context) {
-    return Text('Empty Formation Page');
+    return AlertDialog(
+      content: SingleChildScrollView(
+        child: Text(
+            'Are you sure that you want to delete this formation? All movements will be deleted as well!'
+                .tr),
+      ),
+      actions: [
+        ElevatedButton(
+            child: Text('Cancel'.tr), onPressed: () => Get.back(result: false)),
+        ElevatedButton(
+            child: Text('OK'.tr), onPressed: () => Get.back(result: true))
+      ],
+    );
   }
 }
 
@@ -470,59 +561,4 @@ class KCurvePainter extends CustomPainter {
   @override
   bool shouldRepaint(KCurvePainter oldDelegate) =>
       oldDelegate.editingKCurve != editingKCurve;
-}
-
-class _FormationUpsertDialog extends GetView<FormationController> {
-  // 在dialog最终pop时才给对象赋值，不确定这样的方式是否合适
-
-  late SNFormation f;
-
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-
-  _FormationUpsertDialog(SNFormation? formation) {
-    f = formation ?? SNFormation.initialValue();
-    _nameController.text = f.name;
-    _descriptionController.text = f.description;
-  }
-
-  Widget build(BuildContext context) => SimpleDialog(
-        title: Text('Formation upsert dialog'),
-        children: <Widget>[
-          Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Column(children: [
-                Form(
-                    child: Column(children: [
-                  TextFormField(
-                    controller: _nameController,
-                    decoration:
-                        InputDecoration(labelText: 'Input formation name'),
-                    onEditingComplete: () {},
-                  ),
-                  TextFormField(
-                    controller: _descriptionController,
-                    decoration: InputDecoration(
-                        labelText: 'Input formation description'),
-                    onEditingComplete: () {},
-                  ),
-                ])),
-                SimpleDialogOption(
-                  onPressed: () {
-                    controller.delete(f); // ! formation could be null
-                    Get.back();
-                  },
-                  child: Text('Delete'.tr),
-                ),
-                SimpleDialogOption(
-                  onPressed: () {
-                    f.name = _nameController.text;
-                    f.description = _descriptionController.text;
-                    Get.back(result: f);
-                  },
-                  child: Text('Submit'.tr),
-                ),
-              ]))
-        ],
-      );
 }

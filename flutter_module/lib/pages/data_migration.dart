@@ -60,7 +60,7 @@ class MarkdownExporter extends GetView<DataMigrationController> {
                     value: controller.needEncrypt,
                     onChanged: (bool? newValue) {
                       controller.needEncrypt = newValue!;
-                      controller.update();
+                      (context as Element).markNeedsBuild();
                     })),
             ElevatedButton(
               child: Text('导入Markdown'),

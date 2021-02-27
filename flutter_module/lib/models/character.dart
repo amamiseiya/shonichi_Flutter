@@ -7,6 +7,7 @@ enum CharacterSerializeMode { Normal, Abbreviation }
 class SNCharacter {
   String name;
   String nameAbbr;
+  String? romaji;
   Color? memberColor;
   int? officialOrder;
   String? grade;
@@ -17,6 +18,7 @@ class SNCharacter {
   SNCharacter(
       {required this.name,
       required this.nameAbbr,
+      this.romaji,
       this.memberColor,
       this.officialOrder,
       this.grade,
@@ -28,7 +30,9 @@ class SNCharacter {
     return SNCharacter(
         name: map['name'],
         nameAbbr: map['nameAbbr'],
-        memberColor: Color(int.parse(map['memberColor'])),
+        romaji: map['romaji'],
+        memberColor: Color(
+            int.parse('0xFF${(map['memberColor'] as String).substring(1)}')),
         officialOrder: map['officialOrder'],
         grade: map['grade'],
         group: map['group'],
@@ -40,8 +44,9 @@ class SNCharacter {
     return {
       'name': name,
       'nameAbbr': nameAbbr,
+      'romaji': romaji,
       'memberColor':
-          '0x${memberColor?.value.toRadixString(16).padLeft(8, '0').toUpperCase()}',
+          '#${memberColor?.value.toRadixString(16).padLeft(8, '0').substring(2)}',
       'officialOrder': officialOrder,
       'grade': grade,
       'group': group,

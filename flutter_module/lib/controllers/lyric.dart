@@ -6,22 +6,22 @@ import '../models/song.dart';
 import '../models/lyric.dart';
 import 'song.dart';
 import '../repositories/lyric.dart';
-import '../repositories/attachment.dart';
+import '../repositories/asset.dart';
 
 class LyricController extends GetxController {
   final SongController songController = Get.find();
 
   final LyricRepository lyricRepository;
-  final AttachmentRepository attachmentRepository;
+  final AssetRepository assetRepository;
 
   late Worker worker;
 
   Rx<List<SNLyric>?> lyrics = Rx<List<SNLyric>?>(null);
   RxList<SNLyric> selectedLyrics = RxList<SNLyric>(List.empty());
 
-  LyricController(this.lyricRepository, this.attachmentRepository)
+  LyricController(this.lyricRepository, this.assetRepository)
       : assert(lyricRepository != null),
-        assert(attachmentRepository != null);
+        assert(assetRepository != null);
 
   void onInit() {
     super.onInit();

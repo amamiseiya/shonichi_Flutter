@@ -49,5 +49,6 @@ app.*.map.json
 
 
 .MWebMetaData/
+.vscode/
 
 Pods/

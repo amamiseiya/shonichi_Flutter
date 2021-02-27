@@ -45,7 +45,7 @@ class SongListPage extends GetView<SongController> {
               tooltip: 'Create'.tr, // used by assistive technologies
               child: Icon(Icons.add),
               heroTag: 'CreateFAB',
-              onPressed: () => Get.dialog(SongUpsertDialog(null))
+              onPressed: () => Get.dialog(_SongUpsertDialog(null))
                   .then((song) => controller.submitCreate(song))),
         ]));
   }
@@ -96,7 +96,7 @@ class _SongDataTableState extends State<SongDataTable> {
               .map((song) => DataRow(cells: [
                     DataCell(Text(song.name), onTap: () {
                       print('Pressed from DataCell');
-                      Get.dialog(SongUpsertDialog(song))
+                      Get.dialog(_SongUpsertDialog(song))
                           .then((song) => songController.submitUpdate(song));
                     }),
                     DataCell(Text(song.subordinateKikaku)),
@@ -114,7 +114,7 @@ class _EmptyPage extends StatelessWidget {
   }
 }
 
-class SongUpsertDialog extends StatelessWidget {
+class _SongUpsertDialog extends StatelessWidget {
   late SNSong s;
   SongController songController = Get.find();
   CharacterController characterController = Get.find();
@@ -124,7 +124,7 @@ class SongUpsertDialog extends StatelessWidget {
   TextEditingController _durationController = TextEditingController();
   TextEditingController _lyricOffsetController = TextEditingController();
 
-  SongUpsertDialog(SNSong? song) {
+  _SongUpsertDialog(SNSong? song) {
     s = song ?? SNSong.initialValue();
     _nameController.text = s.name;
     _coverURIController.text = s.coverURI;

@@ -4,16 +4,17 @@ class MovementFirestoreProvider extends FirestoreProvider {
   final CollectionReference _movementRef =
       FirebaseFirestore.instance.collection('sn_movement');
 
+  Query queryForFormation(String formationId) => _movementRef
+      .where('formationId', isEqualTo: formationId)
+      .orderBy('startTime', descending: false);
+
   Future<void> create(SNMovement movement) async {
     await _movementRef.add(movement.toMap());
     print('Provider: Create operation succeed');
   }
 
-  Future<List<SNMovement>> retrieveForTable(String tableId) async {
-    final snapshot = await _movementRef
-        .where('tableId', isEqualTo: tableId)
-        .orderBy('startTime', descending: false)
-        .get();
+  Future<List<SNMovement>> retrieveForFormation(String formationId) async {
+    final snapshot = await queryForFormation(formationId).get();
     print('Provider: ' +
         snapshot.docs.length.toString() +
         ' movement(s) retrieved');
@@ -31,5 +32,14 @@ class MovementFirestoreProvider extends FirestoreProvider {
   Future<void> delete(String id) async {
     await _movementRef.doc(id).delete();
     print('Provider: Delete operation succeed');
+  }
+
+  Future<void> deleteForFormation(String formationId) async {
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    await queryForFormation(formationId).get().then((snapshot) =>
+        snapshot.docs.forEach((doc) => batch.delete(doc.reference)));
+    return batch
+        .commit()
+        .then((_) => print('Provider: Batch delete operation succeed'));
   }
 }

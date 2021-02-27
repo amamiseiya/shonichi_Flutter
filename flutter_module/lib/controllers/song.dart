@@ -5,14 +5,14 @@ import 'package:get/get.dart';
 import '../models/project.dart';
 import '../models/song.dart';
 import 'project.dart';
-import '../repositories/attachment.dart';
+import '../repositories/asset.dart';
 import '../repositories/song.dart';
 
 class SongController extends GetxController {
   final ProjectController projectController = Get.find();
 
   final SongRepository songRepository;
-  final AttachmentRepository attachmentRepository;
+  final AssetRepository assetRepository;
   late Workers workers;
 
   Rx<List<SNSong>?> songs = Rx<List<SNSong>?>(null);
@@ -21,9 +21,9 @@ class SongController extends GetxController {
   Rx<String?> videoURI = Rx<String>(
       'https://assets.mixkit.co/videos/preview/mixkit-landscape-from-the-top-of-a-cloudy-mountain-range-39703-large.mp4');
 
-  SongController(this.songRepository, this.attachmentRepository)
+  SongController(this.songRepository, this.assetRepository)
       : assert(songRepository != null),
-        assert(attachmentRepository != null);
+        assert(assetRepository != null);
 
   void onInit() {
     super.onInit();
@@ -34,8 +34,7 @@ class SongController extends GetxController {
         } else if (projects.isNotEmpty) {
           final SNSong firstSong =
               await songRepository.retrieveById(projects[0].songId!);
-          firstCoverURI(
-              await attachmentRepository.getImageURI(firstSong.coverURI));
+          firstCoverURI(await assetRepository.getImageURI(firstSong.coverURI));
         } else {
           throw FormatException();
         }
@@ -56,8 +55,8 @@ class SongController extends GetxController {
   }
 
   Future<void> retrieveSongVideo() async {
-    attachmentRepository
-        .retrieveAttachmentsForSong(editingSong.value!.id)
+    assetRepository
+        .retrieveAssetsForSong(editingSong.value!.id)
         .then((a) => videoURI(a.first.uRI));
   }
 

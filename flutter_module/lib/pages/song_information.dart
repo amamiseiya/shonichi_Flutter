@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
@@ -10,6 +10,7 @@ import '../controllers/song.dart';
 import '../controllers/lyric.dart';
 import '../widgets/drawer.dart';
 import '../widgets/loading.dart';
+import '../widgets/character_selector.dart';
 import '../utils/reg_exp.dart';
 
 class SongInformationPage extends GetView<LyricController> {
@@ -120,7 +121,10 @@ class _LyricDataTableState extends State<LyricDataTable> {
                                   .stringMatch(lyric.endTime.toString())!)),
                               DataCell(Text(lyric.text),
                                   showEditIcon: true, onTap: null),
-                              DataCell(Text('')),
+                              DataCell(CharacterSelector(
+                                  editingData: lyric,
+                                  updateData: () =>
+                                      lyricController.updateLyric(lyric))),
                             ]))
                     .toList(),
               ),
@@ -143,7 +147,7 @@ class LyricInspectorState extends State<LyricInspector> {
   @override
   void initState() {
     super.initState();
-    songController.retrieveSongVideo();
+    // songController.retrieveSongVideo();
     initializePlayer();
   }
 

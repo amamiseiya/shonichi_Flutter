@@ -7,23 +7,23 @@ import '../models/project.dart';
 import '../models/song.dart';
 import '../repositories/project.dart';
 import '../repositories/song.dart';
-import '../repositories/attachment.dart';
+import '../repositories/asset.dart';
 
 class ProjectController extends GetxController {
   final AuthController authController = Get.find();
 
   final ProjectRepository projectRepository;
   final SongRepository songRepository;
-  final AttachmentRepository attachmentRepository;
+  final AssetRepository assetRepository;
 
   Rx<List<SNProject>?> projects = Rx<List<SNProject>?>(null);
   Rx<SNProject?> editingProject = Rx<SNProject>(null);
 
   ProjectController(
-      this.projectRepository, this.songRepository, this.attachmentRepository)
+      this.projectRepository, this.songRepository, this.assetRepository)
       : assert(projectRepository != null),
         assert(songRepository != null),
-        assert(attachmentRepository != null) {
+        assert(assetRepository != null) {
     // projects.bindStream(projectRepository.projectsStream);
   }
 

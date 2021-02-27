@@ -38,7 +38,7 @@ class SNLyric {
     Duration endTime
     String text
     String songId
-    List<SNCharacter> soloPart
+    List<SNCharacter> characters
     fromMap()
     toMap()
 }
@@ -67,7 +67,7 @@ class SNShot {
     String text
     String image
     String comment
-    String tableId
+    String storyboardId
     List<SNCharacter> characters
     fromMap()
     toMap()
@@ -96,7 +96,7 @@ class SNMovement {
     int curveY2X
     int curveY2Y
     String characterName
-    String tableId
+    String formationId
     fromMap()
     toMap()
 }
