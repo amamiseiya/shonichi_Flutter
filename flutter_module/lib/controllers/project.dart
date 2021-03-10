@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 import 'auth.dart';
@@ -40,8 +41,9 @@ class ProjectController extends GetxController {
     try {
       if (project != null) {
         project.creatorId = authController.user.value!.uid;
-        await projectRepository.create(project);
-        retrieve();
+        final DocumentReference docRef = await projectRepository.create(project);
+        await retrieve();
+        await select(docRef.id);
       }
     } catch (e) {
       print(e);

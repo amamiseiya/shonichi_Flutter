@@ -14,7 +14,7 @@ class AssetFirestoreProvider extends FirestoreProvider {
     print(
         'Provider: ' + snapshot.docs.length.toString() + ' asset(s) retrieved');
     return List.generate(snapshot.docs.length,
-        (i) => SNAsset.fromMap(snapshot.docs[i].data(), snapshot.docs[i].id));
+        (i) => SNAsset.fromJson(snapshot.docs[i].data(), snapshot.docs[i].id));
   }
 
   Future<List<String?>> retrieveAssetForCharacters(

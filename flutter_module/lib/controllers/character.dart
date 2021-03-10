@@ -58,7 +58,7 @@ class CharacterController extends GetxController {
       final result =
           map[kikaku]!.where((character) => character['name'] == name);
       if (result.length == 1) {
-        return SNCharacter.fromMap(result.first);
+        return SNCharacter.fromJson(result.first);
       } else {
         throw FormatException();
       }
@@ -66,7 +66,7 @@ class CharacterController extends GetxController {
       final result =
           map[kikaku]!.where((character) => character['nameAbbr'] == nameAbbr);
       if (result.length == 1) {
-        return SNCharacter.fromMap(result.first);
+        return SNCharacter.fromJson(result.first);
       } else {
         throw FormatException();
       }
@@ -87,7 +87,7 @@ class CharacterController extends GetxController {
     final map = Map<String, List>.from(json.decode(await assetRepository
         .importFromAssets(context, 'character_data.json')));
     if (map[kikaku] != null) {
-      return map[kikaku]!.map((c) => SNCharacter.fromMap(c)).toList();
+      return map[kikaku]!.map((c) => SNCharacter.fromJson(c)).toList();
     } else {
       throw FormatException();
     }

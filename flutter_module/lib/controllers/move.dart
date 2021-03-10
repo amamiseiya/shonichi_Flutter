@@ -9,34 +9,34 @@ import '../controllers/formation.dart';
 import '../models/project.dart';
 import '../models/song.dart';
 import '../models/lyric.dart';
-import '../models/movement.dart';
+import '../models/move.dart';
 import '../models/character.dart';
 import '../models/formation.dart';
 import 'project.dart';
 import 'song.dart';
 import 'lyric.dart';
 import '../repositories/asset.dart';
-import '../repositories/movement.dart';
+import '../repositories/move.dart';
 
-class MovementController extends GetxController with StateMixin {
+class MoveController extends GetxController with StateMixin {
   final ProjectController projectController = Get.find();
   final SongController songController = Get.find();
   final LyricController lyricController = Get.find();
   final FormationController formationController = Get.find();
 
-  final MovementRepository movementRepository;
+  final MoveRepository moveRepository;
   final AssetRepository assetRepository;
 
   late Worker worker;
-  Rx<List<SNMovement>?> movementsForFormation = Rx<List<SNMovement>?>(null);
+  Rx<List<SNMove>?> movesForFormation = Rx<List<SNMove>?>(null);
 
   Rx<SNCharacter?> characterFilter = Rx<SNCharacter>(null);
   Rx<Duration?> timeFilter = Rx<Duration>(null);
   Rx<KCurveType?> kCurveTypeFilter = Rx<KCurveType>(null);
 
-  RxList<SNMovement> movementsForCharacter = RxList<SNMovement>(null);
-  RxList<SNMovement> movementsForTime = RxList<SNMovement>(null);
-  Rx<SNMovement?> editingMovement = Rx<SNMovement>(null);
+  RxList<SNMove> movesForCharacter = RxList<SNMove>(null);
+  RxList<SNMove> movesForTime = RxList<SNMove>(null);
+  Rx<SNMove?> editingMove = Rx<SNMove>(null);
   Rx<List<Offset>?> editingKCurve = Rx<List<Offset>?>(null);
 
   @override
@@ -47,7 +47,7 @@ class MovementController extends GetxController with StateMixin {
         (SNFormation? newFormation) async {
       await retrieveForEditingFormation();
       print(
-          '${movementsForFormation.value?.length} movement(s) retrieved -- listening to editingFormation');
+          '${movesForFormation.value?.length} move(s) retrieved -- listening to editingFormation');
     });
     print('onInit() completed');
   }
@@ -58,70 +58,70 @@ class MovementController extends GetxController with StateMixin {
   final programPainterSize = Size(480, 270);
   final kCurvePainterSize = Size(270, 270);
 
-  MovementController(this.movementRepository, this.assetRepository)
-      : assert(movementRepository != null),
+  MoveController(this.moveRepository, this.assetRepository)
+      : assert(moveRepository != null),
         assert(assetRepository != null) {
-    movementsForCharacter.bindStream(rx.Rx.combineLatest2(
-        movementsForFormation.stream, characterFilter.stream,
-        (List<SNMovement>? stream, SNCharacter? filter) {
+    movesForCharacter.bindStream(rx.Rx.combineLatest2(
+        movesForFormation.stream, characterFilter.stream,
+        (List<SNMove>? stream, SNCharacter? filter) {
       if (stream == null) {
         return List.empty();
       } else if (stream != null && filter == null) {
         return stream;
       } else if (stream != null && filter != null) {
         return stream
-            .where((movement) => movement.character.name == filter.name)
+            .where((move) => move.character.name == filter.name)
             .toList();
       } else {
         throw FormatException();
       }
     }));
-    movementsForTime.bindStream(
-        rx.Rx.combineLatest2(movementsForFormation.stream, timeFilter.stream,
-            (List<SNMovement>? stream, Duration? filter) {
+    movesForTime.bindStream(
+        rx.Rx.combineLatest2(movesForFormation.stream, timeFilter.stream,
+            (List<SNMove>? stream, Duration? filter) {
       if (stream == null) {
         return List.empty();
       } else if (stream != null && filter == null) {
         return stream;
       } else if (stream != null && filter != null) {
         return stream
-            .where((movement) => movement.startTime == filter)
+            .where((move) => move.startTime == filter)
             .toList();
       } else {
         throw FormatException();
       }
     }));
     // ? 不确定.first会不会带来问题
-    editingMovement.bindStream(rx.Rx.combineLatest3(
-        movementsForFormation.stream, characterFilter.stream, timeFilter.stream,
-        (List<SNMovement>? stream, SNCharacter? characterFilter,
+    editingMove.bindStream(rx.Rx.combineLatest3(
+        movesForFormation.stream, characterFilter.stream, timeFilter.stream,
+        (List<SNMove>? stream, SNCharacter? characterFilter,
             Duration? timeFilter) {
       if (stream == null) {
         return null;
       } else if (stream != null) {
-        final Iterable<SNMovement> m = stream
+        final Iterable<SNMove> m = stream
             .where(
-                (movement) => movement.character.name == characterFilter?.name)
-            .where((movement) => movement.startTime == timeFilter);
+                (move) => move.character.name == characterFilter?.name)
+            .where((move) => move.startTime == timeFilter);
         if (m.isEmpty) {
           return null;
         } else if (m.length == 1) {
           return m.first;
         } else {
-          throw FormatException('Multiple movements exist');
+          throw FormatException('Multiple moves exist');
         }
       }
     }));
     editingKCurve.bindStream(
-        rx.Rx.combineLatest2(editingMovement.stream, kCurveTypeFilter.stream,
-            (SNMovement? movement, KCurveType? kCurveType) {
-      if (movement == null || kCurveType == null) {
+        rx.Rx.combineLatest2(editingMove.stream, kCurveTypeFilter.stream,
+            (SNMove? move, KCurveType? kCurveType) {
+      if (move == null || kCurveType == null) {
         return null;
       }
-      if (movement != null && kCurveType != null) {
+      if (move != null && kCurveType != null) {
         return List.generate(
           2,
-          (i) => movement.getMovementPoint(kCurveType, i, kCurvePainterSize),
+          (i) => move.getMovePoint(kCurveType, i, kCurvePainterSize),
         );
       } else {
         throw FormatException();
@@ -133,10 +133,10 @@ class MovementController extends GetxController with StateMixin {
     try {
       print('Retrieving shots for editingFormation');
       if (formationController.editingFormation.value == null) {
-        movementsForFormation.nil();
+        movesForFormation.nil();
         change(0, status: RxStatus.success());
       } else if (formationController.editingFormation.value != null) {
-        movementsForFormation(await movementRepository.retrieveForFormation(
+        movesForFormation(await moveRepository.retrieveForFormation(
             formationController.editingFormation.value!.id));
         change(0, status: RxStatus.success());
       }
@@ -151,13 +151,13 @@ class MovementController extends GetxController with StateMixin {
       if (characterFilter.value == null || timeFilter.value == null) {
         isValid = false;
       }
-      movementsForCharacter.forEach((SNMovement movement) {
-        if (movement.startTime == timeFilter.value) {
+      movesForCharacter.forEach((SNMove move) {
+        if (move.startTime == timeFilter.value) {
           isValid = false;
         }
       });
       if (isValid) {
-        movementRepository.create(SNMovement.initialValue(
+        moveRepository.create(SNMove.initialValue(
             timeFilter.value!,
             characterFilter.value!,
             formationController.editingFormation.value!.id));
@@ -170,7 +170,7 @@ class MovementController extends GetxController with StateMixin {
 
   Future<void> delete() async {
     try {
-      movementRepository.delete(editingMovement.value!.id);
+      moveRepository.delete(editingMove.value!.id);
       await retrieveForEditingFormation();
     } catch (e) {
       print(e);
@@ -179,7 +179,7 @@ class MovementController extends GetxController with StateMixin {
 
   Future<void> deleteForFormation(SNFormation formation) async {
     try {
-      await movementRepository.deleteForFormation(formation.id);
+      await moveRepository.deleteForFormation(formation.id);
     } catch (e) {
       print(e);
     }
@@ -232,13 +232,13 @@ class MovementController extends GetxController with StateMixin {
   }
 
   void onPanDownProgram(DragDownDetails details,
-      List<SNMovement> movementsForTime, BuildContext context) async {
+      List<SNMove> movesForTime, BuildContext context) async {
     print('OnPanDown');
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final Offset localPos = renderBox.globalToLocal(details.globalPosition);
-    for (int i = 0; i < movementsForTime.length; i++) {
+    for (int i = 0; i < movesForTime.length; i++) {
       Rect rect = Rect.fromCircle(
-          center: movementsForTime[i].getMovementPos(programPainterSize),
+          center: movesForTime[i].getMovePos(programPainterSize),
           radius: 20);
       if (rect.contains(localPos)) {
         draggedPos = i;
@@ -252,23 +252,23 @@ class MovementController extends GetxController with StateMixin {
   }
 
   void onPanUpdateProgram(DragUpdateDetails details,
-      List<SNMovement> movementsForTime, BuildContext context) async {
+      List<SNMove> movesForTime, BuildContext context) async {
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final Offset localPos = renderBox.globalToLocal(details.globalPosition);
     print('Pos:${localPos.dx},${localPos.dy}');
     if (draggedPos != -1) {
-      movementsForTime[draggedPos].setMovementPos(localPos, programPainterSize);
+      movesForTime[draggedPos].setMovePos(localPos, programPainterSize);
     }
   }
 
   void onPanEndProgram(DragEndDetails details,
-      List<SNMovement> movementsForTime, BuildContext context) async {
+      List<SNMove> movesForTime, BuildContext context) async {
     print('OnPanEnd');
     if (draggedPos != -1) {
-      movementsForTime[draggedPos].checkMovementPos();
+      movesForTime[draggedPos].checkMovePos();
       print(
-          '${movementsForTime[draggedPos].posX},${movementsForTime[draggedPos].posY}');
-      await movementRepository.update(movementsForTime[draggedPos]);
+          '${movesForTime[draggedPos].posX},${movesForTime[draggedPos].posY}');
+      await moveRepository.update(movesForTime[draggedPos]);
       await retrieveForEditingFormation();
     }
   }
@@ -294,7 +294,7 @@ class MovementController extends GetxController with StateMixin {
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final Offset localPos = renderBox.globalToLocal(details.globalPosition);
     if (draggedPoint != -1) {
-      editingMovement.value!.setMovementPoint(
+      editingMove.value!.setMovePoint(
           localPos, kCurveTypeFilter.value!, draggedPoint, kCurvePainterSize);
       print('Point:${localPos.dx},${localPos.dy}');
     }
@@ -304,12 +304,12 @@ class MovementController extends GetxController with StateMixin {
       BuildContext context) async {
     print('OnPanEnd');
     if (draggedPoint != -1) {
-      editingMovement.value!.checkMovementPoint(kCurveTypeFilter.value!);
+      editingMove.value!.checkMovePoint(kCurveTypeFilter.value!);
       print(
-          '${editingMovement.value!.curveX1X},${editingMovement.value!.curveX1Y},${editingMovement.value!.curveX2X},${editingMovement.value!.curveX2Y}');
+          '${editingMove.value!.curveX1X},${editingMove.value!.curveX1Y},${editingMove.value!.curveX2X},${editingMove.value!.curveX2Y}');
       print(
-          '${editingMovement.value!.curveY1X},${editingMovement.value!.curveY1Y},${editingMovement.value!.curveY2X},${editingMovement.value!.curveY2Y}');
-      await movementRepository.update(editingMovement.value!);
+          '${editingMove.value!.curveY1X},${editingMove.value!.curveY1Y},${editingMove.value!.curveY2X},${editingMove.value!.curveY2Y}');
+      await moveRepository.update(editingMove.value!);
       await retrieveForEditingFormation();
     }
   }

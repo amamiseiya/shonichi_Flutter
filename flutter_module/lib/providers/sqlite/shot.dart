@@ -5,7 +5,7 @@ class ShotSQLiteProvider extends SQLiteProvider {
     final db = await database;
     await db.insert(
       'sn_shot',
-      shot.toMap(),
+      shot.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     print('Provider: Create operation succeed');
@@ -18,14 +18,14 @@ class ShotSQLiteProvider extends SQLiteProvider {
         whereArgs: [storyboardId],
         orderBy: 'startTime DESC');
     return List.generate(mapList.length,
-        (i) => SNShot.fromMap(mapList[i], mapList[i]['id'] as String));
+        (i) => SNShot.fromJson(mapList[i], mapList[i]['id'] as String));
   }
 
   Future<void> update(SNShot shot) async {
     final db = await database;
     await db.update(
       'sn_shot',
-      shot.toMap(),
+      shot.toJson(),
       where: 'id = ?',
       whereArgs: [shot.id],
     );

@@ -55,7 +55,7 @@ class KikakuInformationPage extends GetView<CharacterController> {
                                                             .elementAt(index) !=
                                                         null)
                                                     ? Image.asset(
-                                                        'assets/images/characters/${kikaku.name}/${snapshot.data.values.elementAt(index)!}')
+                                                        'assets/images/characters/${snapshot.data.values.elementAt(index)!}')
                                                     : Container()),
                                             Text(snapshot.data.keys
                                                 .elementAt(index)

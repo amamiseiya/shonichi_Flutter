@@ -1,18 +1,25 @@
 import 'dart:math';
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
+
 import 'character.dart';
 import '../utils/data_convert.dart';
 
+part 'shot.g.dart';
+
+@JsonSerializable()
 class SNShot {
+  @JsonKey(ignore: true)
   String id;
+
   int sceneNumber;
   int shotNumber;
   Duration startTime;
   Duration endTime;
   String lyric;
   String shotType;
-  String shotMovement;
+  String shotMove;
   String shotAngle;
   String text;
   String imageURI;
@@ -21,30 +28,15 @@ class SNShot {
   String storyboardId;
   List<SNCharacter> characters;
 
-  static List<String> titles = [
-    '场号',
-    '镜号',
-    '起始时间',
-    '结束时间',
-    '歌词',
-    '景别',
-    '运动',
-    '角度',
-    '拍摄内容',
-    '画面',
-    '备注',
-    '角色',
-  ];
-
   SNShot(
-      {required this.id,
+      {this.id = 'initial',
       required this.sceneNumber,
       required this.shotNumber,
       required this.startTime,
       required this.endTime,
       required this.lyric,
       required this.shotType,
-      required this.shotMovement,
+      required this.shotMove,
       required this.shotAngle,
       required this.text,
       required this.imageURI,
@@ -61,7 +53,7 @@ class SNShot {
         endTime: Duration(milliseconds: Random().nextInt(100000)),
         lyric: '',
         shotType: 'VERYLONGSHOT',
-        shotMovement: '',
+        shotMove: '',
         shotAngle: '',
         text: '',
         imageURI: '',
@@ -70,42 +62,10 @@ class SNShot {
         characters: []);
   }
 
-  factory SNShot.fromMap(Map<String, dynamic> map, String id) {
-    return SNShot(
-      id: id,
-      sceneNumber: map['sceneNumber'],
-      shotNumber: map['shotNumber'],
-      startTime: Duration(milliseconds: map['startTime']),
-      endTime: Duration(milliseconds: map['endTime']),
-      lyric: map['lyric'],
-      shotType: map['shotType'],
-      shotMovement: map['shotMovement'],
-      shotAngle: map['shotAngle'],
-      text: map['text'],
-      imageURI: map['imageURI'],
-      comment: map['comment'],
-      storyboardId: map['storyboardId'],
-      characters: map['characters']
-          .map<SNCharacter>((cm) => SNCharacter.fromMap(cm))
-          .toList(),
-    );
-  }
+  factory SNShot.fromJson(Map<String, dynamic> map, String id) =>
+      _$SNShotFromJson(map)..id = id;
 
-  Map<String, dynamic> toMap() => {
-        'sceneNumber': sceneNumber,
-        'shotNumber': shotNumber,
-        'startTime': startTime.inMilliseconds,
-        'endTime': endTime.inMilliseconds,
-        'lyric': lyric,
-        'shotType': shotType,
-        'shotMovement': shotMovement,
-        'shotAngle': shotAngle,
-        'text': text,
-        'imageURI': imageURI,
-        'comment': comment,
-        'storyboardId': storyboardId,
-        'characters': characters.map((character) => character.toMap()).toList(),
-      };
+  Map<String, dynamic> toJson() => _$SNShotToJson(this);
 }
 
 List<Map<String, dynamic>> shotScenes = [

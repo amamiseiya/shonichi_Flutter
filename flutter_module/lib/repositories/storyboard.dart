@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../models/storyboard.dart';
 import '../providers/sqlite/sqlite.dart';
 import '../providers/firestore/firestore.dart';
@@ -5,7 +7,7 @@ import '../providers/firestore/firestore.dart';
 class StoryboardRepository {
   final provider = StoryboardFirestoreProvider();
 
-  Future<void> create(SNStoryboard storyboard) async =>
+  Future<DocumentReference> create(SNStoryboard storyboard) async =>
       await provider.create(storyboard);
 
   Future<SNStoryboard> retrieveById(String id) async =>

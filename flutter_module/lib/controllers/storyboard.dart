@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 import '../models/storyboard.dart';
@@ -24,8 +25,9 @@ class StoryboardController extends GetxController {
       if (storyboard != null) {
         storyboard.creatorId = authController.user.value!.uid;
         storyboard.songId = songController.editingSong.value!.id;
-        await storyboardRepository.create(storyboard);
-        retrieve();
+        final DocumentReference docRef =  await storyboardRepository.create(storyboard);
+        await retrieve();
+        await select(docRef.id);
       }
     } catch (e) {
       print(e);

@@ -8,14 +8,14 @@ class ProjectFirestoreProvider extends FirestoreProvider {
   //     .orderBy('createdTime', descending: true)
   //     .snapshots()
   //     .map((querySnapshot) => List.generate(querySnapshot.docs.length, (i) {
-  //           final project = SNProject.fromMap(querySnapshot.docs[i].data());
+  //           final project = SNProject.fromJson(querySnapshot.docs[i].data());
   //           project.id = querySnapshot.docs[i].id;
   //           return project;
   //         }));
 
-  Future<void> create(SNProject project) async {
-    await _projectRef.add(project.toMap());
-    print('Provider: Create operation succeed');
+  Future<DocumentReference> create(SNProject project) async {
+    return _projectRef.add(project.toJson());
+    // print('Provider: Create operation succeed');
   }
 
   Future<SNProject> retrieveById(String id) async {
@@ -24,7 +24,7 @@ class ProjectFirestoreProvider extends FirestoreProvider {
       throw FirebaseException(
           plugin: 'Firestore', message: 'Document does not exist');
     }
-    final project = SNProject.fromMap(snapshot.data(), snapshot.id);
+    final project = SNProject.fromJson(snapshot.data(), snapshot.id);
     print('Provider: Retrieved project: ' + project.toString());
     return project;
   }
@@ -39,11 +39,11 @@ class ProjectFirestoreProvider extends FirestoreProvider {
         snapshot.docs.length.toString() +
         ' project(s) retrieved');
     return List.generate(snapshot.docs.length,
-        (i) => SNProject.fromMap(snapshot.docs[i].data(), snapshot.docs[i].id));
+        (i) => SNProject.fromJson(snapshot.docs[i].data(), snapshot.docs[i].id));
   }
 
   Future<void> update(SNProject project) async {
-    await _projectRef.doc(project.id).set(project.toMap());
+    await _projectRef.doc(project.id).set(project.toJson());
     print('Provider: Update operation succeed');
   }
 

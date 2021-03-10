@@ -1,7 +1,14 @@
 // import 'package:leancloud_storage/leancloud.dart';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'project.g.dart';
+
+@JsonSerializable()
 class SNProject {
+  @JsonKey(ignore: true)
   String id;
+
   String creatorId;
   String dancerName;
   DateTime createdTime;
@@ -12,7 +19,7 @@ class SNProject {
   String? formationId;
 
   SNProject(
-      {required this.id,
+      {this.id = 'initial',
       required this.creatorId,
       required this.dancerName,
       required this.createdTime,
@@ -31,47 +38,8 @@ class SNProject {
       storyboardId: '',
       formationId: '');
 
-  factory SNProject.fromMap(Map<String, dynamic> map, String id) {
-    return SNProject(
-      id: id,
-      creatorId: map['creatorId'],
-      dancerName: map['dancerName'],
-      createdTime: DateTime.parse(map['createdTime']),
-      modifiedTime: DateTime.parse(map['modifiedTime']),
-      songId: map['songId'],
-      storyboardId: map['storyboardId'],
-      formationId: map['formationId'],
-    );
-  }
+  factory SNProject.fromJson(Map<String, dynamic> map, String id) =>
+      _$SNProjectFromJson(map)..id = id;
 
-  // factory SNProject.fromLCObject(LCObject object) {
-  //   return SNProject(
-  //     id: object.objectId,
-  //     dancerName: object['dancerName'],
-  //     createdTime: object.createdAt,
-  //     modifiedTime: object.updatedAt,
-  //     songId: object['songId'],
-  //     storyboardId: object['storyboardId'],
-  //     formationId: object['formationId'],
-  //   );
-  // }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'creatorId': creatorId,
-      'dancerName': dancerName,
-      'createdTime': createdTime.toString(),
-      'modifiedTime': modifiedTime.toString(),
-      'songId': songId,
-      'storyboardId': storyboardId,
-      'formationId': formationId,
-    };
-  }
-
-  // void toLCObject(LCObject object) {
-  //   object['dancerName'] = dancerName;
-  //   object['songId'] = songId;
-  //   object['storyboardId'] = storyboardId;
-  //   object['formationId'] = formationId;
-  // }
+  Map<String, dynamic> toJson() => _$SNProjectToJson(this);
 }

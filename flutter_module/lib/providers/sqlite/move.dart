@@ -1,33 +1,33 @@
 part of 'sqlite.dart';
 
-class MovementSQLiteProvider extends SQLiteProvider {
-  Future<void> create(SNMovement movement) async {
+class MoveSQLiteProvider extends SQLiteProvider {
+  Future<void> create(SNMove move) async {
     final db = await database;
     await db.insert(
-      'sn_movement',
-      movement.toMap(),
+      'sn_move',
+      move.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     print('Provider: Create operation succeed');
   }
 
-  Future<List<SNMovement>> retrieveForFormation(String formationId) async {
+  Future<List<SNMove>> retrieveForFormation(String formationId) async {
     final db = await database;
-    final mapList = await db.query('sn_movement',
+    final mapList = await db.query('sn_move',
         where: 'formationId = ?',
         whereArgs: [formationId],
         orderBy: 'startTime DESC');
     return List.generate(mapList.length,
-        (i) => SNMovement.fromMap(mapList[i], mapList[i]['id'] as String));
+        (i) => SNMove.fromJson(mapList[i], mapList[i]['id'] as String));
   }
 
-  Future<void> update(SNMovement movement) async {
+  Future<void> update(SNMove move) async {
     final db = await database;
     await db.update(
-      'sn_movement',
-      movement.toMap(),
+      'sn_move',
+      move.toJson(),
       where: 'id = ?',
-      whereArgs: [movement.id],
+      whereArgs: [move.id],
     );
     print('Provider: Update operation succeed');
   }
@@ -35,7 +35,7 @@ class MovementSQLiteProvider extends SQLiteProvider {
   Future<void> delete(String id) async {
     final db = await database;
     await db.delete(
-      'sn_movement',
+      'sn_move',
       where: 'id = ?',
       whereArgs: [id],
     );

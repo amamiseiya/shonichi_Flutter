@@ -17,6 +17,7 @@ import '../controllers/song.dart';
 import '../controllers/lyric.dart';
 import '../controllers/storyboard.dart';
 import '../controllers/shot.dart';
+import '../controllers/intro.dart';
 import '../utils/reg_exp.dart';
 import '../utils/data_convert.dart';
 
@@ -132,12 +133,15 @@ class _StoryboardChipSelector extends GetView<StoryboardController> {
                 })),
         Flexible(
             child: Row(children: [
-          ActionChip(
-            label: Icon(Icons.add),
-            tooltip: '',
-            onPressed: () => Get.dialog(_StoryboardUpsertDialog(null))
-                .then((storyboard) => controller.submitCreate(storyboard)),
-          ),
+          GetBuilder<IntroController>(
+              builder: (introController) => ActionChip(
+                    key: introController.intro.keys[3],
+                    label: Icon(Icons.add),
+                    tooltip: '',
+                    onPressed: () => Get.dialog(_StoryboardUpsertDialog(null))
+                        .then((storyboard) =>
+                            controller.submitCreate(storyboard)),
+                  )),
           ActionChip(
             label: Icon(Icons.edit),
             tooltip: '',
@@ -245,12 +249,28 @@ class _EmptyShotPage extends StatelessWidget {
 //分镜表类
 
 class ShotDataTable extends StatefulWidget {
+  static const Map<String, double> titles = {
+    'Scene Number': 2,
+    'Shot Number': 0.5,
+    'Start Time': 1,
+    'End Time': 1,
+    'Lyric': 3,
+    'Shot Type': 2,
+    'Shot Move': 2,
+    'Shot Angle': 2,
+    'Shot Content': 4,
+    'Image': 1,
+    'Comment': 1,
+    'Characters': 4,
+  };
+
   @override
   State<ShotDataTable> createState() => _ShotDataTableState();
 }
 
 class _ShotDataTableState extends State<ShotDataTable> {
   final ShotController shotController = Get.find();
+  final StoryboardController storyboardController = Get.find();
   late final ScrollController _scrollController;
 
   bool _sortAscending = true;
@@ -288,12 +308,19 @@ class _ShotDataTableState extends State<ShotDataTable> {
             scrollDirection: Axis.horizontal,
             child: Column(children: [
               Row(
-                children: List.generate(
-                    SNShot.titles.length, (i) => Text(SNShot.titles[i])),
+                children: <Widget>[
+                      Checkbox(value: false, onChanged: (_) => null)
+                    ] +
+                    List<Widget>.generate(
+                        ShotDataTable.titles.length,
+                        (i) => _StandardBox(
+                            cellName: ShotDataTable.titles.keys.elementAt(i),
+                            child:
+                                Text(ShotDataTable.titles.keys.elementAt(i)))),
               ),
               Expanded(
                   child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 3,
+                      width: MediaQuery.of(context).size.width * 4,
                       child: ListView.builder(
                         controller: _scrollController,
                         scrollDirection: Axis.vertical,
@@ -302,7 +329,10 @@ class _ShotDataTableState extends State<ShotDataTable> {
                         itemCount: shotController.shots.value!.length,
                         itemBuilder: (BuildContext context, int index) =>
                             _ShotItem(
-                                shotController.shots.value![index], index),
+                                index,
+                                shotController.shots.value![index],
+                                storyboardController
+                                    .editingStoryboard.value!.projectSubject),
                       )))
             ])));
   }
@@ -310,16 +340,17 @@ class _ShotDataTableState extends State<ShotDataTable> {
 
 class _ShotItem extends GetView<ShotController> {
   final SongController songController = Get.find();
-  final SNShot shot;
   final int index;
+  final SNShot shot;
+  final ProjectSubject projectSubject;
 
-  _ShotItem(this.shot, this.index);
+  _ShotItem(this.index, this.shot, this.projectSubject);
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       return Material(
-          color: (shot == controller.editingShotIndex.value)
+          color: (index == controller.editingShotIndex.value)
               ? Colors.blue.shade50
               : Colors.grey.shade50,
           elevation: 5.0,
@@ -335,62 +366,75 @@ class _ShotItem extends GetView<ShotController> {
                     // (context as Element).markNeedsBuild();
                   }
                 }),
-            Text('${shot.sceneNumber}'),
-            Text('${shot.shotNumber}'),
-            Text(simpleDurationRegExp.stringMatch(shot.startTime.toString())!),
-            Text(simpleDurationRegExp.stringMatch(shot.endTime.toString())!),
-            Text(shot.lyric),
-            //   DropdownButton(
-            //     value: shot.sceneNumber,
-            //     icon: Icon(Icons.arrow_downward,
-            //         size: 14),
-            //     style: TextStyle(
-            //         fontSize: 12,
-            //         color: Colors.black),
-            //     underline: Container(
-            //       height: 2,
-            //       color: Colors.deepPurpleAccent,
-            //     ),
-            //     onChanged: (newValue) {
-            //       shot.sceneNumber = newValue;
-            //       controller.updateShot(shot);
-            //     },
-            //     items: shotScenes
-            //         .map((shotSceneMap) =>
-            //             DropdownMenuItem<int>(
-            //               value: shotSceneMap[
-            //                   'shotSceneValue'],
-            //               child: Text(shotSceneMap[
-            //                   'shotSceneLabel']),
-            //             ))
-            //         .toList(),
-            //   ),
-            DropdownButton(
-              value: shot.shotType,
-              icon: Icon(Icons.arrow_downward),
-              underline:
-                  Container(height: 2, color: Theme.of(context).accentColor),
-              onChanged: (String? newValue) {
-                shot.shotType = newValue!;
-                controller.updateShot(shot);
-              },
-              items: shotTypes
-                  .map((shotTypeMap) => DropdownMenuItem<String>(
-                        value: shotTypeMap['shotTypeValue'],
-                        child: Text(
-                          shotTypeMap['shotTypeLabel']!,
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
+            _StandardBox(
+                cellName: 'Scene Number',
+                child: Builder(builder: (context) {
+                  switch (projectSubject) {
+                    case ProjectSubject.Odottemita:
+                      return DropdownButton(
+                        value: shot.sceneNumber,
+                        icon: Icon(Icons.arrow_downward, size: 14),
+                        style: TextStyle(fontSize: 12, color: Colors.black),
+                        underline: Container(
+                          height: 2,
+                          color: Colors.deepPurpleAccent,
                         ),
-                      ))
-                  .toList(),
-            ),
-            Text(shot.shotMovement),
-            Text(shot.shotAngle),
-            Expanded(
+                        onChanged: (int? newValue) {
+                          shot.sceneNumber = newValue!;
+                          controller.updateShot(shot);
+                        },
+                        items: shotScenes
+                            .map((shotSceneMap) => DropdownMenuItem<int>(
+                                  value: shotSceneMap['shotSceneValue'],
+                                  child: Text(shotSceneMap['shotSceneLabel']),
+                                ))
+                            .toList(),
+                      );
+                    case ProjectSubject.Film:
+                      return Text('${shot.sceneNumber}');
+                  }
+                })),
+            _StandardBox(
+                cellName: 'Shot Number', child: Text('${shot.shotNumber}')),
+            _StandardBox(
+                cellName: 'Start Time',
+                child: Text(simpleDurationRegExp
+                    .stringMatch(shot.startTime.toString())!)),
+            _StandardBox(
+                cellName: 'End Time',
+                child: Text(simpleDurationRegExp
+                    .stringMatch(shot.endTime.toString())!)),
+            _StandardBox(cellName: 'Lyric', child: Text(shot.lyric)),
+            _StandardBox(
+                cellName: 'Shot Type',
+                child: DropdownButton(
+                  value: shot.shotType,
+                  icon: Icon(Icons.arrow_downward),
+                  underline: Container(
+                      height: 2, color: Theme.of(context).accentColor),
+                  onChanged: (String? newValue) {
+                    shot.shotType = newValue!;
+                    controller.updateShot(shot);
+                  },
+                  items: shotTypes
+                      .map((shotTypeMap) => DropdownMenuItem<String>(
+                            value: shotTypeMap['shotTypeValue'],
+                            child: Text(
+                              shotTypeMap['shotTypeLabel']!,
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                            ),
+                          ))
+                      .toList(),
+                )),
+            _StandardBox(cellName: 'Shot Move', child: Text(shot.shotMove)),
+            _StandardBox(cellName: 'Shot Angle', child: Text(shot.shotAngle)),
+            _StandardBox(
+                cellName: 'Shot Content',
                 child: TextField(
                     controller: TextEditingController()..text = shot.text,
-                    // maxLines: null,
+                    maxLines: null,
+                    expands: true,
                     decoration: InputDecoration(),
                     onChanged: (value) {
                       shot.text = value;
@@ -400,13 +444,31 @@ class _ShotItem extends GetView<ShotController> {
                     },
                     // showEditIcon: true,
                     onTap: null)),
-            Text(shot.imageURI),
-            Text(shot.comment),
-            CharacterSelector(
-                editingData: shot,
-                updateData: () => controller.updateShot(shot))
+            _StandardBox(cellName: 'Image', child: Text(shot.imageURI)),
+            _StandardBox(cellName: 'Comment', child: Text(shot.comment)),
+            _StandardBox(
+                cellName: 'Characters',
+                child: CharacterSelector(
+                    editingData: shot,
+                    updateData: () => controller.updateShot(shot)))
           ]));
     });
+  }
+}
+
+class _StandardBox extends StatelessWidget {
+  final double basicWidth = 70.0;
+  late final Widget child;
+  late final String cellName;
+
+  _StandardBox({required this.cellName, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        width: basicWidth * ShotDataTable.titles[cellName]!,
+        height: 50.0,
+        child: child);
   }
 }
 
@@ -462,6 +524,7 @@ class ShotInspector extends StatelessWidget {
 class LyricAnimator extends StatefulWidget {
   final ShotController shotController = Get.find();
   final LyricController lyricController = Get.find();
+
   @override
   _LyricAnimatorState createState() => _LyricAnimatorState();
 }
@@ -630,7 +693,7 @@ class _ShotFilterPanel extends StatelessWidget {
             onPressed: () => lyricController.retrieveForEditingSong(),
             child: Text('刷新歌词')),
         Obx(() {
-          assert(songController.editingSong.value != null);
+          // assert(songController.editingSong.value != null);
           return SliderTheme(
               data: SliderTheme.of(context).copyWith(
                 thumbColor: Colors.pink,

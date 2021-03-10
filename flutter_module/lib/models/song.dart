@@ -1,8 +1,15 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import '../utils/data_convert.dart';
 import 'asset.dart';
 
+part 'song.g.dart';
+
+@JsonSerializable()
 class SNSong {
+  @JsonKey(ignore: true)
   String id;
+
   String name;
   String coverURI;
   Duration duration;
@@ -11,7 +18,7 @@ class SNSong {
   String subordinateKikaku;
 
   SNSong({
-    required this.id,
+    this.id = 'initial',
     required this.name,
     required this.coverURI,
     required this.duration,
@@ -27,24 +34,8 @@ class SNSong {
       lyricOffset: 0,
       subordinateKikaku: '');
 
-  factory SNSong.fromMap(Map<String, dynamic> map, String id) {
-    return SNSong(
-      id: id,
-      name: map['name'],
-      coverURI: map['coverURI'],
-      duration: Duration(milliseconds: map['duration']),
-      lyricOffset: map['lyricOffset'],
-      subordinateKikaku: map['subordinateKikaku'],
-    );
-  }
+  factory SNSong.fromJson(Map<String, dynamic> map, String id) =>
+      _$SNSongFromJson(map)..id = id;
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'coverURI': coverURI,
-      'duration': duration.inMilliseconds,
-      'lyricOffset': lyricOffset,
-      'subordinateKikaku': subordinateKikaku,
-    };
-  }
+  Map<String, dynamic> toJson() => _$SNSongToJson(this);
 }

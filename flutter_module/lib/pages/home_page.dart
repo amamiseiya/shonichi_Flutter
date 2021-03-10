@@ -7,9 +7,12 @@ import '../widgets/error.dart';
 import '../controllers/data_migration.dart';
 import '../controllers/project.dart';
 import '../controllers/song.dart';
+import '../controllers/intro.dart';
 import '../models/project.dart';
 
 class HomePage extends GetView<ProjectController> {
+  final IntroController introController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,22 +33,25 @@ class HomePage extends GetView<ProjectController> {
         ),
         drawer: MyDrawer(),
         // body is the majority of the screen.
-        body: GetX(
-            initState: (_) => controller.retrieve(),
-            builder: (_) {
-              if (controller.projects.value == null) {
-                return LoadingAnimationLinear();
-              }
-              if (controller.projects.value!.isEmpty) {
-                return _EmptyPage();
-              }
-              return _Dashboard();
-            }),
+        body: GetX(initState: (_) {
+          controller.retrieve();
+          Future.delayed(Duration(seconds: 3))
+              .then((_) => introController.startIntro(context));
+        }, builder: (_) {
+          if (controller.projects.value == null) {
+            return LoadingAnimationLinear();
+          }
+          if (controller.projects.value!.isEmpty) {
+            return _EmptyPage();
+          }
+          return _Dashboard();
+        }),
         floatingActionButton:
             Column(mainAxisAlignment: MainAxisAlignment.end, children: [
           GetBuilder<DataMigrationController>(
               builder: (controller) => FloatingActionButton(
-                  tooltip: 'Reset'.tr, // used by assistive technologies
+                  tooltip: 'Reset'.tr,
+                  // used by assistive technologies
                   backgroundColor: Colors.red,
                   child: Icon(
                     Icons.refresh,
@@ -53,18 +59,20 @@ class HomePage extends GetView<ProjectController> {
                   heroTag: 'ResetFAB',
                   onPressed: () => controller.importJson(context))),
           FloatingActionButton(
-              tooltip: 'Create'.tr, // used by assistive technologies
+              key: introController.intro.keys[1],
+              tooltip: 'Create'.tr,
+              // used by assistive technologies
               child: Icon(Icons.add),
               heroTag: 'CreateFAB',
-              onPressed: () => Get.dialog(_ProjectUpsertDialog(null)).then(
-                  (project) =>
-                      controller.submitCreate(project))), //几个UpsertDialog保持一致
+              onPressed: () => Get.dialog(ProjectUpsertDialog(null))
+                  .then((project) => controller.submitCreate(project))),
+          //几个UpsertDialog保持一致
           FloatingActionButton(
               tooltip: 'Update'.tr, // used by assistive technologies
               child: Icon(Icons.edit),
               heroTag: 'UpdateFAB',
               onPressed: () => Get.dialog(
-                      _ProjectUpsertDialog(controller.editingProject.value))
+                      ProjectUpsertDialog(controller.editingProject.value))
                   .then((project) => controller.submitUpdate(project))),
           FloatingActionButton(
               tooltip: 'Delete'.tr, // used by assistive technologies
@@ -88,17 +96,19 @@ class _Dashboard extends GetView<ProjectController> {
       widthFactor: _widthFactor,
       heightFactor: 1.0,
       child: ListView(children: [
-        Card(
-            margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 5.0),
-            elevation: 4.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            child: Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Text(
-                  'Welcome back!'.tr,
-                  textScaleFactor: 1.8,
-                ))),
+        GetBuilder<IntroController>(
+            builder: (introController) => Card(
+                key: introController.intro.keys[0],
+                margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 5.0),
+                elevation: 4.0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                child: Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Text(
+                      'Welcome back!'.tr,
+                      textScaleFactor: 1.8,
+                    )))),
         Obx(() {
           if (songController.firstCoverURI.value == null) {
             return Container();
@@ -207,20 +217,28 @@ class _EmptyPage extends StatelessWidget {
   }
 }
 
-class _ProjectUpsertDialog extends StatelessWidget {
-  late SNProject p;
+class ProjectUpsertDialog extends StatelessWidget {
+  late SNProject _p;
 
   final TextEditingController _dancerNameController = TextEditingController();
   final TextEditingController _songIdController = TextEditingController();
   final TextEditingController _storyboardIdController = TextEditingController();
   final TextEditingController _formationIdController = TextEditingController();
 
-  _ProjectUpsertDialog(SNProject? project) {
-    p = project ?? SNProject.initialValue();
-    _dancerNameController.text = p.dancerName;
-    _songIdController.text = p.songId ?? '';
-    _storyboardIdController.text = p.storyboardId ?? '';
-    _formationIdController.text = p.formationId ?? '';
+  ProjectUpsertDialog(SNProject? project) {
+    _p = project ?? SNProject.initialValue();
+    _dancerNameController.text = _p.dancerName;
+    _songIdController.text = _p.songId ?? '';
+    _storyboardIdController.text = _p.storyboardId ?? '';
+    _formationIdController.text = _p.formationId ?? '';
+  }
+
+  void submit() {
+  _p.dancerName = _dancerNameController.text;
+  _p.songId = _songIdController.text;
+  _p.storyboardId = _storyboardIdController.text;
+  _p.formationId = _formationIdController.text;
+  Get.back(result: _p);
   }
 
   @override
@@ -233,12 +251,12 @@ class _ProjectUpsertDialog extends StatelessWidget {
               ElevatedButton(
                 onPressed: () => showDatePicker(
                   context: Get.context,
-                  initialDate: p.createdTime,
+                  initialDate: _p.createdTime,
                   firstDate: DateTime.now().subtract(Duration(days: 3650)),
                   lastDate: DateTime.now().add(Duration(days: 3650)),
                 ).then((value) {
                   if (value != null) {
-                    p.createdTime = value;
+                    _p.createdTime = value;
                   }
                 }),
                 child: Text('Created time'.tr),
@@ -264,16 +282,11 @@ class _ProjectUpsertDialog extends StatelessWidget {
                 onEditingComplete: () {},
               ),
             ])),
-            SimpleDialogOption(
-              onPressed: () {
-                p.dancerName = _dancerNameController.text;
-                p.songId = _songIdController.text;
-                p.storyboardId = _storyboardIdController.text;
-                p.formationId = _formationIdController.text;
-                Get.back(result: p);
-              },
+            GetBuilder<IntroController>(builder:(controller)=>SimpleDialogOption(
+              key: controller.intro.keys[2],
+              onPressed: submit,
               child: Text('Submit'.tr),
-            ),
+            )),
           ])
         ],
       );

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shonichi_flutter_module/pages/storyboard.dart';
 
 import 'character.dart';
 import 'project.dart';
@@ -107,7 +108,7 @@ class DataMigrationController extends GetxController {
           endTime: simpleDurationToDuration(shotProps[3].group(0)!),
           lyric: shotProps[4].group(0)!,
           shotType: shotProps[5].group(0)!,
-          shotMovement: shotProps[6].group(0)!,
+          shotMove: shotProps[6].group(0)!,
           shotAngle: shotProps[7].group(0)!,
           text: shotProps[8].group(0)!,
           imageURI: shotProps[9].group(0)!,
@@ -115,7 +116,7 @@ class DataMigrationController extends GetxController {
           storyboardId: storyboardId,
           characters: json
               .decode(shotProps[11].group(0)!)
-              .map((Map<String, dynamic> cm) => SNCharacter.fromMap(cm))
+              .map((Map<String, dynamic> cm) => SNCharacter.fromJson(cm))
               .toList());
     }).toList();
   }
@@ -189,11 +190,11 @@ class DataMigrationController extends GetxController {
 
   String generateShotDataTable(List<SNShot> shots) {
     String mdText = '# 分镜表\n';
-    for (String title in SNShot.titles) {
+    for (String title in ShotDataTable.titles.keys) {
       mdText += '| ' + title + ' ';
     }
     mdText += '|\n';
-    mdText += ('| --- ') * SNShot.titles.length;
+    mdText += ('| --- ') * ShotDataTable.titles.length;
     mdText += '|\n';
 
     for (SNShot shot in shots) {
@@ -210,7 +211,7 @@ class DataMigrationController extends GetxController {
           ' | ' +
           shot.shotType +
           ' | ' +
-          shot.shotMovement +
+          shot.shotMove +
           ' | ' +
           shot.shotAngle +
           ' | ' +
@@ -221,7 +222,7 @@ class DataMigrationController extends GetxController {
           shot.comment +
           ' | ' +
           json.encode(
-              shot.characters.map((character) => character.toMap()).toList()) +
+              shot.characters.map((character) => character.toJson()).toList()) +
           ' |\n';
     }
     return mdText;
@@ -263,7 +264,7 @@ class DataMigrationController extends GetxController {
     // await db.delete('sn_storyboard');
     // await db.delete('sn_shot');
     // await db.delete('sn_formation');
-    // await db.delete('sn_movement');
+    // await db.delete('sn_move');
 
     final map = Map<String, List>.from(json.decode(await assetRepository
         .importFromAssets(context, 'shot_data_example.json')));

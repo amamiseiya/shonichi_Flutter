@@ -6,15 +6,15 @@ import '../../models/song.dart';
 import '../../models/lyric.dart';
 import '../../models/storyboard.dart';
 import '../../models/shot.dart';
-import '../../models/movement.dart';
+import '../../models/move.dart';
 
 part 'project.dart';
 // part 'song.dart';
 // part 'lyric.dart';
 // part 'storyboard.dart';
 // part 'shot.dart';
-part 'formation.dart';
-part 'movement.dart';
+// part 'formation.dart';
+part 'move.dart';
 
 abstract class LeanCloudProvider {
   // Future<void> create();

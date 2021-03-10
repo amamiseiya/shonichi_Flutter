@@ -1,36 +1,36 @@
 part of 'firestore.dart';
 
-class MovementFirestoreProvider extends FirestoreProvider {
-  final CollectionReference _movementRef =
-      FirebaseFirestore.instance.collection('sn_movement');
+class MoveFirestoreProvider extends FirestoreProvider {
+  final CollectionReference _moveRef =
+      FirebaseFirestore.instance.collection('sn_move');
 
-  Query queryForFormation(String formationId) => _movementRef
+  Query queryForFormation(String formationId) => _moveRef
       .where('formationId', isEqualTo: formationId)
       .orderBy('startTime', descending: false);
 
-  Future<void> create(SNMovement movement) async {
-    await _movementRef.add(movement.toMap());
+  Future<void> create(SNMove move) async {
+    await _moveRef.add(move.toJson());
     print('Provider: Create operation succeed');
   }
 
-  Future<List<SNMovement>> retrieveForFormation(String formationId) async {
+  Future<List<SNMove>> retrieveForFormation(String formationId) async {
     final snapshot = await queryForFormation(formationId).get();
     print('Provider: ' +
         snapshot.docs.length.toString() +
-        ' movement(s) retrieved');
+        ' move(s) retrieved');
     return List.generate(
         snapshot.docs.length,
         (i) =>
-            SNMovement.fromMap(snapshot.docs[i].data(), snapshot.docs[i].id));
+            SNMove.fromJson(snapshot.docs[i].data(), snapshot.docs[i].id));
   }
 
-  Future<void> update(SNMovement movement) async {
-    await _movementRef.doc(movement.id).set(movement.toMap());
+  Future<void> update(SNMove move) async {
+    await _moveRef.doc(move.id).set(move.toJson());
     print('Provider: Update operation succeed');
   }
 
   Future<void> delete(String id) async {
-    await _movementRef.doc(id).delete();
+    await _moveRef.doc(id).delete();
     print('Provider: Delete operation succeed');
   }
 

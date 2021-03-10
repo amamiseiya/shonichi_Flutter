@@ -1,13 +1,19 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:shonichi_flutter_module/models/character.dart';
-// import 'package:leancloud_storage/leancloud.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+import '../models/character.dart';
+
+part 'move.g.dart';
 
 enum KCurveType { X, Y, Z, Rotation, Camera }
 
-class SNMovement {
+@JsonSerializable(explicitToJson: true)
+class SNMove {
+  @JsonKey(ignore: true)
   String id;
+
   Duration startTime;
   double posX;
   double posY;
@@ -23,8 +29,8 @@ class SNMovement {
   SNCharacter character;
   String formationId;
 
-  SNMovement(
-      {required this.id,
+  SNMove(
+      {this.id = 'initial',
       required this.startTime,
       required this.posX,
       required this.posY,
@@ -39,9 +45,9 @@ class SNMovement {
       required this.character,
       required this.formationId});
 
-  factory SNMovement.initialValue(
+  factory SNMove.initialValue(
           Duration startTime, SNCharacter character, String formationId) =>
-      SNMovement(
+      SNMove(
           id: 'initial',
           startTime: startTime,
           posX: 0.0,
@@ -57,86 +63,21 @@ class SNMovement {
           character: character,
           formationId: formationId);
 
-  factory SNMovement.fromMap(Map<String, dynamic> map, String id) {
-    return SNMovement(
-        id: id,
-        startTime: Duration(milliseconds: map['startTime']),
-        posX: map['posX'],
-        posY: map['posY'],
-        curveX1X: map['curveX1X'],
-        curveX1Y: map['curveX1Y'],
-        curveX2X: map['curveX2X'],
-        curveX2Y: map['curveX2Y'],
-        curveY1X: map['curveY1X'],
-        curveY1Y: map['curveY1Y'],
-        curveY2X: map['curveY2X'],
-        curveY2Y: map['curveY2Y'],
-        character: SNCharacter.fromMap(map['character']),
-        formationId: map['formationId']);
-  }
+  factory SNMove.fromJson(Map<String, dynamic> map, String id) =>
+      _$SNMoveFromJson(map)..id = id;
 
-  // factory SNMovement.fromLCObject(LCObject object) {
-  //   return SNMovement(
-  //       id: object.objectId,
-  //       startTime: Duration(milliseconds: object['startTime']),
-  //       posX: object['posX'],
-  //       posY: object['posY'],
-  //       curveX1X: object['curveX1X'],
-  //       curveX1Y: object['curveX1Y'],
-  //       curveX2X: object['curveX2X'],
-  //       curveX2Y: object['curveX2Y'],
-  //       curveY1X: object['curveY1X'],
-  //       curveY1Y: object['curveY1Y'],
-  //       curveY2X: object['curveY2X'],
-  //       curveY2Y: object['curveY2Y'],
-  //       characterName: object['characterName'],
-  //       formationId: object['formationId']);
-  // }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'startTime': startTime.inMilliseconds,
-      'posX': posX,
-      'posY': posY,
-      'curveX1X': curveX1X,
-      'curveX1Y': curveX1Y,
-      'curveX2X': curveX2X,
-      'curveX2Y': curveX2Y,
-      'curveY1X': curveY1X,
-      'curveY1Y': curveY1Y,
-      'curveY2X': curveY2X,
-      'curveY2Y': curveY2Y,
-      'character': character.toMap(),
-      'formationId': formationId
-    };
-  }
-
-  // void toLCObject(LCObject object) {
-  //   object['startTime'] = startTime.inMilliseconds;
-  //   object['posX'] = posX;
-  //   object['posY'] = posY;
-  //   object['curveX1X'] = curveX1X;
-  //   object['curveX1Y'] = curveX1Y;
-  //   object['curveX2X'] = curveX2X;
-  //   object['curveX2Y'] = curveX2Y;
-  //   object['curveY1X'] = curveY1X;
-  //   object['curveY1Y'] = curveY1Y;
-  //   object['curveY2X'] = curveY2X;
-  //   object['curveY2Y'] = curveY2Y;
-  //   object['characterName'] = characterName;
-  //   object['formationId'] = formationId;
-  // }
+  Map<String, dynamic> toJson() => _$SNMoveToJson(this);
 
   // range: ±8 meters
-  Offset getMovementPos(Size size) =>
+  Offset getMovePos(Size size) =>
       Offset((posX + 8) / 16 * size.width, (4.5 - posY) / 9 * size.height);
 
-  void setMovementPos(Offset offset, Size size) {
+  void setMovePos(Offset offset, Size size) {
     posX = (offset.dx / size.width * 16) - 8.0;
     posY = 4.5 - (offset.dy / size.height * 9);
   }
 
-  void checkMovementPos() {
+  void checkMovePos() {
     if (posX < -8) {
       posX = -8;
     }
@@ -151,7 +92,7 @@ class SNMovement {
     }
   }
 
-  Offset getMovementPoint(KCurveType kCurveType, int pointNumber, Size size) {
+  Offset getMovePoint(KCurveType kCurveType, int pointNumber, Size size) {
     if (kCurveType == KCurveType.X) {
       if (pointNumber == 0) {
         return Offset((curveX1X + 1) / 128 * size.width,
@@ -172,7 +113,7 @@ class SNMovement {
     throw FormatException('This KCurveType is not supported now');
   }
 
-  void setMovementPoint(
+  void setMovePoint(
       Offset offset, KCurveType kCurveType, int pointNumber, Size size) {
     if (kCurveType == KCurveType.X) {
       if (pointNumber == 0) {
@@ -193,7 +134,7 @@ class SNMovement {
     }
   }
 
-  void checkMovementPoint(KCurveType kCurveType) {
+  void checkMovePoint(KCurveType kCurveType) {
     if (kCurveType == KCurveType.X) {
       if (curveX1X < 0) {
         curveX1X = 0;

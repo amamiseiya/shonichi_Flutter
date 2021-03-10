@@ -10,7 +10,7 @@ import '../../models/lyric.dart';
 import '../../models/storyboard.dart';
 import '../../models/shot.dart';
 import '../../models/formation.dart';
-import '../../models/movement.dart';
+import '../../models/move.dart';
 
 part 'asset.dart';
 part 'project.dart';
@@ -19,7 +19,7 @@ part 'lyric.dart';
 part 'storyboard.dart';
 part 'shot.dart';
 part 'formation.dart';
-part 'movement.dart';
+part 'move.dart';
 
 abstract class FirestoreProvider {
   static FirebaseFirestore fireStore = FirebaseFirestore.instance;

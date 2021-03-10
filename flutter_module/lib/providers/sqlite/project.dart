@@ -5,7 +5,7 @@ class ProjectSQLiteProvider extends SQLiteProvider {
     final db = await database;
     await db.insert(
       'sn_project',
-      project.toMap(),
+      project.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     print('Provider: Create operation succeed');
@@ -15,7 +15,7 @@ class ProjectSQLiteProvider extends SQLiteProvider {
     final db = await database;
     final mapList =
         await db.query('sn_project', where: 'id = ?', whereArgs: [id]);
-    return SNProject.fromMap(mapList.first, id);
+    return SNProject.fromJson(mapList.first, id);
   }
 
   Future<List<SNProject>> retrieveLatestN(int count) async {
@@ -23,14 +23,14 @@ class ProjectSQLiteProvider extends SQLiteProvider {
     final mapList =
         await db.query('sn_project', orderBy: 'id DESC', limit: count);
     return List.generate(mapList.length,
-        (i) => SNProject.fromMap(mapList[i], mapList[i]['id'] as String));
+        (i) => SNProject.fromJson(mapList[i], mapList[i]['id'] as String));
   }
 
   Future<void> update(SNProject project) async {
     final db = await database;
     await db.update(
       'sn_project',
-      project.toMap(),
+      project.toJson(),
       where: 'id = ?',
       whereArgs: [project.id],
     );

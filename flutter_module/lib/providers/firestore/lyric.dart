@@ -5,7 +5,7 @@ class LyricFirestoreProvider extends FirestoreProvider {
       FirebaseFirestore.instance.collection('sn_lyric');
 
   Future<void> create(SNLyric lyric) async {
-    await _lyricRef.add(lyric.toMap());
+    await _lyricRef.add(lyric.toJson());
     print('Provider: Create operation succeed');
   }
 
@@ -17,11 +17,11 @@ class LyricFirestoreProvider extends FirestoreProvider {
     print(
         'Provider: ' + snapshot.docs.length.toString() + ' lyric(s) retrieved');
     return List.generate(snapshot.docs.length,
-        (i) => SNLyric.fromMap(snapshot.docs[i].data(), snapshot.docs[i].id));
+        (i) => SNLyric.fromJson(snapshot.docs[i].data(), snapshot.docs[i].id));
   }
 
   Future<void> update(SNLyric lyric) async {
-    await _lyricRef.doc(lyric.id).set(lyric.toMap());
+    await _lyricRef.doc(lyric.id).set(lyric.toJson());
     print('Provider: Update operation succeed');
   }
 

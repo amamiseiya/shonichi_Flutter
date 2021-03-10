@@ -12,14 +12,14 @@ import '../../models/song.dart';
 import '../../models/lyric.dart';
 import '../../models/storyboard.dart';
 import '../../models/shot.dart';
-import '../../models/movement.dart';
+import '../../models/move.dart';
 
 part 'project.dart';
 part 'song.dart';
 part 'lyric.dart';
 part 'storyboard.dart';
 part 'shot.dart';
-part 'movement.dart';
+part 'move.dart';
 
 abstract class SQLiteProvider {
   // Future<void> create();
@@ -51,13 +51,13 @@ abstract class SQLiteProvider {
             'CREATE TABLE sn_storyboard(id TEXT PRIMARY KEY, name TEXT, creatorId TEXT, songId TEXT)',
           );
           db.execute(
-            'CREATE TABLE sn_shot(id TEXT PRIMARY KEY, sceneNumber INTEGER, shotNumber INTEGER, startTime INTEGER, endTime INTEGER, lyric TEXT, shotType TEXT, shotMovement TEXT, shotAngle TEXT, text TEXT, image TEXT, comment TEXT, storyboardId TEXT, characters TEXT)',
+            'CREATE TABLE sn_shot(id TEXT PRIMARY KEY, sceneNumber INTEGER, shotNumber INTEGER, startTime INTEGER, endTime INTEGER, lyric TEXT, shotType TEXT, shotMove TEXT, shotAngle TEXT, text TEXT, image TEXT, comment TEXT, storyboardId TEXT, characters TEXT)',
           );
           db.execute(
             'CREATE TABLE sn_formation(id TEXT PRIMARY KEY, name TEXT, creatorId TEXT, songId TEXT)',
           );
           db.execute(
-            'CREATE TABLE sn_movement(id TEXT PRIMARY KEY, startTime INTEGER, posX REAL, posY REAL, curveX1X INTEGER, curveX1Y INTEGER, curveX2X INTEGER, curveX2Y INTEGER, curveY1X INTEGER, curveY1Y INTEGER, curveY2X INTEGER, curveY2Y INTEGER, characterName TEXT, formationId TEXT)',
+            'CREATE TABLE sn_move(id TEXT PRIMARY KEY, startTime INTEGER, posX REAL, posY REAL, curveX1X INTEGER, curveX1Y INTEGER, curveX2X INTEGER, curveX2Y INTEGER, curveY1X INTEGER, curveY1Y INTEGER, curveY2X INTEGER, curveY2Y INTEGER, characterName TEXT, formationId TEXT)',
           );
         },
         version: 1,

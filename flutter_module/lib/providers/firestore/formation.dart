@@ -5,7 +5,7 @@ class FormationFirestoreProvider extends FirestoreProvider {
       FirebaseFirestore.instance.collection('sn_formation');
 
   Future<void> create(SNFormation formation) async {
-    await _formationRef.add(formation.toMap());
+    await _formationRef.add(formation.toJson());
     print('Provider: Create operation succeed');
   }
 
@@ -15,7 +15,7 @@ class FormationFirestoreProvider extends FirestoreProvider {
       throw FirebaseException(
           plugin: 'Firestore', message: 'Document does not exist');
     }
-    final formation = SNFormation.fromMap(snapshot.data(), snapshot.id);
+    final formation = SNFormation.fromJson(snapshot.data(), snapshot.id);
     print('Provider: Retrieved formation: ' + formation.toString());
     return formation;
   }
@@ -33,11 +33,11 @@ class FormationFirestoreProvider extends FirestoreProvider {
     return List.generate(
         snapshot.docs.length,
         (i) =>
-            SNFormation.fromMap(snapshot.docs[i].data(), snapshot.docs[i].id));
+            SNFormation.fromJson(snapshot.docs[i].data(), snapshot.docs[i].id));
   }
 
   Future<void> update(SNFormation formation) async {
-    await _formationRef.doc(formation.id).set(formation.toMap());
+    await _formationRef.doc(formation.id).set(formation.toJson());
     print('Provider: Update operation succeed');
   }
 
@@ -56,7 +56,7 @@ class FormationFirestoreProvider extends FirestoreProvider {
       return null;
     }
     final formation =
-        SNFormation.fromMap(snapshot.docs.first.data(), snapshot.docs.first.id);
+        SNFormation.fromJson(snapshot.docs.first.data(), snapshot.docs.first.id);
     print('Provider: Latest formation: ' + formation.toString());
     return formation;
   }

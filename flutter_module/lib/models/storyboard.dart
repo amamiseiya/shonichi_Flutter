@@ -1,30 +1,30 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'storyboard.g.dart';
+
+enum ProjectSubject { Odottemita, Film }
+
+@JsonSerializable()
 class SNStoryboard {
+  @JsonKey(ignore: true)
   String id;
+
   String name;
   String creatorId;
   String description;
   DateTime createdTime;
+  ProjectSubject projectSubject;
 
   String? songId;
 
   SNStoryboard(
-      {required this.id,
+      {this.id = 'initial',
       required this.name,
       required this.creatorId,
       required this.description,
       required this.createdTime,
+      required this.projectSubject,
       this.songId});
-
-  factory SNStoryboard.fromMap(Map<String, dynamic> map, String id) {
-    return SNStoryboard(
-      id: id,
-      name: map['name'],
-      creatorId: map['creatorId'],
-      description: map['description'],
-      createdTime: DateTime.parse(map['createdTime']),
-      songId: map['songId'],
-    );
-  }
 
   factory SNStoryboard.initialValue() => SNStoryboard(
       id: 'initial',
@@ -32,13 +32,11 @@ class SNStoryboard {
       creatorId: '',
       description: '',
       createdTime: DateTime.now(),
+      projectSubject: ProjectSubject.Odottemita,
       songId: '');
 
-  Map<String, dynamic> toMap() => {
-        'name': name,
-        'creatorId': creatorId,
-        'description': description,
-        'createdTime': createdTime.toString(),
-        'songId': songId,
-      };
+  factory SNStoryboard.fromJson(Map<String, dynamic> map, String id) =>
+      _$SNStoryboardFromJson(map)..id = id;
+
+  Map<String, dynamic> toJson() => _$SNStoryboardToJson(this);
 }

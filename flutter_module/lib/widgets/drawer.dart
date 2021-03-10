@@ -24,7 +24,7 @@ class MyDrawer extends StatelessWidget {
             accountName: Text(authController.user.value?.displayName ?? ''),
             accountEmail:
                 Obx(() => Text(authController.user.value?.email ?? '')),
-            onDetailsPressed: (() => Get.to(() => UserInformationPage()))),
+            onDetailsPressed: (() => Get.off(() => UserInformationPage()))),
         ListTile(
           title: Text('Home Page'.tr),
           onTap: () {
@@ -38,15 +38,15 @@ class MyDrawer extends StatelessWidget {
           },
         ),
         ListTile(
-          title: Text('Song Information'.tr),
-          onTap: () {
-            Get.off(() => SongInformationPage());
-          },
-        ),
-        ListTile(
           title: Text('Formation'.tr),
           onTap: () {
             Get.off(() => FormationPage());
+          },
+        ),
+        ListTile(
+          title: Text('Song Information'.tr),
+          onTap: () {
+            Get.off(() => SongInformationPage());
           },
         ),
         ListTile(

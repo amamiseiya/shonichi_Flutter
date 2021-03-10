@@ -1,5 +1,12 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'formation.g.dart';
+
+@JsonSerializable()
 class SNFormation {
+  @JsonKey(ignore: true)
   String id;
+
   String name;
   String creatorId;
   String description;
@@ -9,22 +16,12 @@ class SNFormation {
   String? songId;
 
   SNFormation(
-      {required this.id,
+      {this.id = 'initial',
       required this.name,
       required this.creatorId,
       required this.description,
       required this.createdTime,
       this.songId});
-
-  factory SNFormation.fromMap(Map<String, dynamic> map, String id) {
-    return SNFormation(
-        id: id,
-        name: map['name'],
-        creatorId: map['creatorId'],
-        description: map['description'],
-        createdTime: DateTime.parse(map['createdTime']),
-        songId: map['songId']);
-  }
 
   factory SNFormation.initialValue() => SNFormation(
       id: 'initial',
@@ -34,13 +31,8 @@ class SNFormation {
       createdTime: DateTime.now(),
       songId: '');
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'creatorId': creatorId,
-      'description': description,
-      'createdTime': createdTime.toString(),
-      'songId': songId
-    };
-  }
+  factory SNFormation.fromJson(Map<String, dynamic> map, String id) =>
+      _$SNFormationFromJson(map)..id = id;
+
+  Map<String, dynamic> toJson() => _$SNFormationToJson(this);
 }

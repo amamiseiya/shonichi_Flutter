@@ -1,9 +1,14 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import 'character.dart';
 
-class SNLyric {
-  static List<String> titles = ['起始时间', '歌词内容', 'Solo Part'];
+part 'lyric.g.dart';
 
+@JsonSerializable()
+class SNLyric {
+  @JsonKey(ignore: true)
   String id;
+
   Duration startTime;
   Duration endTime;
   String text;
@@ -12,34 +17,17 @@ class SNLyric {
   List<SNCharacter> characters;
 
   SNLyric(
-      {required this.id,
+      {this.id = 'initial',
       required this.startTime,
       required this.endTime,
       required this.text,
       required this.songId,
       required this.characters});
 
-  factory SNLyric.fromMap(Map<String, dynamic> map, String id) {
-    return SNLyric(
-        id: id,
-        startTime: Duration(milliseconds: map['startTime']),
-        endTime: Duration(milliseconds: map['endTime']),
-        text: map['text'],
-        songId: map['songId'],
-        characters: map['characters']
-            .map<SNCharacter>((cm) => SNCharacter.fromMap(cm))
-            .toList());
-  }
+  factory SNLyric.fromJson(Map<String, dynamic> map, String id) =>
+      _$SNLyricFromJson(map)..id = id;
 
-  Map<String, dynamic> toMap() {
-    return {
-      'startTime': startTime.inMilliseconds,
-      'endTime': endTime.inMilliseconds,
-      'text': text,
-      'songId': songId,
-      'characters': characters.map((character) => character.toMap()).toList()
-    };
-  }
+  Map<String, dynamic> toJson() => _$SNLyricToJson(this);
 
   static List<SNLyric> parseFromLrc(
       String lrcStr, String songId, int lyricOffset) {

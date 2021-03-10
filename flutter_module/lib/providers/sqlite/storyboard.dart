@@ -5,7 +5,7 @@ class StoryboardSQLiteProvider extends SQLiteProvider {
     final db = await database;
     await db.insert(
       'sn_storyboard',
-      storyboard.toMap(),
+      storyboard.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     print('Provider: Create operation succeed');
@@ -15,21 +15,21 @@ class StoryboardSQLiteProvider extends SQLiteProvider {
     final db = await database;
     final mapList =
         await db.query('sn_storyboard', where: 'id = ?', whereArgs: [id]);
-    return SNStoryboard.fromMap(mapList.first, id);
+    return SNStoryboard.fromJson(mapList.first, id);
   }
 
   Future<List<SNStoryboard>> retrieveAll() async {
     final db = await database;
     final mapList = await db.query('sn_storyboard', orderBy: 'id DESC');
     return List.generate(mapList.length,
-        (i) => SNStoryboard.fromMap(mapList[i], mapList[i]['id'] as String));
+        (i) => SNStoryboard.fromJson(mapList[i], mapList[i]['id'] as String));
   }
 
   Future<void> update(SNStoryboard storyboard) async {
     final db = await database;
     await db.update(
       'sn_storyboard',
-      storyboard.toMap(),
+      storyboard.toJson(),
       where: 'id = ?',
       whereArgs: [storyboard.id],
     );
@@ -50,6 +50,6 @@ class StoryboardSQLiteProvider extends SQLiteProvider {
     final db = await database;
     final List<Map<String, dynamic>> mapList = await db.query('sn_storyboard',
         where: 'songId = ?', whereArgs: [songId], orderBy: 'id DESC', limit: 1);
-    return SNStoryboard.fromMap(mapList.first, mapList.first['id']);
+    return SNStoryboard.fromJson(mapList.first, mapList.first['id']);
   }
 }

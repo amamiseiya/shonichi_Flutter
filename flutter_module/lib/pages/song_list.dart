@@ -60,7 +60,7 @@ class _SongDataTableState extends State<SongDataTable> {
   final SongController songController = Get.find();
 
   bool _sortAscending = true;
-  late int _sortColumnIndex = 0;
+  int _sortColumnIndex = 0;
 
   void _sort(int index, bool ascending) {
     if (ascending) {

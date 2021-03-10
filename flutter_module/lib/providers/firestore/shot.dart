@@ -9,7 +9,7 @@ class ShotFirestoreProvider extends FirestoreProvider {
       .orderBy('startTime', descending: false);
 
   Future<void> create(SNShot shot) async {
-    await _shotRef.add(shot.toMap());
+    await _shotRef.add(shot.toJson());
     print('Provider: Create operation succeed');
   }
 
@@ -18,11 +18,11 @@ class ShotFirestoreProvider extends FirestoreProvider {
     print(
         'Provider: ' + snapshot.docs.length.toString() + ' shot(s) retrieved');
     return List.generate(snapshot.docs.length,
-        (i) => SNShot.fromMap(snapshot.docs[i].data(), snapshot.docs[i].id));
+        (i) => SNShot.fromJson(snapshot.docs[i].data(), snapshot.docs[i].id));
   }
 
   Future<void> update(SNShot shot) async {
-    await _shotRef.doc(shot.id).set(shot.toMap());
+    await _shotRef.doc(shot.id).set(shot.toJson());
     print('Provider: Update operation succeed');
   }
 

@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import '../utils/reg_exp.dart';
 
+part 'character.g.dart';
+
 enum CharacterSerializeMode { Normal, Abbreviation }
 
+@JsonSerializable()
 class SNCharacter {
   String name;
   String nameAbbr;
   String? romaji;
+
+  @JsonKey(fromJson: colorFromString, toJson: colorToString)
   Color? memberColor;
+
   int? officialOrder;
   String? grade;
   String? group;
@@ -26,32 +33,14 @@ class SNCharacter {
       this.teamName,
       this.subordinateKikaku});
 
-  factory SNCharacter.fromMap(Map<String, dynamic> map) {
-    return SNCharacter(
-        name: map['name'],
-        nameAbbr: map['nameAbbr'],
-        romaji: map['romaji'],
-        memberColor: Color(
-            int.parse('0xFF${(map['memberColor'] as String).substring(1)}')),
-        officialOrder: map['officialOrder'],
-        grade: map['grade'],
-        group: map['group'],
-        teamName: map['teamName'],
-        subordinateKikaku: map['subordinateKikaku']);
-  }
+  static Color? colorFromString(String? colorString) =>
+      Color(int.parse('0xFF${colorString?.substring(1)}'));
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'nameAbbr': nameAbbr,
-      'romaji': romaji,
-      'memberColor':
-          '#${memberColor?.value.toRadixString(16).padLeft(8, '0').substring(2)}',
-      'officialOrder': officialOrder,
-      'grade': grade,
-      'group': group,
-      'teamName': teamName,
-      'subordinateKikaku': subordinateKikaku
-    };
-  }
+  static String? colorToString(Color? color) =>
+      '#${color?.value.toRadixString(16).padLeft(8, '0').substring(2)}';
+
+  factory SNCharacter.fromJson(Map<String, dynamic> map) =>
+      _$SNCharacterFromJson(map);
+
+  Map<String, dynamic> toJson() => _$SNCharacterToJson(this);
 }

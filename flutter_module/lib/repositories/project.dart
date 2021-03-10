@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../models/project.dart';
 import '../providers/sqlite/sqlite.dart';
 import '../providers/leancloud/leancloud.dart';
@@ -8,7 +10,7 @@ class ProjectRepository {
 
   // Stream<List<SNProject>> get projectsStream => provider.projectsStream;
 
-  Future<void> create(SNProject project) async =>
+  Future<DocumentReference> create(SNProject project) async =>
       await provider.create(project);
 
   Future<SNProject> retrieveById(String id) async =>

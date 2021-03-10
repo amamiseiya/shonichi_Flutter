@@ -57,6 +57,9 @@ class SongInformationPage extends GetView<LyricController> {
 //分镜表类
 
 class LyricDataTable extends StatefulWidget {
+
+  static const List<String> titles = ['起始时间', '歌词内容', 'Solo Part'];
+
   @override
   State<LyricDataTable> createState() => _LyricDataTableState();
 }
@@ -193,7 +196,7 @@ class LyricInspectorState extends State<LyricInspector> {
             }
           }),
           (chewieController == null ||
-                  !chewieController.videoPlayerController.value.initialized)
+                  !chewieController.videoPlayerController.value.isInitialized)
               ? Container()
               : Column(children: [
                   SizedBox(

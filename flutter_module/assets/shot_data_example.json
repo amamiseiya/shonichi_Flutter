@@ -972,6 +972,7 @@
       "creatorId": "WnD497pgbNVrduEUKybF4NJkEmw2",
       "description": "Default Storyboard for Brightest Melody",
       "createdTime": "2019-11-24 00:00:00.000",
+      "projectSubject": 0,
       "songId": "sn_song_example_1"
     },
     {
@@ -980,6 +981,7 @@
       "creatorId": "WnD497pgbNVrduEUKybF4NJkEmw2",
       "description": "Default Storyboard for Star Diamond",
       "createdTime": "2019-11-24 00:00:00.000",
+      "projectSubject": 0,
       "songId": "sn_song_example_2"
     }
   ],
@@ -991,7 +993,7 @@
       "endTime": 20000,
       "lyric": "yarimasune",
       "shotType": "MEDIUMSHOT",
-      "shotMovement": "逆时针环绕",
+      "shotMove": "逆时针环绕",
       "shotAngle": "略仰",
       "text": "taiga!waiya!saiba!faiba!",
       "imageURI": "",
@@ -1006,7 +1008,7 @@
       "endTime": 23333,
       "lyric": "iiyo koiyo",
       "shotType": "CLOSEUP",
-      "shotMovement": "前推",
+      "shotMove": "前推",
       "shotAngle": "略俯",
       "text": "jyajya!",
       "imageURI": "",
@@ -1025,55 +1027,55 @@
     {
       "id": "sn_asset_character_image_0",
       "name": "",
-      "uRI": "kosaka_honoka_full_length.png",
+      "uRI": "lovelive/kosaka_honoka_full_length.png",
       "dataId": "Kosaka Honoka"
     },
     {
       "id": "sn_asset_character_image_1",
       "name": "",
-      "uRI": "ayase_eli_full_length.png",
+      "uRI": "lovelive/ayase_eli_full_length.png",
       "dataId": "Ayase Eli"
     },
     {
       "id": "sn_asset_character_image_2",
       "name": "",
-      "uRI": "minami_kotori_full_length.png",
+      "uRI": "lovelive/minami_kotori_full_length.png",
       "dataId": "Minami Kotori"
     },
     {
       "id": "sn_asset_character_image_3",
       "name": "",
-      "uRI": "sonoda_umi_full_length.png",
+      "uRI": "lovelive/sonoda_umi_full_length.png",
       "dataId": "Sonoda Umi"
     },
     {
       "id": "sn_asset_character_image_4",
       "name": "",
-      "uRI": "hoshizora_rin_full_length.png",
+      "uRI": "lovelive/hoshizora_rin_full_length.png",
       "dataId": "Hoshizora Rin"
     },
     {
       "id": "sn_asset_character_image_5",
       "name": "",
-      "uRI": "nishikino_maki_full_length.png",
+      "uRI": "lovelive/nishikino_maki_full_length.png",
       "dataId": "Nishikino Maki"
     },
     {
       "id": "sn_asset_character_image_6",
       "name": "",
-      "uRI": "tojo_nozomi_full_length.png",
+      "uRI": "lovelive/tojo_nozomi_full_length.png",
       "dataId": "Tojo Nozomi"
     },
     {
       "id": "sn_asset_character_image_7",
       "name": "",
-      "uRI": "koizumi_hanayo_full_length.png",
+      "uRI": "lovelive/koizumi_hanayo_full_length.png",
       "dataId": "Koizumi Hanayo"
     },
     {
       "id": "sn_asset_character_image_8",
       "name": "",
-      "uRI": "yazawa_nico_full_length.png",
+      "uRI": "lovelive/yazawa_nico_full_length.png",
       "dataId": "Yazawa Nico"
     }
   ]

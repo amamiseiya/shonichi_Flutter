@@ -10,15 +10,15 @@ import '../widgets/error.dart';
 import '../controllers/character.dart';
 import '../controllers/lyric.dart';
 import '../controllers/formation.dart';
-import '../controllers/movement.dart';
+import '../controllers/move.dart';
 import '../models/formation.dart';
-import '../models/movement.dart';
+import '../models/move.dart';
 import '../models/character.dart';
 import '../utils/reg_exp.dart';
 
 class FormationPage extends StatelessWidget {
   final FormationController formationController = Get.find();
-  final MovementController movementController = Get.find();
+  final MoveController moveController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -52,13 +52,13 @@ class FormationPage extends StatelessWidget {
           return Column(children: [
             _FormationChipSelector(),
             Obx(() {
-              if (movementController.movementsForFormation.value == null) {
+              if (moveController.movesForFormation.value == null) {
                 return LoadingAnimationLinear();
               }
-              if (movementController.movementsForFormation.value!.isEmpty) {
-                return _EmptyMovementPage();
+              if (moveController.movesForFormation.value!.isEmpty) {
+                // return _EmptyMovePage();
               }
-              return MovementEditor();
+              return MoveEditor();
             })
           ]);
         }),
@@ -68,7 +68,7 @@ class FormationPage extends StatelessWidget {
               tooltip: 'Create'.tr, // used by assistive technologies
               child: Icon(Icons.add),
               heroTag: 'CreateFAB',
-              onPressed: () => movementController.create()),
+              onPressed: () => moveController.create()),
           FloatingActionButton(
               tooltip: 'Update'.tr, // used by assistive technologies
               child: Icon(Icons.edit),
@@ -78,7 +78,7 @@ class FormationPage extends StatelessWidget {
               tooltip: 'Delete'.tr, // used by assistive technologies
               child: Icon(Icons.delete),
               heroTag: 'DeleteFAB',
-              onPressed: () => movementController.delete()),
+              onPressed: () => moveController.delete()),
         ]));
   }
 }
@@ -213,7 +213,7 @@ class _ConfirmDeleteDialog extends StatelessWidget {
     return AlertDialog(
       content: SingleChildScrollView(
         child: Text(
-            'Are you sure that you want to delete this formation? All movements will be deleted as well!'
+            'Are you sure that you want to delete this formation? All moves will be deleted as well!'
                 .tr),
       ),
       actions: [
@@ -226,10 +226,10 @@ class _ConfirmDeleteDialog extends StatelessWidget {
   }
 }
 
-class MovementEditor extends GetView<MovementController> {
+class MoveEditor extends GetView<MoveController> {
   @override
   Widget build(BuildContext context) {
-    print('New MovementEditor rebuilded!');
+    print('New MoveEditor rebuilded!');
     return Card(
         margin: EdgeInsets.all(10.0),
         elevation: 4.0,
@@ -251,12 +251,12 @@ class MovementEditor extends GetView<MovementController> {
                         width: controller.programPainterSize.width,
                         height: controller.programPainterSize.height,
                         child: StreamBuilder(
-                            stream: controller.movementsForTime.stream,
+                            stream: controller.movesForTime.stream,
                             builder:
                                 (BuildContext context, AsyncSnapshot snapshot) {
                               if (snapshot.hasData) {
                                 return ProgramAnimator(
-                                    movementsForTime: snapshot.data,
+                                    movesForTime: snapshot.data,
                                     size: controller.programPainterSize);
                               } else {
                                 return LoadingAnimationLinear();
@@ -299,7 +299,7 @@ class MovementEditor extends GetView<MovementController> {
                           // width:MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height - 50,
                           child: StreamBuilder(
-                              stream: controller.movementsForCharacter.stream,
+                              stream: controller.movesForCharacter.stream,
                               builder: (BuildContext context,
                                   AsyncSnapshot snapshot) {
                                 if (!snapshot.hasData) {
@@ -307,28 +307,28 @@ class MovementEditor extends GetView<MovementController> {
                                 }
                                 return ListView(
                                     children: snapshot.data
-                                        .map<Widget>((SNMovement movement) =>
+                                        .map<Widget>((SNMove move) =>
                                             ListTile(
                                               selected: false,
                                               onTap: () =>
                                                   controller.changeTime(
-                                                      movement.startTime),
+                                                      move.startTime),
                                               leading: CircleAvatar(
-                                                  backgroundColor: movement
+                                                  backgroundColor: move
                                                       .character.memberColor,
                                                   child: Text(
                                                       characterNameFirstNameRegExp
-                                                          .stringMatch(movement
+                                                          .stringMatch(move
                                                               .character
                                                               .name)!)),
                                               title: Text(simpleDurationRegExp
-                                                  .stringMatch(movement
+                                                  .stringMatch(move
                                                       .startTime
                                                       .toString())!),
                                               subtitle: Text(
-                                                  movement.posX.toString() +
+                                                  move.posX.toString() +
                                                       ' , ' +
-                                                      movement.posY.toString()),
+                                                      move.posY.toString()),
                                             ))
                                         .toList());
                               }),
@@ -340,13 +340,13 @@ class MovementEditor extends GetView<MovementController> {
   }
 }
 
-class _EmptyMovementPage extends StatelessWidget {
+class _EmptyMovePage extends StatelessWidget {
   Widget build(BuildContext context) {
-    return Text('Empty Movement Page');
+    return Text('Empty Move Page');
   }
 }
 
-class TimeSlider extends GetView<MovementController> {
+class TimeSlider extends GetView<MoveController> {
   final LyricController lyricController = Get.find();
 
   @override
@@ -401,16 +401,16 @@ class CharacterFilterButton extends StatelessWidget {
         if (characterController.editingCharacters.value!.isEmpty) {}
         return Wrap(
           children: characterController.editingCharacters.value!
-              .map<Widget>((character) => GetX<MovementController>(
-                  builder: (movementController) => ElevatedButton(
+              .map<Widget>((character) => GetX<MoveController>(
+                  builder: (moveController) => ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            primary: (movementController
+                            primary: (moveController
                                         .characterFilter.value?.name ==
                                     character.name)
                                 ? Colors.blueAccent.shade100
                                 : Colors.grey.shade300),
                         onPressed: () =>
-                            movementController.changeCharacter(character),
+                            moveController.changeCharacter(character),
                         child: Text(characterNameFirstNameRegExp
                             .stringMatch(character.name)!),
                       )))
@@ -419,7 +419,7 @@ class CharacterFilterButton extends StatelessWidget {
       });
 }
 
-class KCurveFilterButton extends GetView<MovementController> {
+class KCurveFilterButton extends GetView<MoveController> {
   @override
   Widget build(BuildContext context) => Obx(() => Column(
       children: KCurveType.values
@@ -435,16 +435,16 @@ class KCurveFilterButton extends GetView<MovementController> {
 }
 
 class ProgramAnimator extends StatefulWidget {
-  final List<SNMovement> movementsForTime;
+  final List<SNMove> movesForTime;
   final Size size;
-  ProgramAnimator({required this.movementsForTime, required this.size});
+  ProgramAnimator({required this.movesForTime, required this.size});
   @override
   _ProgramAnimatorState createState() => _ProgramAnimatorState();
 }
 
 class _ProgramAnimatorState extends State<ProgramAnimator>
     with SingleTickerProviderStateMixin {
-  final MovementController movementController = Get.find();
+  final MoveController moveController = Get.find();
   late AnimationController _controller;
 
   @override
@@ -462,33 +462,33 @@ class _ProgramAnimatorState extends State<ProgramAnimator>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onPanDown: (details) => movementController.onPanDownProgram(
-            details, widget.movementsForTime, context),
-        onPanUpdate: (details) => movementController.onPanUpdateProgram(
-            details, widget.movementsForTime, context),
-        onPanEnd: (details) => movementController.onPanEndProgram(
-            details, widget.movementsForTime, context),
+        onPanDown: (details) => moveController.onPanDownProgram(
+            details, widget.movesForTime, context),
+        onPanUpdate: (details) => moveController.onPanUpdateProgram(
+            details, widget.movesForTime, context),
+        onPanEnd: (details) => moveController.onPanEndProgram(
+            details, widget.movesForTime, context),
         child: CustomPaint(
           size: widget.size,
-          painter: ProgramPainter(widget.movementsForTime),
+          painter: ProgramPainter(widget.movesForTime),
         ));
   }
 }
 
 class ProgramPainter extends CustomPainter {
-  final MovementController movementController = Get.find();
-  final List<SNMovement> movementsForTime;
-  ProgramPainter(this.movementsForTime);
+  final MoveController moveController = Get.find();
+  final List<SNMove> movesForTime;
+  ProgramPainter(this.movesForTime);
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (SNMovement characterMovement in movementsForTime) {
+    for (SNMove characterMove in movesForTime) {
       canvas.drawCircle(
-          characterMovement
-              .getMovementPos(movementController.programPainterSize),
+          characterMove
+              .getMovePos(moveController.programPainterSize),
           20,
           Paint()
-            ..color = characterMovement.character.memberColor!
+            ..color = characterMove.character.memberColor!
             ..strokeWidth = 5
             ..style = PaintingStyle.stroke);
     }
@@ -496,7 +496,7 @@ class ProgramPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(ProgramPainter oldDelegate) =>
-      movementsForTime != oldDelegate.movementsForTime;
+      movesForTime != oldDelegate.movesForTime;
 }
 
 class KCurvePainter extends CustomPainter {
@@ -549,8 +549,8 @@ class KCurvePainter extends CustomPainter {
     // canvas.drawPath(
     //     Path()
     //       ..moveTo(0.0, size.height)
-    //       ..quadraticBezierTo(getMovementPoint1(movement, size).dx,
-    //           getMovementPoint1(movement, size).dy, size.width, 0.0),
+    //       ..quadraticBezierTo(getMovePoint1(move, size).dx,
+    //           getMovePoint1(move, size).dy, size.width, 0.0),
     //     Paint()
     //       ..isAntiAlias = !true
     //       ..color = Colors.blueAccent.shade400
