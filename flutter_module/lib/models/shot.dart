@@ -8,16 +8,16 @@ import '../utils/data_convert.dart';
 
 part 'shot.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class SNShot {
   @JsonKey(ignore: true)
   String id;
 
   int sceneNumber;
   int shotNumber;
-  Duration startTime;
-  Duration endTime;
-  String lyric;
+  Duration? startTime;
+  Duration? endTime;
+  String? lyric;
   String shotType;
   String shotMove;
   String shotAngle;
@@ -32,9 +32,9 @@ class SNShot {
       {this.id = 'initial',
       required this.sceneNumber,
       required this.shotNumber,
-      required this.startTime,
-      required this.endTime,
-      required this.lyric,
+      this.startTime,
+      this.endTime,
+      this.lyric,
       required this.shotType,
       required this.shotMove,
       required this.shotAngle,
@@ -45,6 +45,7 @@ class SNShot {
       required this.characters});
 
   factory SNShot.initialValue(String storyboardId) {
+    // TODO: Implement
     return SNShot(
         id: 'initial',
         sceneNumber: 1010,
@@ -52,7 +53,7 @@ class SNShot {
         startTime: Duration(milliseconds: Random().nextInt(100000)),
         endTime: Duration(milliseconds: Random().nextInt(100000)),
         lyric: '',
-        shotType: 'VERYLONGSHOT',
+        shotType: 'LONG_SHOT',
         shotMove: '',
         shotAngle: '',
         text: '',
@@ -68,37 +69,27 @@ class SNShot {
   Map<String, dynamic> toJson() => _$SNShotToJson(this);
 }
 
-List<Map<String, dynamic>> shotScenes = [
-  {
-    'shotSceneLabel': '正机位',
-    'shotSceneValue': 1010,
-  },
-  {
-    'shotSceneLabel': '一般稳定器运镜',
-    'shotSceneValue': 1020,
-  },
-  {
-    'shotSceneLabel': '一般航拍',
-    'shotSceneValue': 1030,
-  },
-  {
-    'shotSceneLabel': '特写短镜头',
-    'shotSceneValue': 1040,
-  },
-  {
-    'shotSceneLabel': '难度极大的镜头',
-    'shotSceneValue': 1050,
-  },
-  {
-    'shotSceneLabel': 'B-roll',
-    'shotSceneValue': 1060,
-  },
-];
+Map<int, String> shotScenes = {
+  1010: '正机位',
+  1020: '一般稳定器运镜',
+  1030: '一般航拍',
+  1040: '特写短镜头',
+  1050: '难度极大的镜头',
+  1060: 'B-roll',
+};
 
-List<Map<String, String>> shotTypes = [
-  {'shotTypeLabel': '特写', 'shotTypeValue': 'CLOSEUP'},
-  {'shotTypeLabel': '近景', 'shotTypeValue': 'MEDIUMCLOSEUP'},
-  {'shotTypeLabel': '中景', 'shotTypeValue': 'MEDIUMSHOT'},
-  {'shotTypeLabel': '全景', 'shotTypeValue': 'LONGSHOT'},
-  {'shotTypeLabel': '远景', 'shotTypeValue': 'VERYLONGSHOT'},
-];
+Map<String, String> shotTypes = {
+  'CLOSEUP': '特写',
+  'MEDIUM_CLOSEUP': '近景',
+  'MEDIUM_SHOT': '中景',
+  'LONG_SHOT': '全景',
+  'VERY_LONG_SHOT': '远景',
+};
+
+List<String> shotMoves = [];
+
+Map<String, String> shotAngles = {
+  '1': '仰',
+  '2': '俯',
+  '3': '平',
+};

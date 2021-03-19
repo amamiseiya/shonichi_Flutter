@@ -5,12 +5,12 @@ import 'package:shonichi_flutter_module/pages/kikaku_information.dart';
 import '../controllers/auth.dart';
 import '../pages/login.dart';
 import '../pages/user_information.dart';
-import '../pages/home_page.dart';
-import '../pages/storyboard.dart';
-import '../pages/song_information.dart';
-import '../pages/song_list.dart';
-import '../pages/data_migration.dart';
-import '../pages/formation.dart';
+import '../pages/home_page/home_page.dart';
+import '../pages/storyboard/storyboard.dart';
+import '../pages/song_information/song_information.dart';
+import '../pages/song_list/song_list.dart';
+import '../pages/data_migration/data_migration.dart';
+import '../pages/formation/formation.dart';
 
 class MyDrawer extends StatelessWidget {
   final AuthController authController = Get.find();

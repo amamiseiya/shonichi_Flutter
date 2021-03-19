@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shonichi_flutter_module/pages/storyboard.dart';
 
 import 'character.dart';
 import 'project.dart';
@@ -25,6 +24,7 @@ import '../providers/firestore/firestore.dart';
 import '../utils/des.dart';
 import '../utils/reg_exp.dart';
 import '../utils/data_convert.dart';
+import '../pages/storyboard/storyboard.dart';
 
 class DataMigrationController extends GetxController {
   final CharacterController characterController = Get.find();
@@ -207,7 +207,7 @@ class DataMigrationController extends GetxController {
           ' | ' +
           simpleDurationRegExp.stringMatch(shot.endTime.toString())! +
           ' | ' +
-          shot.lyric +
+          shot.lyric! +
           ' | ' +
           shot.shotType +
           ' | ' +

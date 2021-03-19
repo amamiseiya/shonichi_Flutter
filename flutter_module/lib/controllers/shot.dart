@@ -166,18 +166,19 @@ class ShotController extends GetxController {
   }
 
   int? selectShot(double value) {
+    // TODO: null value check
     if (shots.value != null) {
       final ms =
           value * songController.editingSong.value!.duration.inMilliseconds;
       if (shots.value!.length == 1) {
         return editingShotIndex(0);
-      } else if (shots.value!.first.startTime.inMilliseconds > ms) {
+      } else if (shots.value!.first.startTime!.inMilliseconds > ms) {
         return editingShotIndex(0);
-      } else if (shots.value!.last.startTime.inMilliseconds < ms) {
+      } else if (shots.value!.last.startTime!.inMilliseconds < ms) {
         return editingShotIndex(shots.value!.length - 1);
       } else if (shots.value!.length == 2) {
-        return ms - shots.value![0].startTime.inMilliseconds >
-                shots.value![1].startTime.inMilliseconds - ms
+        return ms - shots.value![0].startTime!.inMilliseconds >
+                shots.value![1].startTime!.inMilliseconds - ms
             ? editingShotIndex(1)
             : editingShotIndex(0);
       }
@@ -186,9 +187,9 @@ class ShotController extends GetxController {
       int mid = 0;
       while (left <= right) {
         mid = (left + right) ~/ 2;
-        if (shots.value![mid].startTime.inMilliseconds < ms) {
+        if (shots.value![mid].startTime!.inMilliseconds < ms) {
           left = mid + 1;
-        } else if (shots.value![mid].startTime.inMilliseconds > ms) {
+        } else if (shots.value![mid].startTime!.inMilliseconds > ms) {
           right = mid - 1;
         } else {
           break;
@@ -197,14 +198,14 @@ class ShotController extends GetxController {
       if (left <= right) {
         return editingShotIndex(mid);
       }
-      if (shots.value![mid].startTime.inMilliseconds < ms) {
-        return ms - shots.value![mid].startTime.inMilliseconds >
-                shots.value![mid + 1].startTime.inMilliseconds - ms
+      if (shots.value![mid].startTime!.inMilliseconds < ms) {
+        return ms - shots.value![mid].startTime!.inMilliseconds >
+                shots.value![mid + 1].startTime!.inMilliseconds - ms
             ? editingShotIndex(mid + 1)
             : editingShotIndex(mid);
       } else {
-        return shots.value![mid].startTime.inMilliseconds - ms >
-                ms - shots.value![mid - 1].startTime.inMilliseconds
+        return shots.value![mid].startTime!.inMilliseconds - ms >
+                ms - shots.value![mid - 1].startTime!.inMilliseconds
             ? editingShotIndex(mid - 1)
             : editingShotIndex(mid);
       }

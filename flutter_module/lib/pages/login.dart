@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../controllers/auth.dart';
-import '../pages/home_page.dart';
+import '../pages/home_page/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override

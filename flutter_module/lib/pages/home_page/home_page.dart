@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../widgets/drawer.dart';
-import '../widgets/loading.dart';
-import '../widgets/error.dart';
-import '../controllers/data_migration.dart';
-import '../controllers/project.dart';
-import '../controllers/song.dart';
-import '../controllers/intro.dart';
-import '../models/project.dart';
+import '../../widgets/drawer.dart';
+import '../../widgets/loading.dart';
+import '../../widgets/error.dart';
+import '../../controllers/data_migration.dart';
+import '../../controllers/project.dart';
+import '../../controllers/song.dart';
+import '../../controllers/intro.dart';
+import '../../models/project.dart';
+
+part 'upsert_dialog.dart';
+part 'song_select_dialog.dart';
 
 class HomePage extends GetView<ProjectController> {
   final IntroController introController = Get.find();
@@ -42,7 +45,7 @@ class HomePage extends GetView<ProjectController> {
             return LoadingAnimationLinear();
           }
           if (controller.projects.value!.isEmpty) {
-            return _EmptyPage();
+            return _EmptyProjectPage();
           }
           return _Dashboard();
         }),
@@ -211,83 +214,9 @@ class _Dashboard extends GetView<ProjectController> {
   }
 }
 
-class _EmptyPage extends StatelessWidget {
+class _EmptyProjectPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text('Empty Page');
   }
 }
 
-class ProjectUpsertDialog extends StatelessWidget {
-  late SNProject _p;
-
-  final TextEditingController _dancerNameController = TextEditingController();
-  final TextEditingController _songIdController = TextEditingController();
-  final TextEditingController _storyboardIdController = TextEditingController();
-  final TextEditingController _formationIdController = TextEditingController();
-
-  ProjectUpsertDialog(SNProject? project) {
-    _p = project ?? SNProject.initialValue();
-    _dancerNameController.text = _p.dancerName;
-    _songIdController.text = _p.songId ?? '';
-    _storyboardIdController.text = _p.storyboardId ?? '';
-    _formationIdController.text = _p.formationId ?? '';
-  }
-
-  void submit() {
-  _p.dancerName = _dancerNameController.text;
-  _p.songId = _songIdController.text;
-  _p.storyboardId = _storyboardIdController.text;
-  _p.formationId = _formationIdController.text;
-  Get.back(result: _p);
-  }
-
-  @override
-  Widget build(BuildContext context) => SimpleDialog(
-        title: Text('Create or Update Project'.tr),
-        children: <Widget>[
-          Column(children: [
-            Form(
-                child: Column(children: [
-              ElevatedButton(
-                onPressed: () => showDatePicker(
-                  context: Get.context,
-                  initialDate: _p.createdTime,
-                  firstDate: DateTime.now().subtract(Duration(days: 3650)),
-                  lastDate: DateTime.now().add(Duration(days: 3650)),
-                ).then((value) {
-                  if (value != null) {
-                    _p.createdTime = value;
-                  }
-                }),
-                child: Text('Created time'.tr),
-              ),
-              TextFormField(
-                controller: _dancerNameController,
-                decoration: InputDecoration(labelText: 'Dancer name'.tr),
-                onEditingComplete: () {},
-              ),
-              TextFormField(
-                controller: _songIdController,
-                decoration: InputDecoration(labelText: 'Song ID'.tr),
-                onEditingComplete: () {},
-              ),
-              TextFormField(
-                controller: _storyboardIdController,
-                decoration: InputDecoration(labelText: 'Storyboard ID'.tr),
-                onEditingComplete: () {},
-              ),
-              TextFormField(
-                controller: _formationIdController,
-                decoration: InputDecoration(labelText: 'Formation ID'.tr),
-                onEditingComplete: () {},
-              ),
-            ])),
-            GetBuilder<IntroController>(builder:(controller)=>SimpleDialogOption(
-              key: controller.intro.keys[2],
-              onPressed: submit,
-              child: Text('Submit'.tr),
-            )),
-          ])
-        ],
-      );
-}

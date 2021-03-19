@@ -10,9 +10,13 @@ SNShot _$SNShotFromJson(Map<String, dynamic> json) {
   return SNShot(
     sceneNumber: json['sceneNumber'] as int,
     shotNumber: json['shotNumber'] as int,
-    startTime: Duration(microseconds: json['startTime'] as int),
-    endTime: Duration(microseconds: json['endTime'] as int),
-    lyric: json['lyric'] as String,
+    startTime: json['startTime'] == null
+        ? null
+        : Duration(microseconds: json['startTime'] as int),
+    endTime: json['endTime'] == null
+        ? null
+        : Duration(microseconds: json['endTime'] as int),
+    lyric: json['lyric'] as String?,
     shotType: json['shotType'] as String,
     shotMove: json['shotMove'] as String,
     shotAngle: json['shotAngle'] as String,
@@ -29,8 +33,8 @@ SNShot _$SNShotFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$SNShotToJson(SNShot instance) => <String, dynamic>{
       'sceneNumber': instance.sceneNumber,
       'shotNumber': instance.shotNumber,
-      'startTime': instance.startTime.inMicroseconds,
-      'endTime': instance.endTime.inMicroseconds,
+      'startTime': instance.startTime?.inMicroseconds,
+      'endTime': instance.endTime?.inMicroseconds,
       'lyric': instance.lyric,
       'shotType': instance.shotType,
       'shotMove': instance.shotMove,
@@ -39,5 +43,5 @@ Map<String, dynamic> _$SNShotToJson(SNShot instance) => <String, dynamic>{
       'imageURI': instance.imageURI,
       'comment': instance.comment,
       'storyboardId': instance.storyboardId,
-      'characters': instance.characters,
+      'characters': instance.characters.map((e) => e.toJson()).toList(),
     };

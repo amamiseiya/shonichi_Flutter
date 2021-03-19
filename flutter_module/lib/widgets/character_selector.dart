@@ -108,6 +108,8 @@ class CharacterSelectorState extends State<CharacterSelector>
                 onPressed: () {
                   widget.editingData.characters.remove(character);
                   widget.updateData();
+                  setState(() {
+                  });
                 },
                 label: Text(character.nameAbbr),
               );

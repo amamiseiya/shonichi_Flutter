@@ -4,7 +4,7 @@ import 'character.dart';
 
 part 'lyric.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class SNLyric {
   @JsonKey(ignore: true)
   String id;

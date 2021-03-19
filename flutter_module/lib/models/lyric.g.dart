@@ -23,5 +23,5 @@ Map<String, dynamic> _$SNLyricToJson(SNLyric instance) => <String, dynamic>{
       'endTime': instance.endTime.inMicroseconds,
       'text': instance.text,
       'songId': instance.songId,
-      'characters': instance.characters,
+      'characters': instance.characters.map((e) => e.toJson()).toList(),
     };

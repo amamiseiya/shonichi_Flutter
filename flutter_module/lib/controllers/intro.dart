@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 
 import '../controllers/project.dart';
 import '../models/project.dart';
-import '../pages/home_page.dart';
-import '../pages/storyboard.dart';
+import '../pages/home_page/home_page.dart';
+import '../pages/storyboard/storyboard.dart';
 
 class IntroController extends GetxController {
   final ProjectController projectController = Get.find();
@@ -55,12 +55,12 @@ class IntroController extends GetxController {
     switch (currentStepIndex) {
       // 一句问候
       case 0:
-        return stepWidgetParams.onNext();
+        return stepWidgetParams.onNext!();
       // 点击右下角添加项目
       case 1:
         dialog = Get.dialog(projectUpsertDialog);
         return Future.delayed(Duration(seconds: 1))
-            .then((_) => stepWidgetParams.onNext());
+            .then((_) => stepWidgetParams.onNext!());
       case 2:
         projectUpsertDialog.submit();
         dialog
@@ -68,7 +68,7 @@ class IntroController extends GetxController {
             .then((_) => Future.delayed(Duration(seconds: 2)))
             .then((_) => Get.to(() => StoryboardPage()));
         return Future.delayed(Duration(seconds: 5))
-            .then((_) => stepWidgetParams.onNext());
+            .then((_) => stepWidgetParams.onNext!());
 
       case 3:
         return stepWidgetParams.onFinish();
@@ -140,7 +140,7 @@ class IntroController extends GetxController {
     return (StepWidgetParams stepWidgetParams) {
       int currentStepIndex = stepWidgetParams.currentStepIndex;
       int stepCount = stepWidgetParams.stepCount;
-      Offset offset = stepWidgetParams.offset;
+      Offset offset = stepWidgetParams.offset!;
 
       Map position = _smartGetPosition(
         screenSize: stepWidgetParams.screenSize,
@@ -182,18 +182,28 @@ class IntroController extends GetxController {
                     SizedBox(
                       height: 28,
                       child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 0,
-                            horizontal: 8,
+                        style: ButtonStyle(
+                          foregroundColor: MaterialStateProperty.all<Color>(
+                            Colors.white,
                           ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(64),
+                          overlayColor: MaterialStateProperty.all<Color>(
+                            Colors.white.withOpacity(0.1),
+                          ),
+                          side: MaterialStateProperty.all<BorderSide>(
+                            BorderSide(
+                              color: Colors.white,
                             ),
                           ),
-                          side: BorderSide(color: Colors.white),
-                          textStyle: TextStyle(color: Colors.white),
+                          padding:
+                              MaterialStateProperty.all<EdgeInsetsGeometry>(
+                            EdgeInsets.symmetric(
+                              vertical: 0,
+                              horizontal: 8,
+                            ),
+                          ),
+                          shape: MaterialStateProperty.all<OutlinedBorder>(
+                            StadiumBorder(),
+                          ),
                         ),
                         onPressed: () => onPressed(
                             stepWidgetParams, currentStepIndex, stepCount),

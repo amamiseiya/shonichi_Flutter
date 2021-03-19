@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
 
-import '../widgets/drawer.dart';
-import '../widgets/loading.dart';
-import '../controllers/data_migration.dart';
+import '../../widgets/drawer.dart';
+import '../../widgets/loading.dart';
+import '../../controllers/data_migration.dart';
+
+part 'preview.dart';
 
 class DataMigrationPage extends StatelessWidget {
   @override
@@ -144,20 +146,4 @@ class DesKeyDialog extends StatelessWidget {
           ])
         ],
       );
-}
-
-class MarkdownPreview extends GetView<DataMigrationController> {
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-        child: StreamBuilder(
-            stream: controller.markdownText.stream,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData) {
-                return Markdown(data: snapshot.data);
-              } else {
-                return Text('No data.');
-              }
-            }));
-  }
 }
