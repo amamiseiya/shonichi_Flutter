@@ -1,8 +1,7 @@
 part of 'song_list.dart';
 
-
 class SongUpsertDialog extends StatelessWidget {
-  late SNSong s;
+  late SNSong _s;
   SongController songController = Get.find();
   CharacterController characterController = Get.find();
 
@@ -12,30 +11,36 @@ class SongUpsertDialog extends StatelessWidget {
   TextEditingController _lyricOffsetController = TextEditingController();
 
   SongUpsertDialog(SNSong? song) {
-    s = song ?? SNSong.initialValue();
-    _nameController.text = s.name;
-    _coverURIController.text = s.coverURI;
-    _durationController.text = s.duration.inMilliseconds.toString();
-    _lyricOffsetController.text = s.lyricOffset.toString();
+    _s = song ?? SNSong.initialValue();
+    _nameController.text = _s.name;
+    _coverURIController.text = _s.coverURI;
+    _durationController.text = _s.duration.inMilliseconds.toString();
+    _lyricOffsetController.text = _s.lyricOffset.toString();
   }
 
   Widget build(BuildContext context) => SimpleDialog(
-    title: Text('Create or Update Song'.tr),
-    children: <Widget>[
-      Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Form(
-                    child: Column(children: [
+        title: Builder(builder: (context) {
+          if (_s.id == 'initial') {
+            return Text('Create Song'.tr);
+          } else {
+            return Text('Update Song'.tr);
+          }
+        }),
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Form(
+                        child: Column(children: [
                       TextFormField(
                         controller: _nameController,
                         decoration: InputDecoration(labelText: 'Song name'.tr),
                         onEditingComplete: () {},
                       ),
                       DropdownButton(
-                        value: s.subordinateKikaku,
+                        value: _s.subordinateKikaku,
                         icon: Icon(Icons.arrow_downward),
                         isExpanded: true,
                         underline: Container(
@@ -44,25 +49,25 @@ class SongUpsertDialog extends StatelessWidget {
                         ),
                         onChanged: (String? value) {
                           (context as Element).markNeedsBuild(); // 妙啊，实在是妙
-                          s.subordinateKikaku = value!;
+                          _s.subordinateKikaku = value!;
                         },
                         items: [
-                          DropdownMenuItem<String>(
-                            value: '',
-                            child: Text('(undefined)'.tr),
-                          )
-                        ] +
+                              DropdownMenuItem<String>(
+                                value: '',
+                                child: Text('(undefined)'.tr),
+                              )
+                            ] +
                             characterController.kikakus
                                 .map<DropdownMenuItem<String>>(
                                     (SNKikaku kikaku) =>
-                                    DropdownMenuItem<String>(
-                                      value: kikaku.name,
-                                      child: Text(
-                                        kikaku.name,
-                                        overflow: TextOverflow.fade,
-                                        softWrap: false,
-                                      ),
-                                    ))
+                                        DropdownMenuItem<String>(
+                                          value: kikaku.name,
+                                          child: Text(
+                                            kikaku.name,
+                                            overflow: TextOverflow.fade,
+                                            softWrap: false,
+                                          ),
+                                        ))
                                 .toList(),
                       ),
                       TextFormField(
@@ -73,35 +78,35 @@ class SongUpsertDialog extends StatelessWidget {
                       TextFormField(
                         controller: _durationController,
                         decoration:
-                        InputDecoration(labelText: 'Song duration'.tr),
+                            InputDecoration(labelText: 'Song duration'.tr),
                         onEditingComplete: () {},
                       ),
                       TextFormField(
                         controller: _lyricOffsetController,
                         decoration:
-                        InputDecoration(labelText: 'Lyric offset'.tr),
+                            InputDecoration(labelText: 'Lyric offset'.tr),
                         onEditingComplete: () {},
                       ),
                     ])),
-                SimpleDialogOption(
-                  onPressed: () {
-                    songController.delete(s); // ! song could be null
-                    Get.back();
-                  },
-                  child: Text('Delete'.tr),
-                ),
-                SimpleDialogOption(
-                  onPressed: () {
-                    s.name = _nameController.text;
-                    s.coverURI = _coverURIController.text;
-                    s.duration = Duration(
-                        milliseconds: int.parse(_durationController.text));
-                    s.lyricOffset = int.parse(_lyricOffsetController.text);
-                    Get.back(result: s);
-                  },
-                  child: Text('Submit'.tr),
-                ),
-              ]))
-    ],
-  );
+                    SimpleDialogOption(
+                      onPressed: () {
+                        songController.delete(_s); // ! song could be null
+                        Get.back();
+                      },
+                      child: Text('Delete'.tr),
+                    ),
+                    SimpleDialogOption(
+                      onPressed: () {
+                        _s.name = _nameController.text;
+                        _s.coverURI = _coverURIController.text;
+                        _s.duration = Duration(
+                            milliseconds: int.parse(_durationController.text));
+                        _s.lyricOffset = int.parse(_lyricOffsetController.text);
+                        Get.back(result: _s);
+                      },
+                      child: Text('Submit'.tr),
+                    ),
+                  ]))
+        ],
+      );
 }

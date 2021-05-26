@@ -1,6 +1,5 @@
 part of 'home_page.dart';
 
-
 class ProjectUpsertDialog extends StatelessWidget {
   late SNProject _p;
 
@@ -24,12 +23,18 @@ class ProjectUpsertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SimpleDialog(
-    title: Text('Create or Update Project'.tr),
-    contentPadding: EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 12.0),
-    children: <Widget>[
-      Column(children: [
-        Form(
-            child: Column(children: [
+        title: Builder(builder: (context) {
+          if (_p.id == 'initial') {
+            return Text('Create Project'.tr);
+          } else {
+            return Text('Update Project'.tr);
+          }
+        }),
+        contentPadding: EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 12.0),
+        children: <Widget>[
+          Column(children: [
+            Form(
+                child: Column(children: [
               ElevatedButton(
                 onPressed: () => showDatePicker(
                   context: Get.context,
@@ -49,7 +54,8 @@ class ProjectUpsertDialog extends StatelessWidget {
                 onEditingComplete: () {},
               ),
               ElevatedButton(
-                onPressed: ()=>Get.dialog(SongSelectDialog()).then((value) => _p.songId = value),
+                onPressed: () => Get.dialog(SongSelectDialog())
+                    .then((value) => _p.songId = value),
                 child: Text('Song ID'.tr),
               ),
               TextFormField(
@@ -63,14 +69,16 @@ class ProjectUpsertDialog extends StatelessWidget {
                 onEditingComplete: () {},
               ),
             ])),
-        Divider(color: Colors.white,),
-        GetBuilder<IntroController>(
-            builder: (controller) => SimpleDialogOption(
-              key: controller.intro.keys[2],
-              onPressed: submit,
-              child: Text('Submit'.tr),
-            )),
-      ])
-    ],
-  );
+            Divider(
+              color: Colors.white,
+            ),
+            GetBuilder<IntroController>(
+                builder: (controller) => SimpleDialogOption(
+                      key: controller.intro.keys[2],
+                      onPressed: submit,
+                      child: Text('Submit'.tr),
+                    )),
+          ])
+        ],
+      );
 }

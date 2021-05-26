@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 import 'character.dart';
 import 'project.dart';
+import 'storyboard.dart';
 import 'song.dart';
 import '../models/project.dart';
 import '../models/song.dart';
@@ -29,6 +30,7 @@ import '../pages/storyboard/storyboard.dart';
 class DataMigrationController extends GetxController {
   final CharacterController characterController = Get.find();
   final ProjectController projectController = Get.find();
+  final StoryboardController storyboardController = Get.find();
   final SongController songController = Get.find();
 
   final ProjectRepository projectRepository;
@@ -41,8 +43,7 @@ class DataMigrationController extends GetxController {
   RxString markdownText = RxString(null);
   bool needEncrypt = false;
 
-  DataMigrationController(
-      this.projectRepository,
+  DataMigrationController(this.projectRepository,
       this.songRepository,
       this.lyricRepository,
       this.storyboardRepository,
@@ -60,7 +61,42 @@ class DataMigrationController extends GetxController {
     super.onInit();
   }
 
-  void importMarkdown(String? key) async {
+  Future<List<SNShot>> parseShots(SNProject project, String mdText) async {
+    String storyboardSection = storyboardChapterRegExp.stringMatch(mdText)!;
+    String shotSection =
+    RegExp(r'(?<=---\s\|\n).+', dotAll: true).stringMatch(storyboardSection)!;
+    final String storyboardId =
+        (await storyboardController.submitCreate(SNStoryboard.initialValue()
+          ..name = 'Imported')).id;
+    final String kikaku =
+        (await songRepository.retrieveById(project.songId!)).subordinateKikaku;
+    return shotSection
+        .split('\n')
+        .where((element) => RegExp(r'^\|.+\|$').hasMatch(element))
+        .map((String shotRecord) {
+      List<RegExpMatch> shotProps =
+      RegExp(r'(?<=\|\s)[^\|]*(?=\s\|)').allMatches(shotRecord).toList();
+      return SNShot.fromText(
+          {
+        'sceneNumber': shotProps[0].group(0),
+        'shotNumber': shotProps[1].group(0),
+        'startTime': shotProps[2].group(0),
+        'endTime': shotProps[3].group(0),
+        'lyric': shotProps[4].group(0),
+        'shotType': shotProps[5].group(0),
+        'shotMove': shotProps[6].group(0),
+        'shotAngle': shotProps[7].group(0),
+        'text': shotProps[8].group(0),
+        'imageURI': shotProps[9].group(0),
+        'comment': shotProps[10].group(0),
+        'storyboardId': storyboardId,
+        'characters':shotProps[11].group(0),
+      });
+    }).toList();
+  }
+
+
+  void previewImportMarkdown(String? key) async {
     try {
       String mdText = await assetRepository
           .importMarkdown(projectController.editingProject.value!);
@@ -80,96 +116,16 @@ class DataMigrationController extends GetxController {
       for (SNShot shot in shots) {
         await shotRepository.create(shot);
       }
+      markdownText.nil();
     } catch (e) {
       print(e);
     }
   }
 
-  Future<List<SNShot>> parseShots(SNProject project, String mdText) async {
-    String storyboardText = storyboardChapterRegExp.stringMatch(mdText)!;
-    String shotsText =
-        RegExp(r'(?<=---\s\|\n).+', dotAll: true).stringMatch(storyboardText)!;
-    final String storyboardId =
-        (await storyboardRepository.getLatestStoryboard(project.songId!))!.id +
-            '1';
-    final String kikaku =
-        (await songRepository.retrieveById(project.songId!)).subordinateKikaku;
-    return shotsText
-        .split('\n')
-        .where((element) => RegExp(r'^\|.+\|$').hasMatch(element))
-        .map((String shotText) {
-      List<RegExpMatch> shotProps =
-          RegExp(r'(?<=\|\s)[^\|]*(?=\s\|)').allMatches(shotText).toList();
-      return SNShot(
-          id: 'initial',
-          sceneNumber: int.parse(shotProps[0].group(0)!),
-          shotNumber: int.parse(shotProps[1].group(0)!),
-          startTime: simpleDurationToDuration(shotProps[2].group(0)!),
-          endTime: simpleDurationToDuration(shotProps[3].group(0)!),
-          lyric: shotProps[4].group(0)!,
-          shotType: shotProps[5].group(0)!,
-          shotMove: shotProps[6].group(0)!,
-          shotAngle: shotProps[7].group(0)!,
-          text: shotProps[8].group(0)!,
-          imageURI: shotProps[9].group(0)!,
-          comment: shotProps[10].group(0)!,
-          storyboardId: storyboardId,
-          characters: json
-              .decode(shotProps[11].group(0)!)
-              .map((Map<String, dynamic> cm) => SNCharacter.fromJson(cm))
-              .toList());
-    }).toList();
-  }
-
-  // 输入角色列表返回String
-  String serializeCharacters(List<SNCharacter> characters,
-      {required CharacterSerializeMode mode}) {
-    String str = '';
-    for (SNCharacter character in characters) {
-      if (mode == CharacterSerializeMode.Normal) {
-        str += character.name + ', ';
-      }
-      if (mode == CharacterSerializeMode.Abbreviation) {
-        str += character.nameAbbr + ', ';
-      }
-    }
-    str.substring(0, str.lastIndexOf(', '));
-    return str;
-  }
-
-  // 输入String返回角色列表
-  List<SNCharacter> unserializeCharacters(BuildContext context, String str,
-      {required CharacterSerializeMode mode}) {
-    if (str != null) {
-      final Iterable<String> csi =
-          str.split(', ').where((row) => characterNameRegExp.hasMatch(row));
-      final List<SNCharacter> cl = [];
-      if (mode == CharacterSerializeMode.Normal) {
-        csi.forEach((cs) async {
-          cl.add(await characterController.retrieveFromString(context,
-              name: cs,
-              kikaku: songController.editingSong.value!.subordinateKikaku));
-        });
-        return cl;
-      } else if (mode == CharacterSerializeMode.Abbreviation) {
-        csi.forEach((cs) async {
-          cl.add(await characterController.retrieveFromString(context,
-              nameAbbr: cs,
-              kikaku: songController.editingSong.value!.subordinateKikaku));
-        });
-        return cl;
-      } else {
-        throw FormatException();
-      }
-    } else {
-      return [];
-    }
-  }
-
-  void previewMarkdown() async {
+  void previewExportMarkdown() async {
     try {
       markdownText(generateIntro(projectController.editingProject.value!,
-              songController.editingSong.value!) +
+          songController.editingSong.value!) +
           generateShotDataTable(await shotRepository.retrieveForStoryboard(
               projectController.editingProject.value!.storyboardId!)));
     } catch (e) {
@@ -183,52 +139,54 @@ class DataMigrationController extends GetxController {
         ' ' +
         song.name +
         ' 拍摄计划\n\n拍摄日期：' +
-        project.createdTime.toString() +
+        project.createdTime.toIso8601String() +
         '\n';
     return mdText;
   }
 
   String generateShotDataTable(List<SNShot> shots) {
     String mdText = '# 分镜表\n';
-    for (String title in ShotDataTable.titles.keys) {
+    for (String title in ShotDataTable.titles.keys
+        .toList()
+        .sublist(0, ShotDataTable.titles.length - 1)) {
       mdText += '| ' + title + ' ';
     }
     mdText += '|\n';
-    mdText += ('| --- ') * ShotDataTable.titles.length;
+    mdText += ('| --- ') * (ShotDataTable.titles.length - 1);
     mdText += '|\n';
 
     for (SNShot shot in shots) {
+      final _textMap = shot.toText();
       mdText += ' | ' +
-          shot.sceneNumber.toString() +
+          _textMap['sceneNumber']! +
           ' | ' +
-          shot.shotNumber.toString() +
+          _textMap['shotNumber']! +
           ' | ' +
-          simpleDurationRegExp.stringMatch(shot.startTime.toString())! +
+          _textMap['startTime']! +
           ' | ' +
-          simpleDurationRegExp.stringMatch(shot.endTime.toString())! +
+          _textMap['endTime']! +
           ' | ' +
-          shot.lyric! +
+          _textMap['lyric']! +
           ' | ' +
-          shot.shotType +
+          _textMap['shotType']! +
           ' | ' +
-          shot.shotMove +
+          _textMap['shotMove']! +
           ' | ' +
-          shot.shotAngle +
+          _textMap['shotAngle']! +
           ' | ' +
-          shot.text +
+          _textMap['text']! +
           ' | ' +
-          shot.imageURI +
+          _textMap['imageURI']! +
           ' | ' +
-          shot.comment +
+          _textMap['comment']! +
           ' | ' +
-          json.encode(
-              shot.characters.map((character) => character.toJson()).toList()) +
+          _textMap['characters']! +
           ' |\n';
     }
     return mdText;
   }
 
-  Future<void> exportMarkdown(String? key) async {
+  Future<void> confirmExportMarkdown(String? key) async {
     try {
       if (key != null) {
         await assetRepository.exportMarkdown(
@@ -238,6 +196,7 @@ class DataMigrationController extends GetxController {
         await assetRepository.exportMarkdown(
             projectController.editingProject.value!, markdownText.value);
       }
+      markdownText.nil();
     } catch (e) {
       print(e);
     }
@@ -249,15 +208,21 @@ class DataMigrationController extends GetxController {
       'sn_song': [],
       'sn_lyric': [],
       'sn_storyboard': [],
-      'sn_shot': []
+      'sn_shot': [],
+      'sn_asset': []
     };
+    FirebaseFirestore.instance
+        .collection('sn_asset')
+        .get()
+        .then((snapshot) =>
+        snapshot.docs.forEach((doc) {
+          return map['sn_asset']!.add(doc);
+        }));
 
     await assetRepository.exportJson(json.encode(map), 'shot_data_export.json');
   }
 
-  Future<void> importJson(
-    BuildContext context,
-  ) async {
+  Future<void> importJson(BuildContext context,) async {
     // await db.delete('sn_project');
     // await db.delete('sn_song');
     // await db.delete('sn_lyric');
@@ -288,7 +253,8 @@ class DataMigrationController extends GetxController {
     //     .collection('sn_shot')
     //     .doc(s['id'])
     //     .set(s));
-    map['sn_asset']!.forEach((a) async => await FirebaseFirestore.instance
+    map['sn_asset']!.forEach((a) async =>
+    await FirebaseFirestore.instance
         .collection('sn_asset')
         .doc(a['id'])
         .set(a));

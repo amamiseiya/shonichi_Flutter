@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shonichi_flutter_module/controllers/asset.dart';
 
 import '../../widgets/drawer.dart';
 import '../../widgets/loading.dart';
@@ -11,6 +12,7 @@ import '../../controllers/intro.dart';
 import '../../models/project.dart';
 
 part 'upsert_dialog.dart';
+
 part 'song_select_dialog.dart';
 
 class HomePage extends GetView<ProjectController> {
@@ -98,118 +100,127 @@ class _Dashboard extends GetView<ProjectController> {
       alignment: Alignment.center,
       widthFactor: _widthFactor,
       heightFactor: 1.0,
-      child: ListView(children: [
-        GetBuilder<IntroController>(
-            builder: (introController) => Card(
-                key: introController.intro.keys[0],
-                margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 5.0),
-                elevation: 4.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                child: Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text(
-                      'Welcome back!'.tr,
-                      textScaleFactor: 1.8,
-                    )))),
-        Obx(() {
-          if (songController.firstCoverURI.value == null) {
-            return Container();
-          }
-          return Card(
-              margin: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-              elevation: 4.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
-              clipBehavior: Clip.antiAlias,
-              child: Padding(
-                  padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Current project:'.tr,
-                          textScaleFactor: 1.2,
-                        ),
-                        Ink.image(
-                          image:
-                              NetworkImage(songController.firstCoverURI.value!),
-                          fit: BoxFit.fitWidth,
-                          // width: 300,
-                          height: 300,
-                          child: InkWell(
-                            onTap: () {
-                              controller
-                                  .select(controller.projects.value![0].id);
-                            },
-                          ),
-                        ),
-                        Text(
-                          controller.projects.value![0].songId.toString(),
-                          textScaleFactor: 1.5,
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        Text('At: '.tr +
-                            controller.projects.value![0].createdTime
-                                .toString()),
-                        Text('With: '.tr +
-                            controller.projects.value![0].dancerName),
-                      ])));
-        }),
-        Card(
-            margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 5.0),
-            elevation: 4.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            child: Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Or another project:'.tr,
-                        textScaleFactor: 1.2,
-                      ),
-                      Column(
-                          children: List.generate(
-                              3,
-                              (i) =>
-                                  (controller.projects.value!.length >= i + 2)
-                                      ? (ListTile(
+      child: ListView.builder(
+          itemCount: 3,
+          itemBuilder: (BuildContext context, int count) {
+            if (count == 0) {
+              return GetBuilder<IntroController>(
+                  builder: (introController) => Card(
+                      key: introController.intro.keys[0],
+                      margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 5.0),
+                      elevation: 4.0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.0))),
+                      child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Text(
+                            'Welcome back!'.tr,
+                            textScaleFactor: 1.8,
+                          ))));
+            } else if (count == 1) {
+              return Obx(() {
+                if (songController.firstCoverURI.value == null) {
+                  return Container();
+                }
+                return Card(
+                    margin: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+                    elevation: 4.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    clipBehavior: Clip.antiAlias,
+                    child: Padding(
+                        padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Current project:'.tr,
+                                textScaleFactor: 1.2,
+                              ),
+                              Ink.image(
+                                image: NetworkImage(
+                                    songController.firstCoverURI.value!),
+                                fit: BoxFit.fitWidth,
+                                // width: 300,
+                                height: 300,
+                                child: InkWell(
+                                  onTap: () {
+                                    controller.select(
+                                        controller.projects.value![0].id);
+                                  },
+                                ),
+                              ),
+                              Text(
+                                controller.projects.value![0].songId.toString(),
+                                textScaleFactor: 1.5,
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                              Text('At: '.tr +
+                                  controller.projects.value![0].createdTime
+                                      .toString()),
+                              Text('With: '.tr +
+                                  controller.projects.value![0].dancerName),
+                            ])));
+              });
+            } else {
+              return Card(
+                  margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 5.0),
+                  elevation: 4.0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                  child: Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Or another project:'.tr,
+                              textScaleFactor: 1.2,
+                            ),
+                            ListView.builder(
+                                shrinkWrap: true,
+                                itemCount:
+                                    controller.projects.value!.length - 1,
+                                itemBuilder:
+                                    (BuildContext context, int count) =>
+                                        ListTile(
                                           title: Text(controller
-                                              .projects.value![i + 1].songId
+                                              .projects.value![count + 1].songId
                                               .toString()),
                                           subtitle: Text('With: ' +
-                                              controller.projects.value![i + 1]
+                                              controller
+                                                  .projects
+                                                  .value![count + 1]
                                                   .dancerName),
                                           onTap: () {
                                             controller.select(controller
-                                                .projects.value![i + 1].id);
+                                                .projects.value![count + 1].id);
                                           },
                                         ))
-                                      : Container()))
-                    ]))),
-        Card(
-            margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 5.0),
-            elevation: 4.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            child: Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Input project ID:'.tr,
-                        textScaleFactor: 1.2,
-                      ),
-                      TextField(
-                        onSubmitted: (value) {
-                          controller.select(value);
-                        },
-                      )
-                    ]))),
-      ]),
+                          ])));
+            }
+            // Card(
+            //     margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 5.0),
+            //     elevation: 4.0,
+            //     shape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            //     child: Padding(
+            //         padding: EdgeInsets.all(10.0),
+            //         child: Column(
+            //             mainAxisAlignment: MainAxisAlignment.start,
+            //             children: [
+            //               Text(
+            //                 'Input project ID:'.tr,
+            //                 textScaleFactor: 1.2,
+            //               ),
+            //               TextField(
+            //                 onSubmitted: (value) {
+            //                   controller.select(value);
+            //                 },
+            //               )
+            //             ]))),
+          }),
     );
   }
 }
@@ -219,4 +230,3 @@ class _EmptyProjectPage extends StatelessWidget {
     return Text('Empty Page');
   }
 }
-

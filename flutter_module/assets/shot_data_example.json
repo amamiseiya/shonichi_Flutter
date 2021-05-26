@@ -1021,61 +1021,71 @@
     {
       "id": "sn_asset_video_2",
       "name": "sn_asset_video_2",
-      "uRI": "https://firebasestorage.googleapis.com/v0/b/odottemita-satsuei-flutter.appspot.com/o/videos%2Fstar_diamond_proxy.mp4?alt=media&token=04d0f8db-6c71-4c29-8ca8-023d96ae7ee6",
+      "type": "SongVideo",
+      "uri": "https://firebasestorage.googleapis.com/v0/b/odottemita-satsuei-flutter.appspot.com/o/videos%2Fstar_diamond_proxy.mp4?alt=media&token=04d0f8db-6c71-4c29-8ca8-023d96ae7ee6",
       "dataId": "sn_song_example_2"
     },
     {
       "id": "sn_asset_character_image_0",
       "name": "",
-      "uRI": "lovelive/kosaka_honoka_full_length.png",
+      "type": "CharacterFullLengthPhoto",
+      "uri": "lovelive/kosaka_honoka_full_length.png",
       "dataId": "Kosaka Honoka"
     },
     {
       "id": "sn_asset_character_image_1",
       "name": "",
-      "uRI": "lovelive/ayase_eli_full_length.png",
+      "type": "CharacterFullLengthPhoto",
+      "uri": "lovelive/ayase_eli_full_length.png",
       "dataId": "Ayase Eli"
     },
     {
       "id": "sn_asset_character_image_2",
       "name": "",
-      "uRI": "lovelive/minami_kotori_full_length.png",
+      "type": "CharacterFullLengthPhoto",
+      "uri": "lovelive/minami_kotori_full_length.png",
       "dataId": "Minami Kotori"
     },
     {
       "id": "sn_asset_character_image_3",
       "name": "",
-      "uRI": "lovelive/sonoda_umi_full_length.png",
+      "type": "CharacterFullLengthPhoto",
+      "uri": "lovelive/sonoda_umi_full_length.png",
       "dataId": "Sonoda Umi"
     },
     {
       "id": "sn_asset_character_image_4",
       "name": "",
-      "uRI": "lovelive/hoshizora_rin_full_length.png",
+      "type": "CharacterFullLengthPhoto",
+      "uri": "lovelive/hoshizora_rin_full_length.png",
       "dataId": "Hoshizora Rin"
     },
     {
       "id": "sn_asset_character_image_5",
       "name": "",
-      "uRI": "lovelive/nishikino_maki_full_length.png",
+      "type": "CharacterFullLengthPhoto",
+      "uri": "lovelive/nishikino_maki_full_length.png",
       "dataId": "Nishikino Maki"
     },
     {
       "id": "sn_asset_character_image_6",
       "name": "",
-      "uRI": "lovelive/tojo_nozomi_full_length.png",
+      "type": "CharacterFullLengthPhoto",
+      "uri": "lovelive/tojo_nozomi_full_length.png",
       "dataId": "Tojo Nozomi"
     },
     {
       "id": "sn_asset_character_image_7",
       "name": "",
-      "uRI": "lovelive/koizumi_hanayo_full_length.png",
+      "type": "CharacterFullLengthPhoto",
+      "uri": "lovelive/koizumi_hanayo_full_length.png",
       "dataId": "Koizumi Hanayo"
     },
     {
       "id": "sn_asset_character_image_8",
       "name": "",
-      "uRI": "lovelive/yazawa_nico_full_length.png",
+      "type": "CharacterFullLengthPhoto",
+      "uri": "lovelive/yazawa_nico_full_length.png",
       "dataId": "Yazawa Nico"
     }
   ]

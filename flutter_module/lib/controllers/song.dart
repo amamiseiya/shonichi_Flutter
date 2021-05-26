@@ -34,7 +34,7 @@ class SongController extends GetxController {
         } else if (projects.isNotEmpty) {
           final SNSong firstSong =
               await songRepository.retrieveById(projects[0].songId!);
-          firstCoverURI(await assetRepository.getImageURI(firstSong.coverURI));
+          firstCoverURI(firstSong.coverURI);
         } else {
           throw FormatException();
         }
@@ -57,7 +57,7 @@ class SongController extends GetxController {
   Future<void> retrieveSongVideo() async {
     assetRepository
         .retrieveAssetsForSong(editingSong.value!.id)
-        .then((a) => videoURI(a.first.uRI));
+        .then((a) => videoURI(a.first.uri));
   }
 
   Future<void> submitCreate(SNSong song) async {

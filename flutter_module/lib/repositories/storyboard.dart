@@ -7,21 +7,18 @@ import '../providers/firestore/firestore.dart';
 class StoryboardRepository {
   final provider = StoryboardFirestoreProvider();
 
-  Future<DocumentReference> create(SNStoryboard storyboard) async =>
-      await provider.create(storyboard);
+  Future<DocumentReference> create(SNStoryboard storyboard) =>
+      provider.create(storyboard);
 
-  Future<SNStoryboard> retrieveById(String id) async =>
-      await provider.retrieveById(id);
+  Future<SNStoryboard> retrieveById(String id) => provider.retrieveById(id);
 
-  Future<List<SNStoryboard>> retrieveForSong(
-          String creatorId, String songId) async =>
-      await provider.retrieveForSong(creatorId, songId);
+  Future<List<SNStoryboard>> retrieveForSong(String creatorId, String songId) =>
+      provider.retrieveForSong(creatorId, songId);
 
-  Future<void> update(SNStoryboard storyboard) async =>
-      await provider.update(storyboard);
+  Future<void> update(SNStoryboard storyboard) => provider.update(storyboard);
 
-  Future<void> delete(String id) async => await provider.delete(id);
+  Future<void> delete(String id) => provider.delete(id);
 
-  Future<SNStoryboard?> getLatestStoryboard(String songId) async =>
-      await provider.getLatestStoryboard(songId);
+  Future<SNStoryboard?> getLatestStoryboard(String songId) =>
+      provider.getLatestStoryboard(songId);
 }

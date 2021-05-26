@@ -4,9 +4,9 @@ class FormationFirestoreProvider extends FirestoreProvider {
   final CollectionReference _formationRef =
       FirebaseFirestore.instance.collection('sn_formation');
 
-  Future<void> create(SNFormation formation) async {
-    await _formationRef.add(formation.toJson());
-    print('Provider: Create operation succeed');
+  Future<DocumentReference> create(SNFormation formation) async {
+    return _formationRef.add(formation.toJson());
+    // print('Provider: Create operation succeed');
   }
 
   Future<SNFormation> retrieveById(String id) async {

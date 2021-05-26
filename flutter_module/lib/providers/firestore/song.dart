@@ -13,9 +13,9 @@ class SongFirestoreProvider extends FirestoreProvider {
   //           return song;
   //         }));
 
-  Future<void> create(SNSong song) async {
-    await _songRef.add(song.toJson());
-    print('Provider: Create operation succeed');
+  Future<DocumentReference> create(SNSong song) async {
+    return _songRef.add(song.toJson());
+    // print('Provider: Create operation succeed');
   }
 
   Future<SNSong> retrieveById(String id) async {

@@ -55,7 +55,7 @@ class EmailDetailDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SimpleDialog(
-        title: Text('Email Detail'.tr),
+        title: Text('Email Settings'.tr),
         children: [
           Builder(
             builder: (context) {
@@ -73,7 +73,7 @@ class EmailDetailDialog extends StatelessWidget {
                   Text('Your email address has already been verified.'.tr)
                 ]);
               } else {
-                throw FormatException();
+                throw Exception('Unknown error');
               }
             },
           ),

@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
+import 'package:shonichi_flutter_module/controllers/asset.dart';
 // import 'package:leancloud_storage/leancloud.dart';
 
 import 'widgets/loading.dart';
@@ -72,6 +73,7 @@ Future<void> initServices() async {
   Get.put(MoveController(moveRepository, assetRepository));
   Get.put(DataMigrationController(projectRepository, songRepository,
       lyricRepository, storyboardRepository, shotRepository, assetRepository));
+  Get.put(AssetController());
   Get.put(IntroController());
 }
 

@@ -1,15 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 import '../models/formation.dart';
 import 'auth.dart';
+import 'project.dart';
 import 'song.dart';
 import 'move.dart';
 import '../repositories/formation.dart';
 
 class FormationController extends GetxController {
-  final AuthController authController = Get.find();
-  final SongController songController = Get.find();
-  late MoveController moveController = Get.find();
+  late final AuthController authController = Get.find();
+  late final ProjectController projectController = Get.find();
+  late final SongController songController = Get.find();
+  late final MoveController moveController = Get.find();
 
   final FormationRepository formationRepository;
 
@@ -19,17 +22,25 @@ class FormationController extends GetxController {
   FormationController(this.formationRepository)
       : assert(formationRepository != null);
 
-  void submitCreate(SNFormation? formation) async {
+  Future<SNFormation> submitCreate(SNFormation? formation) async {
     try {
       if (formation != null) {
         formation.creatorId = authController.user.value!.uid;
         formation.songId = songController.editingSong.value!.id;
-        await formationRepository.create(formation);
-        retrieve();
+        final DocumentReference docRef =
+            await formationRepository.create(formation);
+        await retrieve();
+        await select(docRef.id);
+        return docRef
+            .get()
+            .then((value) => SNFormation.fromJson(value.data(), value.id));
+      } else {
+        throw FormatException('Formation is null');
       }
     } catch (e) {
       print(e);
     }
+    throw Exception();
   }
 
   void submitUpdate(SNFormation? formation) async {
@@ -72,7 +83,10 @@ class FormationController extends GetxController {
   Future<void> select(String id) async {
     try {
       if (editingFormation.value == null || editingFormation.value?.id != id) {
-        editingFormation(await formationRepository.retrieveById(id));
+        final newFormation = await formationRepository.retrieveById(id);
+        editingFormation(newFormation);
+        projectController.editingProject.value!.formationId = id;
+        projectController.submitUpdate(projectController.editingProject.value!);
         print('editingFormation is ${editingFormation.value?.id}');
       } else if (editingFormation.value?.id == id) {
         editingFormation.nil();

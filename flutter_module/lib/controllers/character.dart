@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shonichi_flutter_module/models/asset.dart';
 
 import '../models/character.dart';
 import '../models/kikaku.dart';
@@ -23,8 +24,10 @@ class CharacterController extends GetxController {
   final AssetRepository assetRepository;
 
   late Worker worker;
+
   // 要么editingSong未初始化时值为null，要么加载到对应的角色，List为空则有异常
   Rx<List<SNCharacter>?> editingCharacters = Rx<List<SNCharacter>?>(null);
+
   CharacterController(this.assetRepository);
 
   void onInit() {
@@ -77,7 +80,8 @@ class CharacterController extends GetxController {
 
   Future<Map<SNCharacter, String?>> fetchImages(
       List<SNCharacter> characters) async {
-    final images = await assetRepository.retrieveAssetForCharacters(characters);
+    final images = await assetRepository.retrieveAssetForCharacters(
+        characters, SNAssetType.CharacterHalfLengthPhoto);
     return Map.fromIterables(characters, images);
   }
 
@@ -89,22 +93,7 @@ class CharacterController extends GetxController {
     if (map[kikaku] != null) {
       return map[kikaku]!.map((c) => SNCharacter.fromJson(c)).toList();
     } else {
-      throw FormatException();
+      throw FormatException('Kikaku doesn\'t exist in JSON file');
     }
-  }
-
-  void exportJson() async {
-    final map = {
-      '(undefined)': [],
-      'ラブライブ！': [],
-      'ラブライブ！サンシャイン!!': [],
-      'ラブライブ！虹ヶ咲学園スクールアイドル同好会': [],
-      '少女☆歌劇 レヴュー・スタァライト': [],
-      '22/7': [],
-      'AKB48': [],
-    };
-
-    await assetRepository.exportJson(
-        json.encode(map), 'character_data_export.json');
   }
 }

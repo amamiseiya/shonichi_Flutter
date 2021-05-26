@@ -205,7 +205,7 @@ class _ShotItem extends GetView<ShotController> {
                   shot.text = newText;
                   controller.updateShot(shot);
                 })),
-            _StandardBox(cellName: 'Image', child: Text(shot.imageURI)),
+            _StandardBox(cellName: 'Image', child: Image.network(shot.imageURI)),
             _StandardBox(
                 cellName: 'Comment',
                 child: SNTextField(shot.comment, (String newText) {

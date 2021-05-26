@@ -15,7 +15,7 @@ class AuthRepository {
       String? email, String? password) async {
     try {
       UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          await auth.createUserWithEmailAndPassword(
         email: email!,
         password: password!,
       );
@@ -34,7 +34,7 @@ class AuthRepository {
       String? email, String? password) async {
     try {
       UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+          await auth.signInWithEmailAndPassword(
         email: email!,
         password: password!,
       );

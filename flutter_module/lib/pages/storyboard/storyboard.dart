@@ -22,6 +22,7 @@ import '../../utils/reg_exp.dart';
 import '../../utils/data_convert.dart';
 
 part 'data_table.dart';
+part 'upsert_dialog.dart';
 part 'inspector.dart';
 
 class StoryboardPage extends StatelessWidget {
@@ -63,18 +64,24 @@ class StoryboardPage extends StatelessWidget {
                       if (shotController.shots.value!.isEmpty) {
                         return _EmptyShotPage();
                       }
-                      return Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: ShotDataTable(),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: ShotInspector(),
-                            )
-                          ]);
+                      return Card(
+                          margin: EdgeInsets.all(10.0),
+                          elevation: 4.0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0))),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: ShotDataTable(),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: ShotInspector(),
+                                )
+                              ]));
                     })
                   ]);
                 })),
@@ -170,59 +177,6 @@ class _StoryboardChipSelector extends GetView<StoryboardController> {
   }
 }
 
-class _StoryboardUpsertDialog extends GetView<StoryboardController> {
-  // 在dialog最终pop时才给对象赋值，不确定这样的方式是否合适
-  late SNStoryboard s;
-
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-
-  _StoryboardUpsertDialog(SNStoryboard? storyboard) {
-    s = storyboard ?? SNStoryboard.initialValue();
-    _nameController.text = s.name;
-    _descriptionController.text = s.description;
-  }
-
-  Widget build(BuildContext context) => SimpleDialog(
-        title: Text('Storyboard Upsert Dialog'),
-        children: <Widget>[
-          Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Column(children: [
-                Form(
-                    child: Column(children: [
-                  TextFormField(
-                    controller: _nameController,
-                    decoration:
-                        InputDecoration(labelText: 'Input storyboard name'),
-                    onEditingComplete: () {},
-                  ),
-                  TextFormField(
-                    controller: _descriptionController,
-                    decoration: InputDecoration(
-                        labelText: 'Input storyboard description'),
-                    onEditingComplete: () {},
-                  ),
-                ])),
-                SimpleDialogOption(
-                  onPressed: () {
-                    controller.delete(s); // ! storyboard could be null
-                    Get.back();
-                  },
-                  child: Text('Delete'.tr),
-                ),
-                SimpleDialogOption(
-                  onPressed: () {
-                    s.name = _nameController.text;
-                    s.description = _descriptionController.text;
-                    Get.back(result: s);
-                  },
-                  child: Text('Submit'.tr),
-                ),
-              ]))
-        ],
-      );
-}
 
 class _ConfirmDeleteDialog extends StatelessWidget {
   @override
@@ -248,6 +202,3 @@ class _EmptyShotPage extends StatelessWidget {
     return Text('Empty Shot Page');
   }
 }
-
-
-

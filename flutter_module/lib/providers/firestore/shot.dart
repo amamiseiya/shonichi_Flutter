@@ -8,9 +8,9 @@ class ShotFirestoreProvider extends FirestoreProvider {
       .where('storyboardId', isEqualTo: storyboardId)
       .orderBy('startTime', descending: false);
 
-  Future<void> create(SNShot shot) async {
-    await _shotRef.add(shot.toJson());
-    print('Provider: Create operation succeed');
+  Future<DocumentReference> create(SNShot shot) async {
+    return _shotRef.add(shot.toJson());
+    // print('Provider: Create operation succeed');
   }
 
   Future<List<SNShot>> retrieveForStoryboard(String storyboardId) async {

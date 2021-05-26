@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../models/move.dart';
 import '../providers/sqlite/sqlite.dart';
 import '../providers/firestore/firestore.dart';
@@ -7,17 +9,15 @@ import '../providers/firestore/firestore.dart';
 class MoveRepository {
   final provider = MoveFirestoreProvider();
 
-  Future<void> create(SNMove move) async =>
-      await provider.create(move);
+  Future<DocumentReference> create(SNMove move) => provider.create(move);
 
-  Future<List<SNMove>> retrieveForFormation(String formationId) async =>
-      await provider.retrieveForFormation(formationId);
+  Future<List<SNMove>> retrieveForFormation(String formationId) =>
+      provider.retrieveForFormation(formationId);
 
-  Future<void> update(SNMove move) async =>
-      await provider.update(move);
+  Future<void> update(SNMove move) => provider.update(move);
 
-  Future<void> delete(String id) async => await provider.delete(id);
+  Future<void> delete(String id) => provider.delete(id);
 
-  Future<void> deleteForFormation(String formationId) async =>
-      await provider.deleteForFormation(formationId);
+  Future<void> deleteForFormation(String formationId) =>
+      provider.deleteForFormation(formationId);
 }

@@ -7,7 +7,11 @@ import '../../widgets/drawer.dart';
 import '../../widgets/loading.dart';
 import '../../controllers/data_migration.dart';
 
-part 'preview.dart';
+part 'des_key_dialog.dart';
+
+part 'export_preview_dialog.dart';
+
+part 'import_preview_dialog.dart';
 
 class DataMigrationPage extends StatelessWidget {
   @override
@@ -19,7 +23,7 @@ class DataMigrationPage extends StatelessWidget {
           //   tooltip: 'Navigation menu',
           //   onPressed: () => Scaffold.of(context).openDrawer(),
           // ),
-          title: Text('文档导出'),
+          title: Text('Data Migration'.tr),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.search),
@@ -51,99 +55,56 @@ class DataMigrationPage extends StatelessWidget {
 class MarkdownExporter extends GetView<DataMigrationController> {
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      Expanded(flex: 2, child: Hero(tag: 'Preview', child: MarkdownPreview())),
-      Expanded(
-          flex: 1,
-          child: Column(children: [
-            GetBuilder(
-                builder: (_) => CheckboxListTile(
-                    title: Text('导入导出加密：'),
-                    value: controller.needEncrypt,
-                    onChanged: (bool? newValue) {
-                      controller.needEncrypt = newValue!;
-                      (context as Element).markNeedsBuild();
-                    })),
-            ElevatedButton(
-              child: Text('导入Markdown'),
-              onPressed: () async {
-                if (controller.needEncrypt) {
-                  await Get.dialog(DesKeyDialog())
-                      .then((key) => controller.importMarkdown(key));
-                } else {
-                  controller.importMarkdown(null);
-                }
-                await showDialog(
-                    context: context,
-                    builder: (context) => SimpleDialog(
-                          title: Text('确认内容'),
-                          children: <Widget>[
-                            Column(children: <Widget>[
-                              Hero(
-                                tag: 'Preview',
-                                child: Container(),
-                              ),
-                              Text('将导入的项目数据如上。确定是否继续？'),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    controller.confirmImportMarkdown();
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('Submit'.tr))
-                            ])
-                          ],
-                        ));
-              },
-            ),
-            ElevatedButton(
-              child: Text('生成Markdown'),
-              onPressed: () {
-                controller.previewMarkdown();
-              },
-            ),
-            ElevatedButton(
-              child: Text('写入文件'),
-              onPressed: () {
-                if (controller.needEncrypt) {
-                  Get.dialog(DesKeyDialog()).then(
-                      (key) => controller.exportMarkdown(key),
-                      onError: (_) {});
-                } else {
-                  controller.exportMarkdown(null);
-                }
-              },
-            ),
-          ])),
+    return Column(children: [
+      Container(
+          padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
+          child: GetBuilder(
+              builder: (_) => CheckboxListTile(
+                  title: Text('导入导出加密：'),
+                  value: controller.needEncrypt,
+                  onChanged: (bool? newValue) {
+                    controller.needEncrypt = newValue!;
+                    (context as Element).markNeedsBuild();
+                  }))),
+      Row(children: [
+        Expanded(
+            child: Container(
+                padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 20.0),
+                child: Column(children: [
+                  ElevatedButton(
+                    child: Text('Import Markdown'.tr),
+                    onPressed: () async {
+                      if (controller.needEncrypt) {
+                        Get.dialog(DesKeyDialog()).then(
+                            (key) => controller.previewImportMarkdown(key));
+                      } else {
+                        controller.previewImportMarkdown(null);
+                      }
+                      await Get.dialog(ImportPreviewDialog());
+                    },
+                  ),
+                  ElevatedButton(
+                    child: Text('Import JSON'.tr),
+                    onPressed: () async {},
+                  ),
+                ]))),
+        Expanded(
+            child: Container(
+                padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 20.0),
+                child: Column(children: [
+                  ElevatedButton(
+                    child: Text('Export Markdown'.tr),
+                    onPressed: () async {
+                      controller.previewExportMarkdown();
+                      await Get.dialog(ExportPreviewDialog());
+                    },
+                  ),
+                  ElevatedButton(
+                    child: Text('Export JSON'.tr),
+                    onPressed: () async {},
+                  ),
+                ]))),
+      ])
     ]);
   }
-}
-
-class DesKeyDialog extends StatelessWidget {
-  String? desKey;
-
-  @override
-  Widget build(BuildContext context) => SimpleDialog(
-        title: Text('设定密钥'),
-        children: <Widget>[
-          Column(children: <Widget>[
-            Text('请设定密钥：'),
-            TextField(
-              onChanged: (value) {
-                desKey = value;
-              },
-              controller: TextEditingController()..text = desKey ?? '',
-              // inputFormatters: [
-              //   WhitelistingTextInputFormatter(
-              //       RegExp(r'\S{8}'))
-              // ],
-              decoration: InputDecoration(labelText: '请输入8位字符。'),
-              maxLength: 8,
-              maxLengthEnforcement: MaxLengthEnforcement.enforced,
-            ),
-            ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(desKey),
-                child: Text('确定'))
-          ])
-        ],
-      );
 }

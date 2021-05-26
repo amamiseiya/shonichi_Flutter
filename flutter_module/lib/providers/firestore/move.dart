@@ -8,9 +8,9 @@ class MoveFirestoreProvider extends FirestoreProvider {
       .where('formationId', isEqualTo: formationId)
       .orderBy('startTime', descending: false);
 
-  Future<void> create(SNMove move) async {
-    await _moveRef.add(move.toJson());
-    print('Provider: Create operation succeed');
+  Future<DocumentReference> create(SNMove move) async {
+    return _moveRef.add(move.toJson());
+    // print('Provider: Create operation succeed');
   }
 
   Future<List<SNMove>> retrieveForFormation(String formationId) async {

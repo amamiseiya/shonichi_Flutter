@@ -184,3 +184,9 @@ UI - BLoC - Model - Repository - Provider
 ## 参考
 
 <https://leancloud.cn/docs/sdk_setup-flutter.html>
+
+### 功能实现
+
+#### 引导界面
+
+使用flutter_intro package来实现。

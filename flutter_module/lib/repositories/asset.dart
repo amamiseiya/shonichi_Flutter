@@ -16,39 +16,36 @@ class AssetRepository {
   final storageProvider = AssetFirebaseProvider();
 
   // * -------- Simple Functions --------
-  Future<String> getImageURI(String id) async =>
-      await storageProvider.getImageURI(id);
 
   // * -------- Asset CRUD --------
 
-  Future<List<SNAsset>> retrieveAssetsForSong(String songId) async =>
-      await databaseProvider.retrieveAssetsForSong(songId);
+  Future<List<SNAsset>> retrieveAssetsForSong(String songId) =>
+      databaseProvider.retrieveAssetsForSong(songId);
 
   Future<List<String?>> retrieveAssetForCharacters(
-          List<SNCharacter> characters) async =>
-      await databaseProvider.retrieveAssetForCharacters(characters);
+          List<SNCharacter> characters, SNAssetType type) =>
+      databaseProvider.retrieveAssetForCharacters(characters, type);
 
   // * -------- Asset Loading --------
 
   // TODO:
-  Future<String> importFromAssets(BuildContext context, String ref) async {
-    return await DefaultAssetBundle.of(context)
-        .loadString(p.join('assets', ref));
+  Future<String> importFromAssets(BuildContext context, String ref) {
+    return DefaultAssetBundle.of(context).loadString(p.join('assets', ref));
   }
 
   // * -------- Data Migration --------
 
-  Future<String> importMarkdown(SNProject project) async {
+  Future<String> importMarkdown(SNProject project) {
     String fileName = project.id + '.md';
-    return await storageProvider.readAsString('markdowns', fileName);
+    return storageProvider.readAsString('markdowns', fileName);
   }
 
   Future<void> exportMarkdown(SNProject project, String text) async {
     String fileName = project.id + '.md';
-    await storageProvider.writeAsString(text, 'markdowns', fileName);
+    storageProvider.writeAsString(text, 'markdowns', fileName);
   }
 
   Future<void> exportJson(String text, String fileName) async {
-    await storageProvider.writeAsString(text, 'jsons', fileName);
+    storageProvider.writeAsString(text, 'jsons', fileName);
   }
 }

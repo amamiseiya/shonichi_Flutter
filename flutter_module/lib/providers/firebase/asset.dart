@@ -10,13 +10,6 @@ class AssetFirebaseProvider {
 
   // * -------- Simple Functions --------
 
-  Future<String> getImageURI(String id) async {
-    return await storage.ref().child('images').child(id).getDownloadURL();
-  }
-
-  Future<String> getVideoURI(String id) async {
-    return await storage.ref().child('videos').child(id).getDownloadURL();
-  }
 
   // * -------- Text File I/O --------
 

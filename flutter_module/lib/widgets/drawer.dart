@@ -18,7 +18,7 @@ class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-        child: ListView(
+        child: Column(
       children: <Widget>[
         UserAccountsDrawerHeader(
             accountName: Text(authController.user.value?.displayName ?? ''),
@@ -67,12 +67,13 @@ class MyDrawer extends StatelessWidget {
             Get.off(() => DataMigrationPage());
           },
         ),
-        ListTile(
-          title: Text('Exit'.tr),
+        Divider(),
+        Align(alignment: Alignment.bottomCenter,child: ListTile(
+          title: Text('Sign out'.tr),
           onTap: () {
             authController.signOut().then((_) => Get.off(() => LoginPage()));
           },
-        ),
+        )),
       ],
     ));
   }

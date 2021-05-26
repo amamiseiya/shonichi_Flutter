@@ -7,12 +7,12 @@ import '../providers/firestore/firestore.dart';
 class LyricRepository {
   final provider = LyricFirestoreProvider();
 
-  Future<void> create(SNLyric lyric) async => await provider.create(lyric);
+  Future<void> create(SNLyric lyric) => provider.create(lyric);
 
-  Future<List<SNLyric>> retrieveForSong(String songId) async =>
-      await provider.retrieveForSong(songId);
+  Future<List<SNLyric>> retrieveForSong(String songId) =>
+      provider.retrieveForSong(songId);
 
-  Future<void> update(SNLyric lyric) async => await provider.update(lyric);
+  Future<void> update(SNLyric lyric) => provider.update(lyric);
 
-  Future<void> delete(String id) async => await provider.delete(id);
+  Future<void> delete(String id) => provider.delete(id);
 }

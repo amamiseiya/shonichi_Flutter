@@ -29,6 +29,7 @@ class LyricController extends GetxController {
       await retrieveForEditingSong();
       print(
           '${lyrics.value?.length} lyric(s) retrieved -- listening to editingSong');
+      print('EndTime of the last lyric: ${lyrics.value?.last.endTime}');
     });
   }
 

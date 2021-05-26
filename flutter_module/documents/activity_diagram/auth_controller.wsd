@@ -1,0 +1,26 @@
+
+@startuml AuthController
+scale 800 width
+start
+
+:输入账号密码;
+if(点击按钮) then(点击登录)
+    if(是否抛出错误) then(no)
+        :登录App;
+    else(yes)
+        #pink:显示错误信息;
+        detach
+    endif
+else(点击注册)
+    if(是否抛出错误) then(no)
+        :注册账号;
+        :登录App;
+    else(yes)
+        #pink:显示错误信息;
+        detach
+    endif
+endif
+
+
+stop
+@enduml

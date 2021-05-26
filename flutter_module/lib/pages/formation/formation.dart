@@ -17,6 +17,7 @@ import '../../models/character.dart';
 import '../../utils/reg_exp.dart';
 
 part 'move_editor.dart';
+part 'upsert_dialog.dart';
 
 class FormationPage extends StatelessWidget {
   final FormationController formationController = Get.find();
@@ -154,60 +155,7 @@ class _FormationChipSelector extends GetView<FormationController> {
   }
 }
 
-class _FormationUpsertDialog extends GetView<FormationController> {
-  // 在dialog最终pop时才给对象赋值，不确定这样的方式是否合适
 
-  late SNFormation f;
-
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-
-  _FormationUpsertDialog(SNFormation? formation) {
-    f = formation ?? SNFormation.initialValue();
-    _nameController.text = f.name;
-    _descriptionController.text = f.description;
-  }
-
-  Widget build(BuildContext context) => SimpleDialog(
-        title: Text('Formation upsert dialog'),
-        children: <Widget>[
-          Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Column(children: [
-                Form(
-                    child: Column(children: [
-                  TextFormField(
-                    controller: _nameController,
-                    decoration:
-                        InputDecoration(labelText: 'Input formation name'),
-                    onEditingComplete: () {},
-                  ),
-                  TextFormField(
-                    controller: _descriptionController,
-                    decoration: InputDecoration(
-                        labelText: 'Input formation description'),
-                    onEditingComplete: () {},
-                  ),
-                ])),
-                SimpleDialogOption(
-                  onPressed: () {
-                    controller.delete(f); // ! formation could be null
-                    Get.back();
-                  },
-                  child: Text('Delete'.tr),
-                ),
-                SimpleDialogOption(
-                  onPressed: () {
-                    f.name = _nameController.text;
-                    f.description = _descriptionController.text;
-                    Get.back(result: f);
-                  },
-                  child: Text('Submit'.tr),
-                ),
-              ]))
-        ],
-      );
-}
 
 class _ConfirmDeleteDialog extends StatelessWidget {
   @override
@@ -227,4 +175,3 @@ class _ConfirmDeleteDialog extends StatelessWidget {
     );
   }
 }
-

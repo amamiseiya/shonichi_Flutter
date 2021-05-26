@@ -7,7 +7,7 @@ SNSong "1" -- "1..*" SNStoryboard
 SNSong "1" -- "1..*" SNFormation
 SNSong "1" *-- "1..*" SNLyric
 SNStoryboard "1" *-- "1..*" SNShot
-SNFormation "1" *-- "1..*" SNMovement
+SNFormation "1" *-- "1..*" SNMove
 
 
 class SNProject {
@@ -25,7 +25,7 @@ class SNProject {
 class SNSong {
     String id
     String name
-    String coverId
+    String coverURI
     int lyricOffset
     String subordinateKikaku
     fromMap()
@@ -47,6 +47,8 @@ class SNLyric {
 class SNStoryboard {
   String id
   String name
+  String description
+  DateTime CreatedTime
   String creatorId
   String songId
   fromMap()
@@ -65,16 +67,19 @@ class SNShot {
     String shotMovement
     String shotAngle
     String text
-    String image
+    String imageURI
     String comment
     String storyboardId
     List<SNCharacter> characters
     fromMap()
     toMap()
 }
+
 class SNFormation {
   String id
   String name
+  String description
+  DateTime CreatedTime
   String creatorId
   String songId
 
@@ -82,7 +87,7 @@ class SNFormation {
   toMap()
 }
 
-class SNMovement {
+class SNMove {
     String id
     Duration startTime
     double posX

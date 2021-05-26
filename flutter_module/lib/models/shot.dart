@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'character.dart';
 import '../utils/data_convert.dart';
+import '../utils/reg_exp.dart';
 
 part 'shot.g.dart';
 
@@ -66,7 +67,48 @@ class SNShot {
   factory SNShot.fromJson(Map<String, dynamic> map, String id) =>
       _$SNShotFromJson(map)..id = id;
 
+  factory SNShot.fromText(Map<String, dynamic> json) {
+    return SNShot(
+      sceneNumber: json['sceneNumber'] as int,
+      shotNumber: json['shotNumber'] as int,
+      startTime: json['startTime'] == null
+          ? null
+          : simpleDurationToDuration(json['startTime']),
+      endTime: json['endTime'] == null
+          ? null
+          : simpleDurationToDuration(json['endTime']),
+      lyric: json['lyric'] as String?,
+      shotType: json['shotType'] as String,
+      shotMove: json['shotMove'] as String,
+      shotAngle: json['shotAngle'] as String,
+      text: json['text'] as String,
+      imageURI: json['imageURI'] as String,
+      comment: json['comment'] as String,
+      storyboardId: json['storyboardId'] as String,
+      characters: (json['characters'] as List<dynamic>)
+          .map((e) => SNCharacter.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
   Map<String, dynamic> toJson() => _$SNShotToJson(this);
+
+  Map<String, String> toText() => {
+        'sceneNumber': sceneNumber.toString(),
+        'shotNumber': shotNumber.toString(),
+        'startTime':
+            simpleDurationRegExp.stringMatch(startTime.toString()) ?? '',
+        'endTime': simpleDurationRegExp.stringMatch(endTime.toString()) ?? '',
+        'lyric': lyric ?? '',
+        'shotType': shotType,
+        'shotMove': shotMove,
+        'shotAngle': shotAngle,
+        'text': text,
+        'imageURI': imageURI,
+        'comment': comment,
+        'storyboardId': storyboardId,
+        'characters': characters.toText(mode: SNCharacterSerializeMode.Normal)
+      };
 }
 
 Map<int, String> shotScenes = {

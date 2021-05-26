@@ -9,7 +9,9 @@ class SNLyric {
   @JsonKey(ignore: true)
   String id;
 
+  @JsonKey(fromJson: durationFromJson, toJson: durationToJson)
   Duration startTime;
+  @JsonKey(fromJson: durationFromJson, toJson: durationToJson)
   Duration endTime;
   String text;
 
@@ -28,6 +30,10 @@ class SNLyric {
       _$SNLyricFromJson(map)..id = id;
 
   Map<String, dynamic> toJson() => _$SNLyricToJson(this);
+
+  static Duration durationFromJson(int? ms) => Duration(milliseconds: ms ?? 0);
+
+  static int? durationToJson(Duration? duration) => duration?.inMilliseconds;
 
   static List<SNLyric> parseFromLrc(
       String lrcStr, String songId, int lyricOffset) {
@@ -66,7 +72,7 @@ class SNLyric {
       return result;
     } catch (e) {
       print(e);
-      throw FormatException();
+      throw Exception();
     }
   }
 }
