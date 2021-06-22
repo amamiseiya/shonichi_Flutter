@@ -15,10 +15,10 @@ class SongController extends GetxController {
   final AssetRepository assetRepository;
   late Workers workers;
 
-  Rx<List<SNSong>?> songs = Rx<List<SNSong>?>(null);
-  Rx<SNSong?> editingSong = Rx<SNSong>(null);
-  Rx<String?> firstCoverURI = Rx<String>(null);
-  Rx<String?> videoURI = Rx<String>(
+  Rxn<List<SNSong>> songs = Rxn<List<SNSong>>(null);
+  Rxn<SNSong> editingSong = Rxn<SNSong>(null);
+  Rxn<String> firstCoverURI = Rxn<String>(null);
+  Rxn<String> videoURI = Rxn<String>(
       'https://assets.mixkit.co/videos/preview/mixkit-landscape-from-the-top-of-a-cloudy-mountain-range-39703-large.mp4');
 
   SongController(this.songRepository, this.assetRepository)
@@ -30,7 +30,7 @@ class SongController extends GetxController {
     workers = Workers([
       ever(projectController.projects, (List<SNProject>? projects) async {
         if (projects == null || projects.isEmpty) {
-          firstCoverURI.nil();
+          firstCoverURI();
         } else if (projects.isNotEmpty) {
           final SNSong firstSong =
               await songRepository.retrieveById(projects[0].songId!);
@@ -41,7 +41,7 @@ class SongController extends GetxController {
       }),
       ever(projectController.editingProject, (SNProject? newProject) async {
         if (newProject == null) {
-          editingSong.nil();
+          editingSong();
           print('editingSong changed to null -- listening to editingProject');
         } else if (newProject != null) {
           await select(newProject.songId!);

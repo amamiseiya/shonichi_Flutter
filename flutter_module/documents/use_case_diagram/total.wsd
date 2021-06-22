@@ -1,20 +1,25 @@
 @startuml 用户与移动设备交互用例图
+scale 1.5
+'scale 1.5 | scale 200 width | scale 100 height | scale [max] 200x100
 
-User -> (登录)
-User -> (注册)
+普通用户 <|-- 管理员
+普通用户 <|-- 导演
+普通用户 <|-- 分镜师
+普通用户 <|-- 编舞师
+
+普通用户 -> (登录)
+普通用户 -> (注册)
 (注册) -> (登录)
-(登录) -> (编辑Project)
 (登录) -up-> (修改个人信息)
-(编辑Project) -> (选择Project)
-(编辑Project) -up-> (创建Project)
-(编辑Project) -up-> (修改Project)
-(编辑Project) -up-> (删除Project)
-(选择Project) --> (编辑Shot)
-(选择Project) --> (编辑Song)
-(选择Project) --> (编辑Movement)
-(选择Project) --> (数据迁移)
-(数据迁移) --> (从JSON导入)
-(数据迁移) --> (导出为Markdown)
+(登录) --> (查看歌曲)
+(登录) --> (迁移数据)
+导演 --> (编辑项目)
+(编辑项目) --> (分发分镜)
+(编辑项目) --> (分发队形)
+分镜师 --> (编辑分镜)
+编舞师 --> (编辑队形)
 
+管理员 --> (编辑歌曲)
+管理员 --> (管理用户)
 
 @enduml

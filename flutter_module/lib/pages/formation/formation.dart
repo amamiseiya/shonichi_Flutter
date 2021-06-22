@@ -43,7 +43,7 @@ class FormationPage extends StatelessWidget {
         ),
         drawer: MyDrawer(),
         // body is the majority of the screen.
-        body: GetX(initState: (_) {
+        body: GetX<FormationController>(initState: (_) {
           formationController.retrieve();
         }, builder: (_) {
           if (formationController.formationsForSong.value == null) {
@@ -154,8 +154,6 @@ class _FormationChipSelector extends GetView<FormationController> {
         ]));
   }
 }
-
-
 
 class _ConfirmDeleteDialog extends StatelessWidget {
   @override

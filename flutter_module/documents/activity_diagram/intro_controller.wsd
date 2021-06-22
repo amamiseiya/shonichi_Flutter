@@ -1,0 +1,23 @@
+
+@startuml IntroController
+scale 800 width
+start
+
+:登录完成，进入首页;
+if(满足初次使用条件) then(yes)
+    if(进入引导页1) then(点击继续)
+        if(进入引导页2) then(点击继续)
+            if(进入引导页3) then(点击继续)
+            :进入引导页4;
+            else(点击其它区域)
+            endif
+        else(点击其它区域)
+        endif
+    else(点击其它区域)
+    endif
+else(no)
+endif
+:结束引导;
+
+stop
+@enduml

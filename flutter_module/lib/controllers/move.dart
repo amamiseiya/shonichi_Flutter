@@ -28,16 +28,16 @@ class MoveController extends GetxController with StateMixin {
   final AssetRepository assetRepository;
 
   late Worker worker;
-  Rx<List<SNMove>?> movesForFormation = Rx<List<SNMove>?>(null);
+  Rxn<List<SNMove>> movesForFormation = Rxn<List<SNMove>>(null);
 
-  Rx<SNCharacter?> characterFilter = Rx<SNCharacter>(null);
-  Rx<Duration?> timeFilter = Rx<Duration>(null);
-  Rx<KCurveType?> kCurveTypeFilter = Rx<KCurveType>(null);
+  Rxn<SNCharacter> characterFilter = Rxn<SNCharacter>(null);
+  Rxn<Duration> timeFilter = Rxn<Duration>(null);
+  Rxn<KCurveType> kCurveTypeFilter = Rxn<KCurveType>(null);
 
-  RxList<SNMove> movesForCharacter = RxList<SNMove>(null);
-  RxList<SNMove> movesForTime = RxList<SNMove>(null);
-  Rx<SNMove?> editingMove = Rx<SNMove>(null);
-  Rx<List<Offset>?> editingKCurve = Rx<List<Offset>?>(null);
+  RxList<SNMove> movesForCharacter = RxList<SNMove>();
+  RxList<SNMove> movesForTime = RxList<SNMove>();
+  Rxn<SNMove> editingMove = Rxn<SNMove>(null);
+  Rxn<List<Offset>> editingKCurve = Rxn<List<Offset>>(null);
 
   @override
   void onInit() {
@@ -133,7 +133,7 @@ class MoveController extends GetxController with StateMixin {
     try {
       print('Retrieving shots for editingFormation');
       if (formationController.editingFormation.value == null) {
-        movesForFormation.nil();
+        movesForFormation();
         change(0, status: RxStatus.success());
       } else if (formationController.editingFormation.value != null) {
         movesForFormation(await moveRepository.retrieveForFormation(
@@ -210,7 +210,7 @@ class MoveController extends GetxController with StateMixin {
   void changeCharacter(SNCharacter character) async {
     try {
       if (characterFilter.value?.name == character.name) {
-        characterFilter.nil();
+        characterFilter();
       } else {
         characterFilter(character);
       }
@@ -222,7 +222,7 @@ class MoveController extends GetxController with StateMixin {
   void changeKCurveType(KCurveType kCurveType) async {
     try {
       if (kCurveTypeFilter.value == kCurveType) {
-        return kCurveTypeFilter.nil();
+        kCurveTypeFilter();
       } else {
         kCurveTypeFilter(kCurveType);
       }

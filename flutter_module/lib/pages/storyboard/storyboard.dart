@@ -46,7 +46,7 @@ class StoryboardPage extends StatelessWidget {
         // body is the majority of the screen.
         body: SlidingUpPanel(
             panel: _ShotFilterPanel(),
-            body: GetX(
+            body: GetX<StoryboardController>(
                 initState: (_) async => await storyboardController.retrieve(),
                 builder: (_) {
                   if (storyboardController.storyboardsForSong.value == null) {
@@ -176,7 +176,6 @@ class _StoryboardChipSelector extends GetView<StoryboardController> {
     );
   }
 }
-
 
 class _ConfirmDeleteDialog extends StatelessWidget {
   @override

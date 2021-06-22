@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shonichi_flutter_module/pages/kikaku_information.dart';
 
 import '../controllers/auth.dart';
 import '../pages/login.dart';
 import '../pages/user_information.dart';
 import '../pages/home_page/home_page.dart';
+import '../pages/kikaku_information.dart';
 import '../pages/storyboard/storyboard.dart';
 import '../pages/song_information/song_information.dart';
 import '../pages/song_list/song_list.dart';

@@ -38,8 +38,8 @@ class SNProject {
       storyboardId: '',
       formationId: '');
 
-  factory SNProject.fromJson(Map<String, dynamic> map, String id) =>
-      _$SNProjectFromJson(map)..id = id;
+  factory SNProject.fromJson(Object? map, String id) =>
+      _$SNProjectFromJson(map as Map<String, dynamic>)..id = id;
 
   Map<String, dynamic> toJson() => _$SNProjectToJson(this);
 }

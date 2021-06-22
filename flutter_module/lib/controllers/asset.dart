@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:get/get.dart';
-import 'package:shonichi_flutter_module/controllers/character.dart';
+
+import 'character.dart';
 
 class AssetController extends GetxController {
   final CharacterController characterController = Get.find();
@@ -13,7 +14,7 @@ class AssetController extends GetxController {
 
   Future<List<Null>> updateCharacterAsset() async {
     final llMembers =
-        await characterController.retrieveForKikaku(Get.context, 'ラブライブ！');
+        await characterController.retrieveForKikaku(Get.context!, 'ラブライブ！');
     return Future.wait(llMembers.map((character) async {
       if (character.romaji != null) {
         final snapshot =

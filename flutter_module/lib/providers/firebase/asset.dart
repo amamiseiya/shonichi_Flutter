@@ -22,7 +22,7 @@ class AssetFirebaseProvider {
 
   Future<String> readAsString(String folder, String fileName) async {
     final ref = storage.ref().child(folder).child(fileName);
-    final Uint8List rawData = await ref.getData();
-    return utf8.decode(rawData.toList());
+    final Uint8List? rawData = await ref.getData();
+    return utf8.decode(rawData!.toList());
   }
 }

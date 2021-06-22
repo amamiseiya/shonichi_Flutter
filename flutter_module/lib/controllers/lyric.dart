@@ -16,7 +16,7 @@ class LyricController extends GetxController {
 
   late Worker worker;
 
-  Rx<List<SNLyric>?> lyrics = Rx<List<SNLyric>?>(null);
+  Rxn<List<SNLyric>> lyrics = Rxn<List<SNLyric>>(null);
   RxList<SNLyric> selectedLyrics = RxList<SNLyric>(List.empty());
 
   LyricController(this.lyricRepository, this.assetRepository)
@@ -37,7 +37,7 @@ class LyricController extends GetxController {
     try {
       print('Retrieving lyrics for editingSong');
       if (songController.editingSong.value == null) {
-        lyrics.nil();
+        lyrics();
       } else if (songController.editingSong.value != null) {
         lyrics(await lyricRepository
             .retrieveForSong(songController.editingSong.value!.id));

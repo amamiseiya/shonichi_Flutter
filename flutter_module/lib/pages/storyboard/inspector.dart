@@ -40,7 +40,7 @@ class ShotInspector extends StatelessWidget {
               }),
           Obx(() {
             if (shotController.coverageStream.value == null ||
-                shotController.coverageStream.isEmpty) {
+                shotController.coverageStream.value!.isEmpty) {
               return Container();
             }
             return LyricAnimator();
@@ -70,7 +70,7 @@ class _LyricAnimatorState extends State<LyricAnimator>
   void initState() {
     super.initState();
     _lyricPainter = LyricPainter(
-        widget.shotController.coverageStream.value, currentShotTime);
+        widget.shotController.coverageStream.value!, currentShotTime);
   }
 
   @override

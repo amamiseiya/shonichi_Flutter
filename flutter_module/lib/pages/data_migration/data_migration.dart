@@ -58,7 +58,7 @@ class MarkdownExporter extends GetView<DataMigrationController> {
     return Column(children: [
       Container(
           padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
-          child: GetBuilder(
+          child: GetBuilder<DataMigrationController>(
               builder: (_) => CheckboxListTile(
                   title: Text('导入导出加密：'),
                   value: controller.needEncrypt,

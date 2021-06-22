@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shonichi_flutter_module/controllers/asset.dart';
 
 import '../../widgets/drawer.dart';
 import '../../widgets/loading.dart';
 import '../../widgets/error.dart';
+import '../../controllers/asset.dart';
 import '../../controllers/data_migration.dart';
 import '../../controllers/project.dart';
 import '../../controllers/song.dart';
@@ -38,7 +38,7 @@ class HomePage extends GetView<ProjectController> {
         ),
         drawer: MyDrawer(),
         // body is the majority of the screen.
-        body: GetX(initState: (_) {
+        body: GetX<ProjectController>(initState: (_) {
           controller.retrieve();
           Future.delayed(Duration(seconds: 3))
               .then((_) => introController.startIntro(context));
@@ -90,7 +90,7 @@ class HomePage extends GetView<ProjectController> {
 }
 
 class _Dashboard extends GetView<ProjectController> {
-  final double _widthFactor = Get.context.isPhone ? 1 : 0.6;
+  final double _widthFactor = Get.context!.isPhone ? 1 : 0.6;
 
   final SongController songController = Get.find();
 

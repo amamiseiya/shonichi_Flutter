@@ -6,7 +6,7 @@ import '../repositories/auth.dart';
 class AuthController extends GetxController {
   final AuthRepository authRepository;
 
-  Rx<User> user = Rx<User>(null);
+  Rx<User?> user = Rx<User?>(null);
 
   AuthController(this.authRepository) : assert(authRepository != null) {
     user.bindStream(authRepository.userChangeStream);
@@ -22,7 +22,7 @@ class AuthController extends GetxController {
     await authRepository.signInWithEmailAndPassword(email, password);
   }
 
-  Future<void> submitEmailAuth(String? email) async {
+  Future<void> submitEmailAuth(String email) async {
     await authRepository.sendSignInLinkToEmail(email).then((value) => null);
   }
 

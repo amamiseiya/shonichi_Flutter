@@ -64,8 +64,8 @@ class SNShot {
         characters: []);
   }
 
-  factory SNShot.fromJson(Map<String, dynamic> map, String id) =>
-      _$SNShotFromJson(map)..id = id;
+  factory SNShot.fromJson(Object? map, String id) =>
+      _$SNShotFromJson(map as Map<String, dynamic>)..id = id;
 
   factory SNShot.fromText(Map<String, dynamic> json) {
     return SNShot(

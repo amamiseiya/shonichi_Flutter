@@ -26,8 +26,8 @@ class SNLyric {
       required this.songId,
       required this.characters});
 
-  factory SNLyric.fromJson(Map<String, dynamic> map, String id) =>
-      _$SNLyricFromJson(map)..id = id;
+  factory SNLyric.fromJson(Object? map, String id) =>
+      _$SNLyricFromJson(map as Map<String, dynamic>)..id = id;
 
   Map<String, dynamic> toJson() => _$SNLyricToJson(this);
 

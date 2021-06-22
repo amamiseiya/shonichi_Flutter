@@ -12,7 +12,7 @@ class UserInformationPage extends GetView<AuthController> {
     return Scaffold(
         appBar: AppBar(title: Text('User Information'.tr)),
         drawer: MyDrawer(),
-        body: GetX(builder: (_) {
+        body: GetX<AuthController>(builder: (_) {
           if (controller.user.value == null) {
             return LoadingAnimationLinear();
           }
@@ -25,8 +25,8 @@ class UserInformationPage extends GetView<AuthController> {
                     onTap: () => Get.dialog(EmailDetailDialog()),
                     leading: Text('Email:'.tr),
                     trailing: Obx(() => Text.rich(TextSpan(children: [
-                          TextSpan(text: controller.user.value.email ?? ''),
-                          (controller.user.value.emailVerified)
+                          TextSpan(text: controller.user.value!.email ?? ''),
+                          (controller.user.value!.emailVerified)
                               ? TextSpan(
                                   text: '(Verified)'.tr,
                                   style: TextStyle(color: Colors.green))
@@ -77,12 +77,14 @@ class EmailDetailDialog extends StatelessWidget {
               }
             },
           ),
-          Row(mainAxisAlignment: MainAxisAlignment.end,children:[SimpleDialogOption(
-            onPressed: () {
-              Get.back();
-            },
-            child: Text('OK'.tr),
-          )])
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            SimpleDialogOption(
+              onPressed: () {
+                Get.back();
+              },
+              child: Text('OK'.tr),
+            )
+          ])
         ],
       );
 }

@@ -20,7 +20,7 @@ class SongListPage extends GetView<SongController> {
     return Scaffold(
         appBar: AppBar(title: Text('All Song List'.tr)),
         drawer: MyDrawer(),
-        body: GetX(
+        body: GetX<SongController>(
             initState: (_) => controller.retrieveAll(),
             builder: (_) {
               if (controller.songs.value == null) {

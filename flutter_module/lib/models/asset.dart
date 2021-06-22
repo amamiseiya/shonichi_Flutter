@@ -28,8 +28,8 @@ class SNAsset {
       required this.uri,
       required this.dataId});
 
-  factory SNAsset.fromJson(Map<String, dynamic> map, String id) =>
-      _$SNAssetFromJson(map)..id = id;
+  factory SNAsset.fromJson(Object? map, String id) =>
+      _$SNAssetFromJson(map as Map<String, dynamic>)..id = id;
 
   Map<String, dynamic> toJson() => _$SNAssetToJson(this);
 }

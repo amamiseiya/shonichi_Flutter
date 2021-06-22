@@ -35,8 +35,8 @@ class SNStoryboard {
       projectSubject: ProjectSubject.Odottemita,
       songId: '');
 
-  factory SNStoryboard.fromJson(Map<String, dynamic> map, String id) =>
-      _$SNStoryboardFromJson(map)..id = id;
+  factory SNStoryboard.fromJson(Object? map, String id) =>
+      _$SNStoryboardFromJson(map as Map<String, dynamic>)..id = id;
 
   Map<String, dynamic> toJson() => _$SNStoryboardToJson(this);
 }

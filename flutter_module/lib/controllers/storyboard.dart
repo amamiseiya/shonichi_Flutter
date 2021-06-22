@@ -16,8 +16,8 @@ class StoryboardController extends GetxController {
 
   final StoryboardRepository storyboardRepository;
 
-  Rx<List<SNStoryboard>?> storyboardsForSong = Rx<List<SNStoryboard>>(null);
-  Rx<SNStoryboard?> editingStoryboard = Rx<SNStoryboard>(null);
+  Rxn<List<SNStoryboard>> storyboardsForSong = Rxn<List<SNStoryboard>>(null);
+  Rxn<SNStoryboard> editingStoryboard = Rxn<SNStoryboard>(null);
 
   StoryboardController(this.storyboardRepository)
       : assert(storyboardRepository != null);
@@ -59,7 +59,7 @@ class StoryboardController extends GetxController {
       print('Retrieving storyboards');
       if (authController.user.value == null ||
           songController.editingSong.value == null) {
-        storyboardsForSong.nil();
+        storyboardsForSong();
       } else if (authController.user.value != null &&
           songController.editingSong.value != null) {
         storyboardsForSong(await (storyboardRepository.retrieveForSong(
@@ -77,7 +77,7 @@ class StoryboardController extends GetxController {
         await shotController.deleteForStoryboard(storyboard);
         await storyboardRepository.delete(storyboard.id);
         if (storyboard == editingStoryboard.value) {
-          editingStoryboard.nil();
+          editingStoryboard();
         }
         retrieve();
       }
@@ -95,7 +95,7 @@ class StoryboardController extends GetxController {
         projectController.editingProject.value!.storyboardId = id;
         print('editingStoryboard is ${editingStoryboard.value!.id}');
       } else if (editingStoryboard.value!.id == id) {
-        editingStoryboard.nil();
+        editingStoryboard();
         projectController.editingProject.value!.storyboardId = null;
         print('editingStoryboard is null');
       }

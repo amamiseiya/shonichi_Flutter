@@ -17,8 +17,8 @@ class ProjectController extends GetxController {
   final SongRepository songRepository;
   final AssetRepository assetRepository;
 
-  Rx<List<SNProject>?> projects = Rx<List<SNProject>?>(null);
-  Rx<SNProject?> editingProject = Rx<SNProject>(null);
+  Rxn<List<SNProject>> projects = Rxn<List<SNProject>>(null);
+  Rxn<SNProject> editingProject = Rxn<SNProject>(null);
 
   ProjectController(
       this.projectRepository, this.songRepository, this.assetRepository)
@@ -78,7 +78,7 @@ class ProjectController extends GetxController {
         editingProject(await projectRepository.retrieveById(id));
         print('editingProject is ${editingProject.value!.id}');
       } else if (editingProject.value!.id == id) {
-        editingProject.nil();
+        editingProject();
         print('editingProject is null');
       }
     } catch (e) {

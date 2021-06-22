@@ -34,8 +34,8 @@ class SNSong {
       lyricOffset: 0,
       subordinateKikaku: '');
 
-  factory SNSong.fromJson(Map<String, dynamic> map, String id) =>
-      _$SNSongFromJson(map)..id = id;
+  factory SNSong.fromJson(Object? map, String id) =>
+      _$SNSongFromJson(map as Map<String, dynamic>)..id = id;
 
   Map<String, dynamic> toJson() => _$SNSongToJson(this);
 }

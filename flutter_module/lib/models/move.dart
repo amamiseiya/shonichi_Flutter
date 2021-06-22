@@ -63,8 +63,8 @@ class SNMove {
           character: character,
           formationId: formationId);
 
-  factory SNMove.fromJson(Map<String, dynamic> map, String id) =>
-      _$SNMoveFromJson(map)..id = id;
+  factory SNMove.fromJson(Object? map, String id) =>
+      _$SNMoveFromJson(map as Map<String, dynamic>)..id = id;
 
   Map<String, dynamic> toJson() => _$SNMoveToJson(this);
 

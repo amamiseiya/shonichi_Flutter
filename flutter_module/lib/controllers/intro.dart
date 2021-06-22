@@ -14,7 +14,7 @@ class IntroController extends GetxController {
 
   late final Intro intro;
   late final ProjectUpsertDialog projectUpsertDialog;
-  late final Future<SNProject> dialog;
+  late final Future<SNProject?> dialog;
 
   IntroController() {
     projectUpsertDialog = ProjectUpsertDialog(SNProject(
@@ -58,7 +58,7 @@ class IntroController extends GetxController {
         return stepWidgetParams.onNext!();
       // 点击右下角添加项目
       case 1:
-        dialog = Get.dialog(projectUpsertDialog);
+        dialog = Get.dialog<SNProject>(projectUpsertDialog);
         return Future.delayed(Duration(seconds: 1))
             .then((_) => stepWidgetParams.onNext!());
       case 2:

@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shonichi_flutter_module/models/asset.dart';
 
+import '../models/asset.dart';
 import '../models/character.dart';
 import '../models/kikaku.dart';
 import '../models/song.dart';
@@ -26,7 +26,7 @@ class CharacterController extends GetxController {
   late Worker worker;
 
   // 要么editingSong未初始化时值为null，要么加载到对应的角色，List为空则有异常
-  Rx<List<SNCharacter>?> editingCharacters = Rx<List<SNCharacter>?>(null);
+  Rxn<List<SNCharacter>> editingCharacters = Rxn<List<SNCharacter>>(null);
 
   CharacterController(this.assetRepository);
 
@@ -34,10 +34,10 @@ class CharacterController extends GetxController {
     super.onInit();
     worker = ever(songController.editingSong, (SNSong? song) async {
       if (song == null) {
-        editingCharacters.nil();
+        editingCharacters();
       } else if (song != null) {
         editingCharacters(await retrieveForKikaku(
-            Get.context, song.subordinateKikaku,
+            Get.context!, song.subordinateKikaku,
             orderBy: CharacterOrdering.Grade));
       }
     });

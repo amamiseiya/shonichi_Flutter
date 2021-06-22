@@ -40,7 +40,7 @@ class DataMigrationController extends GetxController {
   final ShotRepository shotRepository;
   final AssetRepository assetRepository;
 
-  RxString markdownText = RxString(null);
+  RxnString markdownText = RxnString(null);
   bool needEncrypt = false;
 
   DataMigrationController(this.projectRepository,
@@ -112,11 +112,11 @@ class DataMigrationController extends GetxController {
   void confirmImportMarkdown() async {
     try {
       final List<SNShot> shots = await parseShots(
-          projectController.editingProject.value!, markdownText.value);
+          projectController.editingProject.value!, markdownText.value!);
       for (SNShot shot in shots) {
         await shotRepository.create(shot);
       }
-      markdownText.nil();
+      markdownText();
     } catch (e) {
       print(e);
     }
@@ -191,12 +191,12 @@ class DataMigrationController extends GetxController {
       if (key != null) {
         await assetRepository.exportMarkdown(
             projectController.editingProject.value!,
-            desEncrypt(markdownText.value, key));
+            desEncrypt(markdownText.value!, key));
       } else {
         await assetRepository.exportMarkdown(
-            projectController.editingProject.value!, markdownText.value);
+            projectController.editingProject.value!, markdownText.value!);
       }
-      markdownText.nil();
+      markdownText();
     } catch (e) {
       print(e);
     }

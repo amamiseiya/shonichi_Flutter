@@ -38,11 +38,11 @@ class MarkdownPreview extends GetView<DataMigrationController> {
         child: SizedBox(
             width: MediaQuery.of(context).size.width * 2 / 3,
             height: MediaQuery.of(context).size.height * 2 / 3,
-            child: GetX(builder: (_) {
+            child: GetX<DataMigrationController>(builder: (_) {
               if (controller.markdownText.value == null) {
                 return Text('No data.');
               }
-              return Markdown(data: controller.markdownText.value);
+              return Markdown(data: controller.markdownText.value!);
             })));
   }
 }

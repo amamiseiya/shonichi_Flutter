@@ -47,7 +47,7 @@ class AuthRepository {
     }
   }
 
-  Future<void> sendSignInLinkToEmail(String? email) async {
+  Future<void> sendSignInLinkToEmail(String email) async {
     auth
         .sendSignInLinkToEmail(email: email, actionCodeSettings: acs)
         .catchError(

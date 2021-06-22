@@ -16,8 +16,8 @@ class FormationController extends GetxController {
 
   final FormationRepository formationRepository;
 
-  Rx<List<SNFormation>?> formationsForSong = Rx<List<SNFormation>?>(null);
-  Rx<SNFormation?> editingFormation = Rx<SNFormation>(null);
+  Rxn<List<SNFormation>> formationsForSong = Rxn<List<SNFormation>>(null);
+  Rxn<SNFormation> editingFormation = Rxn<SNFormation>(null);
 
   FormationController(this.formationRepository)
       : assert(formationRepository != null);
@@ -71,7 +71,7 @@ class FormationController extends GetxController {
         await moveController.deleteForFormation(formation);
         await formationRepository.delete(formation.id);
         if (formation == editingFormation.value) {
-          editingFormation.nil();
+          editingFormation();
         }
         retrieve();
       }
@@ -89,7 +89,7 @@ class FormationController extends GetxController {
         projectController.submitUpdate(projectController.editingProject.value!);
         print('editingFormation is ${editingFormation.value?.id}');
       } else if (editingFormation.value?.id == id) {
-        editingFormation.nil();
+        editingFormation();
         print('editingFormation is null');
       }
     } catch (e) {

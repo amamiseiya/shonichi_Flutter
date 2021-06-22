@@ -1,0 +1,33 @@
+
+@startuml LyricController
+scale 1.5
+start
+
+:进入歌曲详情页面;
+:读取所有歌词;
+switch(点击按钮)
+case(创建歌词)
+    :弹出对话框;
+    if(是否填写数据合法) then(yes)
+        :在数据库中创建;
+        :刷新所有歌词;
+    else(no)
+    endif
+case(修改歌词)
+    :弹出对话框;
+    if(是否填写数据合法) then(yes)
+        :在数据库中修改;
+        :刷新所有歌词;
+    else(no)
+    endif
+case(删除歌词)
+    if(是否有当前编辑歌词) then(yes)
+        :在数据库中删除;
+        :刷新所有歌词;
+    else(no)
+    endif
+endswitch
+
+
+stop
+@enduml

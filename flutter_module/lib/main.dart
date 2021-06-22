@@ -1,15 +1,14 @@
-// @dart=2.9
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
-import 'package:shonichi_flutter_module/controllers/asset.dart';
 // import 'package:leancloud_storage/leancloud.dart';
 
 import 'widgets/loading.dart';
 import 'pages/login.dart';
 import 'controllers/auth.dart';
+import 'controllers/asset.dart';
 import 'controllers/character.dart';
 import 'controllers/project.dart';
 import 'controllers/song.dart';
@@ -42,7 +41,8 @@ Future<void> main() async {
     home: LoginPage(),
     theme: NananijiTheme.theme,
     translations: Messages(),
-    locale: window.locale,
+    // locale: window.locale,
+    locale: Locale('zh', 'CN'),
     fallbackLocale: Locale('en', 'US'),
   ));
 }

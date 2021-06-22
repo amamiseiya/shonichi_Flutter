@@ -31,8 +31,8 @@ class SNFormation {
       createdTime: DateTime.now(),
       songId: '');
 
-  factory SNFormation.fromJson(Map<String, dynamic> map, String id) =>
-      _$SNFormationFromJson(map)..id = id;
+  factory SNFormation.fromJson(Object? map, String id) =>
+      _$SNFormationFromJson(map as Map<String, dynamic>)..id = id;
 
   Map<String, dynamic> toJson() => _$SNFormationToJson(this);
 }

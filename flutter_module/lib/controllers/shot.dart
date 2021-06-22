@@ -34,14 +34,14 @@ class ShotController extends GetxController {
 
   // 生成的Stream
   late Worker worker;
-  RxList<Map<String, dynamic>> coverageStream =
-      RxList<Map<String, dynamic>>(null);
+  Rxn<List<Map<String, dynamic>>> coverageStream =
+      Rxn<List<Map<String, dynamic>>>(null);
   Stream<Map<String, int>> statisticsStream = Stream.empty();
 
   // 控制的变量
-  Rx<List<SNShot>?> shots = Rx<List<SNShot>>(null);
+  Rxn<List<SNShot>> shots = Rxn<List<SNShot>>(null);
   RxList<SNShot> selectedShots = RxList<SNShot>(List.empty());
-  Rx<int?> editingShotIndex = Rx<int>(null);
+  Rxn<int> editingShotIndex = Rxn<int>(null);
 
   ShotController(this.songRepository, this.lyricRepository, this.shotRepository,
       this.assetRepository)
@@ -109,7 +109,7 @@ class ShotController extends GetxController {
     try {
       print('Retrieving shots for editingStoryboard');
       if (storyboardController.editingStoryboard.value == null) {
-        shots.nil();
+        shots();
       } else if (storyboardController.editingStoryboard.value != null) {
         shots(await shotRepository.retrieveForStoryboard(
             storyboardController.editingStoryboard.value!.id));

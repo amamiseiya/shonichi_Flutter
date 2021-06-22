@@ -21,7 +21,7 @@ class SongInformationPage extends GetView<LyricController> {
     return Scaffold(
         appBar: AppBar(title: Text('Song Information'.tr)),
         drawer: MyDrawer(),
-        body: GetX(builder: (_) {
+        body: GetX<LyricController>(builder: (_) {
           if (controller.lyrics.value == null) {
             return LoadingAnimationLinear();
           }
@@ -135,4 +135,3 @@ class _LyricDataTableState extends State<LyricDataTable> {
             )));
   }
 }
-
