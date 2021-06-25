@@ -1,0 +1,39 @@
+
+@startuml SongController
+scale 1.5
+start
+
+:进入歌曲列表页面;
+:读取所有歌曲;
+switch(点击按钮)
+case(创建歌曲)
+    :弹出对话框;
+    if(是否填写数据合法) then(yes)
+        :在数据库中创建;
+        :刷新所有歌曲;
+    else(no)
+    endif
+case(修改歌曲)
+    :弹出对话框;
+    if(是否填写数据合法) then(yes)
+        :在数据库中修改;
+        :刷新所有歌曲;
+    else(no)
+    endif
+case(删除歌曲)
+    if(是否有当前编辑歌曲) then(yes)
+        :在数据库中删除;
+        :刷新所有歌曲;
+    else(no)
+    endif
+case(选择歌曲)
+if(选择了与当前不同的歌曲或当前歌曲为null) then(yes)
+    :将当前编辑歌曲设为所选歌曲;
+else(no)
+    :将当前编辑歌曲设为null;
+endif
+endswitch
+
+
+stop
+@enduml

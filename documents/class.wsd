@@ -1,0 +1,109 @@
+@startuml Class
+
+SNProject "1..*" -- "1" SNSong
+SNProject "1..*" -- "1" SNStoryboard
+SNProject "1..*" -- "1" SNFormation
+SNSong "1" -- "1..*" SNStoryboard
+SNSong "1" -- "1..*" SNFormation
+SNSong "1" *-- "1..*" SNLyric
+SNStoryboard "1" *-- "1..*" SNShot
+SNFormation "1" *-- "1..*" SNMove
+
+
+class SNProject {
+    String id
+    String dancerName
+    DateTime createdTime
+    DateTime modifiedTime
+    String songId
+    String storyboardId
+    String formationId
+    fromMap()
+    toMap()
+}
+
+class SNSong {
+    String id
+    String name
+    String coverURI
+    int lyricOffset
+    String subordinateKikaku
+    fromMap()
+    toMap()
+}
+
+class SNLyric {
+    String id
+    Duration startTime
+    Duration endTime
+    String text
+    String songId
+    List<SNCharacter> characters
+    fromMap()
+    toMap()
+}
+
+
+class SNStoryboard {
+  String id
+  String name
+  String description
+  DateTime CreatedTime
+  String creatorId
+  String songId
+  fromMap()
+  toMap()
+}
+
+
+class SNShot {
+    String id
+    int sceneNumber
+    int shotNumber
+    Duration startTime
+    Duration endTime
+    String lyric
+    String shotType
+    String shotMovement
+    String shotAngle
+    String text
+    String imageURI
+    String comment
+    String storyboardId
+    List<SNCharacter> characters
+    fromMap()
+    toMap()
+}
+
+class SNFormation {
+  String id
+  String name
+  String description
+  DateTime CreatedTime
+  String creatorId
+  String songId
+
+  fromMap()
+  toMap()
+}
+
+class SNMove {
+    String id
+    Duration startTime
+    double posX
+    double posY
+    int curveX1X
+    int curveX1Y
+    int curveX2X
+    int curveX2Y
+    int curveY1X
+    int curveY1Y
+    int curveY2X
+    int curveY2Y
+    String characterName
+    String formationId
+    fromMap()
+    toMap()
+}
+
+@enduml
