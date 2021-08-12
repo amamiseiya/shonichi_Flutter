@@ -211,13 +211,14 @@ class DataMigrationController extends GetxController {
       'sn_shot': [],
       'sn_asset': []
     };
-    FirebaseFirestore.instance
-        .collection('sn_asset')
-        .get()
-        .then((snapshot) =>
-        snapshot.docs.forEach((doc) {
-          return map['sn_asset']!.add(doc);
-        }));
+    // 弃用。
+    // FirebaseFirestore.instance
+    //     .collection('sn_asset')
+    //     .get()
+    //     .then((snapshot) =>
+    //     snapshot.docs.forEach((doc) {
+    //       return map['sn_asset']!.add(doc);
+    //     }));
 
     await assetRepository.exportJson(json.encode(map), 'shot_data_export.json');
   }

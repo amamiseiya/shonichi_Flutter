@@ -32,6 +32,7 @@ class CharacterController extends GetxController {
 
   void onInit() {
     super.onInit();
+    // 每次editingSong刷新时，同时刷新editingCharacters
     worker = ever(songController.editingSong, (SNSong? song) async {
       if (song == null) {
         editingCharacters();
@@ -78,10 +79,24 @@ class CharacterController extends GetxController {
     }
   }
 
-  Future<Map<SNCharacter, String?>> fetchImages(
-      List<SNCharacter> characters) async {
-    final images = await assetRepository.retrieveAssetForCharacters(
-        characters, SNAssetType.CharacterHalfLengthPhoto);
+  Map<SNCharacter, String> fetchImages(
+      String kikakuNameEng, List<SNCharacter> characters, SNAssetType type) {
+    final Iterable<String> images = characters.map((c) {
+      final String imageURI = 'assets/images/characters/' +
+          kikakuNameEng.toLowerCase().replaceAll(RegExp(r'\s'), '_') +
+          '/' +
+          c.romaji!.toLowerCase().replaceAll(RegExp(r'\s'), '_');
+      switch (type) {
+        case SNAssetType.CharacterFullLengthPhoto:
+          return imageURI + '_full_length.png';
+          break;
+        case SNAssetType.CharacterHalfLengthPhoto:
+          return imageURI + '_half_length.png';
+          break;
+        default:
+          throw FormatException('No such asset type');
+      }
+    });
     return Map.fromIterables(characters, images);
   }
 

@@ -12,19 +12,19 @@ import '../providers/firestore/firestore.dart';
 import '../providers/firebase/asset.dart';
 
 class AssetRepository {
-  final databaseProvider = AssetFirestoreProvider();
+  // final databaseProvider = AssetFirestoreProvider();
   final storageProvider = AssetFirebaseProvider();
 
   // * -------- Simple Functions --------
 
+  // 弃用。目前认为，不需要单独为每个资源添加一个数据库记录，需要的时候直接从存储里读就好了。
   // * -------- Asset CRUD --------
+  // Future<List<SNAsset>> retrieveAssetsForSong(String songId) =>
+  //     databaseProvider.retrieveAssetsForSong(songId);
 
-  Future<List<SNAsset>> retrieveAssetsForSong(String songId) =>
-      databaseProvider.retrieveAssetsForSong(songId);
-
-  Future<List<String?>> retrieveAssetForCharacters(
-          List<SNCharacter> characters, SNAssetType type) =>
-      databaseProvider.retrieveAssetForCharacters(characters, type);
+  // Future<List<String?>> retrieveAssetForCharacters(
+  //         List<SNCharacter> characters, SNAssetType type) =>
+  //     databaseProvider.retrieveAssetForCharacters(characters, type);
 
   // * -------- Asset Loading --------
 

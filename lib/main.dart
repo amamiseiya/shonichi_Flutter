@@ -41,8 +41,8 @@ Future<void> main() async {
     home: LoginPage(),
     theme: NananijiTheme.theme,
     translations: Messages(),
-    // locale: window.locale,
-    locale: Locale('zh', 'CN'),
+    locale: window.locale,
+    // locale: Locale('zh', 'CN'),
     fallbackLocale: Locale('en', 'US'),
   ));
 }

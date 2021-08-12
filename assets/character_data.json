@@ -207,6 +207,7 @@
     {
       "name": "愛城 華恋",
       "nameAbbr": "恋",
+      "romaji": "AIJO KAREN",
       "memberColor": "#FB5458",
       "grade": null,
       "group": null,
@@ -216,6 +217,7 @@
     {
       "name": "神楽 ひかり",
       "nameAbbr": "光",
+      "romaji": "KAGURA HIKARI",
       "memberColor": "#6292E9",
       "grade": null,
       "group": null,
@@ -225,6 +227,7 @@
     {
       "name": "天堂 真矢",
       "nameAbbr": "真",
+      "romaji": "TENDO MAYA",
       "memberColor": "#CBC6CC",
       "grade": null,
       "group": null,
@@ -234,6 +237,7 @@
     {
       "name": "星見 純那",
       "nameAbbr": "纯",
+      "romaji": "HOSHIMI JUNNA",
       "memberColor": "#95CAEE",
       "grade": null,
       "group": null,
@@ -243,6 +247,7 @@
     {
       "name": "露崎 まひる",
       "nameAbbr": "露",
+      "romaji": "TSUYUZAKI MAHIRU",
       "memberColor": "#61BF99",
       "grade": null,
       "group": null,
@@ -252,6 +257,7 @@
     {
       "name": "大場 なな",
       "nameAbbr": "蕉",
+      "romaji": "DAIBA NANA",
       "memberColor": "#FDD162",
       "grade": null,
       "group": null,
@@ -261,6 +267,7 @@
     {
       "name": "西條 クロディーヌ",
       "nameAbbr": "克",
+      "romaji": "SAIJO CLAUDINE",
       "memberColor": "#FE9952",
       "grade": null,
       "group": null,
@@ -270,6 +277,7 @@
     {
       "name": "石動 双葉",
       "nameAbbr": "叶",
+      "romaji": "ISURUGI FUTABA",
       "memberColor": "#8C67AA",
       "grade": null,
       "group": null,
@@ -279,6 +287,7 @@
     {
       "name": "花柳 香子",
       "nameAbbr": "花",
+      "romaji": "HANAYAGI KAORUKO",
       "memberColor": "#E08696",
       "grade": null,
       "group": null,

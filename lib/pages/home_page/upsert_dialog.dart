@@ -44,9 +44,11 @@ class ProjectUpsertDialog extends StatelessWidget {
                 ).then((value) {
                   if (value != null) {
                     _p.createdTime = value;
+                    (context as Element).markNeedsBuild();
                   }
                 }),
-                child: Text('Created time'.tr),
+                child:
+                    Text('Created time'.tr + ': ' + _p.createdTime.toString()),
               ),
               TextFormField(
                 controller: _dancerNameController,
@@ -54,9 +56,11 @@ class ProjectUpsertDialog extends StatelessWidget {
                 onEditingComplete: () {},
               ),
               ElevatedButton(
-                onPressed: () => Get.dialog(SongSelectDialog())
-                    .then((value) => _p.songId = value),
-                child: Text('Song ID'.tr),
+                onPressed: () => Get.dialog(SongSelectDialog()).then((value) {
+                  _p.songId = value;
+                  (context as Element).markNeedsBuild();
+                }),
+                child: Text('Song ID'.tr + ': ' + _p.songId!),
               ),
               TextFormField(
                 controller: _storyboardIdController,

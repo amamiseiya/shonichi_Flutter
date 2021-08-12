@@ -54,10 +54,9 @@ class SongController extends GetxController {
     ]);
   }
 
-  Future<void> retrieveSongVideo() async {
-    assetRepository
-        .retrieveAssetsForSong(editingSong.value!.id)
-        .then((a) => videoURI(a.first.uri));
+  String retrieveSongVideo() {
+    return editingSong.value!.id.toLowerCase().replaceAll(RegExp(r'\s'), '_') +
+        '.mp4';
   }
 
   Future<void> submitCreate(SNSong song) async {

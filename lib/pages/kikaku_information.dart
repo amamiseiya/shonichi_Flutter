@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shonichi/models/asset.dart';
 
 import '../controllers/character.dart';
 import '../models/character.dart';
@@ -15,6 +16,7 @@ class KikakuInformationPage extends GetView<CharacterController> {
             appBar: AppBar(
               title: Text('Information about Kikakus'.tr),
               bottom: TabBar(
+                // 显示多个Tab，按企划分组
                 tabs: controller.kikakus
                     .map((kikaku) => Text(
                           kikaku.name,
@@ -29,11 +31,15 @@ class KikakuInformationPage extends GetView<CharacterController> {
                 children: controller.kikakus
                     .map((kikaku) => Card(
                         child: FutureBuilder(
+                            // 先获取单个企划的角色列表
                             future: controller
                                 .retrieveForKikaku(context, kikaku.name,
                                     orderBy: CharacterOrdering.Grade)
-                                .then((characters) =>
-                                    controller.fetchImages(characters)),
+                                // 然后为所有角色获取图片
+                                .then((characters) => controller.fetchImages(
+                                    kikaku.nameEng,
+                                    characters,
+                                    SNAssetType.CharacterFullLengthPhoto)),
                             builder:
                                 (BuildContext context, AsyncSnapshot snapshot) {
                               if (snapshot.hasData) {
@@ -54,8 +60,10 @@ class KikakuInformationPage extends GetView<CharacterController> {
                                                 child: (snapshot.data.values
                                                             .elementAt(index) !=
                                                         null)
-                                                    ? Image.asset(
-                                                        'assets/images/characters/${snapshot.data.values.elementAt(index)!}')
+                                                    //! 无用的判断
+                                                    ? Image.asset(snapshot
+                                                        .data.values
+                                                        .elementAt(index)!)
                                                     : Container()),
                                             Text(snapshot.data.keys
                                                 .elementAt(index)

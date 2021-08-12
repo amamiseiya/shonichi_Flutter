@@ -51,6 +51,8 @@ dependencies:
   flutter_intro:
   flutter_markdown:
   flutter_slidable:
+#  https://pub.dev/packages/flutter_unity_widget
+#  flutter_unity_widget:
   get:
   google_fonts:
   image_picker:
@@ -85,6 +87,8 @@ flutter:
   assets:
     - assets/images/characters/lovelive/
     - assets/images/characters/22_7/
+    - assets/images/characters/revue_starlight/
+    - assets/images/covers/
     - assets/shot_data_example.json
     - assets/character_data.json
   #   - images/a_dot_burr.jpeg

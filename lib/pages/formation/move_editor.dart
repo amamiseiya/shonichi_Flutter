@@ -82,25 +82,25 @@ class MoveEditor extends GetView<MoveController> {
                                 return ListView(
                                     children: snapshot.data
                                         .map<Widget>((SNMove move) => ListTile(
-                                      selected: false,
-                                      onTap: () => controller
-                                          .changeTime(move.startTime),
-                                      leading: CircleAvatar(
-                                          backgroundColor: move
-                                              .character.memberColor,
-                                          child: Text(
-                                              characterNameFirstNameRegExp
-                                                  .stringMatch(move
-                                                  .character
-                                                  .name)!)),
-                                      title: Text(simpleDurationRegExp
-                                          .stringMatch(move.startTime
-                                          .toString())!),
-                                      subtitle: Text(
-                                          move.posX.toString() +
-                                              ' , ' +
-                                              move.posY.toString()),
-                                    ))
+                                              selected: false,
+                                              onTap: () => controller
+                                                  .changeTime(move.startTime),
+                                              leading: CircleAvatar(
+                                                  backgroundColor: move
+                                                      .character.memberColor,
+                                                  child: Text(
+                                                      characterNameFirstNameRegExp
+                                                          .stringMatch(move
+                                                              .character
+                                                              .name)!)),
+                                              title: Text(simpleDurationRegExp
+                                                  .stringMatch(move.startTime
+                                                      .toString())!),
+                                              subtitle: Text(
+                                                  move.posX.toString() +
+                                                      ' , ' +
+                                                      move.posY.toString()),
+                                            ))
                                         .toList());
                               }),
                         )
@@ -133,28 +133,28 @@ class TimeSlider extends GetView<MoveController> {
                 thumbColor: Colors.pink,
               ),
               child: Obx(() => Slider(
-                value: (lyricController.lyrics.value != null)
-                    ? sliderValue
-                    : 0.0,
-                // label: 'yeah tiger',
-                // value: currentTime.inSeconds.toDouble(),
-                min: 0.0,
-                max: (lyricController.lyrics.value != null)
-                    ? lyricController
-                    .lyrics.value!.last.endTime.inMilliseconds
-                    .toDouble()
-                    : 1.0,
-                divisions: (lyricController.lyrics.value != null)
-                    ? lyricController
-                    .lyrics.value!.last.endTime.inMilliseconds ~/
-                    100
-                    : null,
-                onChanged: (value) {
-                  sliderValue = value;
-                  print(sliderValue);
-                },
-                onChangeEnd: (value) => controller.changeSliderValue(value),
-              )));
+                    value: (lyricController.lyrics.value != null)
+                        ? sliderValue
+                        : 0.0,
+                    // label: 'yeah tiger',
+                    // value: currentTime.inSeconds.toDouble(),
+                    min: 0.0,
+                    max: (lyricController.lyrics.value != null)
+                        ? lyricController
+                            .lyrics.value!.last.endTime.inMilliseconds
+                            .toDouble()
+                        : 1.0,
+                    divisions: (lyricController.lyrics.value != null)
+                        ? lyricController
+                                .lyrics.value!.last.endTime.inMilliseconds ~/
+                            100
+                        : null,
+                    onChanged: (value) {
+                      sliderValue = value;
+                      print(sliderValue);
+                    },
+                    onChangeEnd: (value) => controller.changeSliderValue(value),
+                  )));
         } else {
           return Column(
               children: [LoadingAnimationLinear(), Text('TimeSlider')]);
@@ -173,18 +173,18 @@ class CharacterFilterButton extends StatelessWidget {
         return Wrap(
           children: characterController.editingCharacters.value!
               .map<Widget>((character) => GetX<MoveController>(
-              builder: (moveController) => ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    primary:
-                    (moveController.characterFilter.value?.name ==
-                        character.name)
-                        ? Colors.blueAccent.shade100
-                        : Colors.grey.shade300),
-                onPressed: () =>
-                    moveController.changeCharacter(character),
-                child: Text(characterNameFirstNameRegExp
-                    .stringMatch(character.name)!),
-              )))
+                  builder: (moveController) => ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary:
+                                (moveController.characterFilter.value?.name ==
+                                        character.name)
+                                    ? Colors.blueAccent.shade100
+                                    : Colors.grey.shade300),
+                        onPressed: () =>
+                            moveController.changeCharacter(character),
+                        child: Text(characterNameFirstNameRegExp
+                            .stringMatch(character.name)!),
+                      )))
               .toList(),
         );
       });
@@ -196,19 +196,21 @@ class KCurveFilterButton extends GetView<MoveController> {
       children: KCurveType.values
           .sublist(0, 2)
           .map<Widget>((type) => TextButton(
-          style: ElevatedButton.styleFrom(
-              onPrimary: (controller.kCurveTypeFilter.value == type)
-                  ? Colors.blueAccent.shade100
-                  : Colors.grey.shade300),
-          onPressed: () => controller.changeKCurveType(type),
-          child: Text(type.toString())))
+              style: ElevatedButton.styleFrom(
+                  onPrimary: (controller.kCurveTypeFilter.value == type)
+                      ? Colors.blueAccent.shade100
+                      : Colors.grey.shade300),
+              onPressed: () => controller.changeKCurveType(type),
+              child: Text(type.toString())))
           .toList()));
 }
 
 class ProgramAnimator extends StatefulWidget {
   final List<SNMove> movesForTime;
   final Size size;
+
   ProgramAnimator({required this.movesForTime, required this.size});
+
   @override
   _ProgramAnimatorState createState() => _ProgramAnimatorState();
 }
@@ -249,6 +251,7 @@ class _ProgramAnimatorState extends State<ProgramAnimator>
 class ProgramPainter extends CustomPainter {
   final MoveController moveController = Get.find();
   final List<SNMove> movesForTime;
+
   ProgramPainter(this.movesForTime);
 
   @override
@@ -262,6 +265,12 @@ class ProgramPainter extends CustomPainter {
             ..strokeWidth = 5
             ..style = PaintingStyle.stroke);
     }
+    canvas.drawRect(
+        Rect.fromLTWH(0, 0, 480, 270),
+        Paint()
+          ..color = Colors.blueAccent.shade100
+          ..strokeWidth = 3
+          ..style = PaintingStyle.stroke);
   }
 
   @override
@@ -271,6 +280,7 @@ class ProgramPainter extends CustomPainter {
 
 class KCurvePainter extends CustomPainter {
   final List<Offset> editingKCurve;
+
   KCurvePainter(this.editingKCurve)
       : assert(editingKCurve != null),
         assert(editingKCurve[0] != null),
@@ -299,8 +309,8 @@ class KCurvePainter extends CustomPainter {
         PointMode.lines,
         List.generate(
             50,
-                (int index) =>
-            Offset(0.0, size.height) * pow(1 - index * 0.02, 3).toDouble() +
+            (int index) =>
+                Offset(0.0, size.height) * pow(1 - index * 0.02, 3).toDouble() +
                 editingKCurve[0] *
                     3 *
                     (index * 0.02) *
@@ -314,6 +324,13 @@ class KCurvePainter extends CustomPainter {
           ..isAntiAlias = !true
           ..strokeWidth = 5
           ..color = Colors.blueAccent.shade200
+          ..style = PaintingStyle.stroke);
+
+    canvas.drawRect(
+        Rect.fromLTWH(0, 0, 270, 270),
+        Paint()
+          ..color = Colors.blueAccent.shade100
+          ..strokeWidth = 3
           ..style = PaintingStyle.stroke);
 
     // canvas.drawPath(
