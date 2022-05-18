@@ -2,14 +2,14 @@
 scale 500 width
 
 [*] --> SongUninitialized
-SongUninitialized-->RetrievingSong
-RetrievingSong-->SongRetrieved
-SongRetrieved-->RetrievingSong:PressDelete
-SongRetrieved-->RetrievingSong:PressDeleteSelected
-SongRetrieved->EditingSong:PressedAdd
-SongRetrieved->EditingSong:PressedUpdate
-EditingSong-up->RetrievingSong:ConfirmAdd
-EditingSong-up->RetrievingSong:ConfirmUpdate
-SongRetrieved-->[*]
+SongUninitialized --> RetrievingSong
+RetrievingSong --> SongRetrieved
+SongRetrieved --> RetrievingSong : PressDelete
+SongRetrieved --> RetrievingSong : PressDeleteSelected
+SongRetrieved -> EditingSong : PressedAdd
+SongRetrieved -> EditingSong : PressedUpdate
+EditingSong -up-> RetrievingSong : ConfirmAdd
+EditingSong -up->RetrievingSong : ConfirmUpdate
+SongRetrieved --> [*]
 
 @enduml

@@ -5,7 +5,9 @@
 使用Flutter为跨平台开发框架，集成Firebase云服务，可部署于Android端、iOS端、Web端。
 这是一个 **“专用”** 的App。其“专用”，体现在其主要用来辅助 **LoveLive、AKB48等偶像企划** 的 **宅舞的录制** ，且仅用于满足 **本作者** 的实际需求。
 作者计算机方面技术力底下，没有条件将其发展为一个大范围公开的、通用的应用。
-代码和文档可能有很多匪夷所思的地方，看个乐子就完了，不建议认真研究，更不建议Star&Fork。
+代码和文档可能有很多匪夷所思的地方，看个乐子就完了，认真研究你就输了，不建议Star&Fork。
+
+本项目为一个宅舞拍摄全流程解决方案的一部分。关于这个全流程解决方案的大致构想，请跳转至[documents/odottemita_satsuei_overview.md](documents/odottemita_satsuei_overview.md)。
 
 ## 功能简介
 
@@ -24,7 +26,7 @@
 
 用户进入分镜编辑页面后，可以查看所有分镜表对象，并可进行创建、修改、删除操作。用户可以指定一个分镜表为当前使用分镜表，指定后可以进行分镜的编辑。
 
-一个分镜表对象由若干个分镜对象组合而成。分镜具有景别、角色、内容、画面等属性。用户可以分别使用下拉菜单、文本输入框等UI元素(Widget)对这些属性进行编辑，进行的更改会实时保存。
+一个分镜表对象由若干个分镜对象组合而成。分镜具有景别、角色、内容、画面等属性。用户可以分别使用下拉菜单、文本输入框等UI元素对这些属性进行编辑，进行的更改会实时保存。
 
 用户在编辑分镜时，软件可以根据现有的歌曲、队形、分镜等信息，为用户进行智能推荐，自动填充内容。
 
@@ -75,15 +77,14 @@
 ### iOS下的配置
 
 * 本地文件存储
+    在ios/Runner/Info.plist中加入如下的项，以启用iOS下的本地文件存储功能。
 
-在Runner/Runner/Info.plist中加入如下的项，以启用iOS下的本地文件存储功能。
-
-``` plist
+    ``` plist
     <key>LSSupportsOpeningDocumentsInPlace</key>
     <true/>
     <key>UIFileSharingEnabled</key>
     <true/>
-```
+    ```
 
 ### 初次使用
 
@@ -94,25 +95,50 @@
 
 如题。
 
+## 开发计划
+
+- [ ] 分镜自动设计
+	抓取萌娘百科的歌曲词条页面，根据歌词的字体颜色，识别solo角色。
+	根据单句在整首歌中的位置，配置分镜的运动、景别等。
+	判断单句位置的方法：
+	1. 通过单句换行
+	2. 事先给出结构说明
+	例：Intro -> Verse1 -> Verse2 -> Chorus -> Verse2 -> Chorus -> Solo -> Chorus -> Outro
+
+- [ ] 规范分镜运动的描述
+	- 规定描述动作的短语的成分——前面形容词，中间主要动作，后面“跟随”等叠加状态
+	- 表示速度可以有“极速”“缓慢”
+	- 表示幅度可以有“大范围”“小范围”
+	- 略微=小位移+低速度
+	- 环绕拍摄=镜头角度航向轴变化+相机做曲线移动
+	- 上升=相机向上位移+相机向前位移
+	- 爬升=相机向前位移+相机向上位移
+
+- [x] 统计每个角色出现的次数
+
+- [ ] 建立分镜表与歌词表的联动
+	- [ ] 歌词覆盖显示
+		匹配歌词表与分镜表内相同的歌词，将相同部分用彩色做标记。
+
 ## 软件的一些其它信息
 
 ### 数据存储
 
-使用Firebase Cloud Firestore作为远程数据库。数据不设本地存储方式。
+使用Firebase的Cloud Firestore作为远程数据库。数据不设本地存储方式。
 
 ### 后端文件存储
 
-使用Firebase Cloud Storage实现文件存储。
+使用Firebase的Cloud Storage实现文件存储。
 
-* /images
-歌曲封面
-分镜图示
+1. /images
+    1. 歌曲封面
+    2. 分镜图示
 
-* /audios
-歌曲
+2. /audios
+    1.歌曲
 
-* /videos
-官方PV
+3. /videos
+    1.官方PV
 
 ### 架构
 
@@ -128,6 +154,10 @@ View - Controller - Model - Repository - Provider
 
 ## 一个真实的故事
 
+* 2020年2月
+
+开始学习Flutter，尝试开发本项目。
+
 * 2020年7月
 
 发现两个艰难的事实：
@@ -135,17 +165,22 @@ View - Controller - Model - Repository - Provider
 1. Flutter还是不够我用的，我需要一个能够运行在iPhone、iPad、Apple Watch以及MacBook上、并且能在这些平台上进行交互的通用的应用，可能还需要集成Apple的ARKit等框架，用Flutter恐怕难以实现，必须原生开发。
 2. 等等……用Flutter是为了跨Apple之外的平台，可是我根本就不会在Android或是网页端上用它，我TM为什么闲得没事要用Flutter写啊？？！！
 
-于是停止了Flutter项目的开发。转头学习iOS原生开发。希望重写现有功能，并继续改进。
+于是停止了Flutter项目的开发，转头学习iOS原生开发。希望重写现有功能，并继续改进。
 
 * 2021年1月
 
-发现iOS原生开发好难啊！学习了SwiftUI的基本使用，这框架和Flutter有很多相通的地方，所以我能比较轻松地理解。但是目前还不成熟，很多需要的东西还得靠UIKit。UIKit比这又难多了，我才不要去学！
-还是用Flutter继续写吧……
-把Flutter的项目作为iOS原生项目的模块，继续开发。
+发现iOS原生开发好难啊！比Flutter难得多！
+学习了SwiftUI的基本使用，因为和Flutter有很多相通的地方，所以我能比较轻松地理解。但是SwiftUI目前还不成熟，很多时候还是得靠UIKit。UIKit估计又是个天坑，我才不要去学！
+还是用Flutter继续写吧！但是已经写好的原生部分又不想浪费，于是把Flutter的项目作为iOS原生项目的模块，继续开发。
 
 * 2021年6月
 
 将Flutter作为模块开发，经历了许多麻烦。比如生成的iOS项目是临时的，每次pub get更新插件都会重置，我就得重新配置Firebase的文件。
 那我为啥要作为模块啊？？我还想着原生+Flutter混合栈？别逗了，我有这水平吗。
-还是把Flutter项目分出来了。
-SwiftUI的项目存档，或许未来哪天又能用了呢？
+于是还是把Flutter项目单独分出来了。
+虽然是垃圾，但还是不忍心丢掉SwiftUI项目的文件，所以一起merge在Git里面了，或许未来哪天又能用了呢？
+
+## References
+
+- [Flutter实战 | 从 0 搭建「网易云音乐」APP（六、歌词（一））_移动开发_Flutter笔记-CSDN博客](https://blog.csdn.net/qq_23756803/article/details/102814343)
+- [fluttercandies/NeteaseCloudMusic](https://github.com/fluttercandies/NeteaseCloudMusic)

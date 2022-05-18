@@ -2,11 +2,11 @@
 scale 500 width
 
 [*] --> ShotUninitialized
-ShotUninitialized-->RetrievingShot:StartRetrieving
-RetrievingShot-->ShotRetrieved
-ShotRetrieved-->RetrievingShot:PressDelete
-ShotRetrieved-->RetrievingShot:PressDeleteSelected
-ShotRetrieved-->RetrievingShot:ChangeShotData
-ShotRetrieved-->[*]
+ShotUninitialized --> RetrievingShot : StartRetrieving
+RetrievingShot --> ShotRetrieved
+ShotRetrieved --> RetrievingShot : PressDelete
+ShotRetrieved --> RetrievingShot : PressDeleteSelected
+ShotRetrieved --> RetrievingShot : ChangeShotData
+ShotRetrieved --> [*]
 
 @enduml
